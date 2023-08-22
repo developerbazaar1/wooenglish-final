@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "448620809328",
+    "firebase_url": "https://wooenglishapp-default-rtdb.firebaseio.com",
+    "project_id": "wooenglishapp",
+    "storage_bucket": "wooenglishapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448620809328:android:217ea4fbf11f674d1e78b5",
+        "android_client_info": {
+          "package_name": "app.woo.english.woo_english"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448620809328-dbl9efs3k1dgqnkjbonikel0drlb1o5l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.woo.english.woo_english",
+            "certificate_hash": "8e643b3fa2e5de846fdb534d2140410ff3db571e"
+          }
+        },
+        {
+          "client_id": "448620809328-dhrui766k7u0q2r3j9honktbf0jkvs9q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.woo.english.woo_english",
+            "certificate_hash": "a6f8737020c3297437aded64cd75e7b60b29ac8f"
+          }
+        },
+        {
+          "client_id": "448620809328-a6lr69mpo7m2ra9e6vnsjorq6m6frm52.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUi8_tw9lL7xCvwIZ30iqrFmFkjdsSACY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448620809328-a6lr69mpo7m2ra9e6vnsjorq6m6frm52.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "448620809328-suksd7qn0ugg4d6fbinep32jggih9qdp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.woo.english.wooEnglish"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

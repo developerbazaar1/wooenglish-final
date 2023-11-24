@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "551305220605",
+    "project_id": "wooenglishlatest",
+    "storage_bucket": "wooenglishlatest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551305220605:android:c51042c14b62af1ecb4994",
+        "android_client_info": {
+          "package_name": "app.woo.english.woo_english_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551305220605-o96bdv5kkb1a6jfau1j66m8ki0n2ahpd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.woo.english.woo_english_application",
+            "certificate_hash": "8f097a57cada7bd6c2001bbdc8af29a2731fac5c"
+          }
+        },
+        {
+          "client_id": "551305220605-uodupske7kq7sfhparmai5qjk82vvu1l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.woo.english.woo_english_application",
+            "certificate_hash": "983fbd18b7690e450c2669c7cdee54368e6bee0c"
+          }
+        },
+        {
+          "client_id": "551305220605-84759j74uhhj5s25950nnm9n71ll6sm1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNlf6-RVB6JvfrMmITJxZQxQ4uUvEy8y0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551305220605-84759j74uhhj5s25950nnm9n71ll6sm1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "551305220605-rlku6mn8dks5dt1j9bva9tnq7fosh4qo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.woo.english.wooEnglish"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

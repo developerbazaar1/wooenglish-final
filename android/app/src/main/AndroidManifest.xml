@@ -1,0 +1,116 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Add THIS PERMISSION  FOR INTERNET PERMISSION OF RELEASE APK -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Add THIS PERMISSION FOR GOOGLE ADS-->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+
+    <!-- ADD THESE TWO PERMISSIONS FOR AUDIO SERVICE -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <!-- ADD THIS QUERY FOR FACEBOOK AUTHENTICATION -->
+    <queries>
+        <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
+    </queries>
+
+    <application
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:label="woo_english"
+        android:usesCleartextTraffic="true"
+
+        tools:ignore="ExtraText"
+        tools:targetApi="m">
+
+        <!-- ADD THIS TWO META DATA  FOR FACEBOOK AUTHENTICATION -->
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+
+        <!-- THIS IS MAIN ACTIVITY CHANGE NAME BECAUSE OF AUDIO SERVICE -->
+        <activity
+            android:name="io.flutter.embedding.android.FlutterFragmentActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="MissingClass">
+
+
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Replace 'example.page.link' with your own dynamic link domain -->
+                <data
+                    android:host="wooenglishapplication.page.link"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+
+        <!-- ADD THIS "SERVICE" FOR AUDIO SERVICE -->
+        <service android:name="com.ryanheise.audioservice.AudioService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="true" tools:ignore="Instantiatable,MissingClass">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+
+        <!-- ADD THIS "RECEIVER" FOR AUDIO SERVICE -->
+        <receiver android:name="com.ryanheise.audioservice.MediaButtonReceiver"
+            android:exported="true" tools:ignore="Instantiatable,MissingClass">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
+
+        <!-- ADD THIS TWO META DATA  FOR GOOGLE ADS -->
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--            android:value="ca-app-pub-9747725006209280~6109061124"/>-->
+
+
+        <!-- ADD THIS ACTIVITY FOR CROPPER -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            tools:ignore="MissingClass" />
+
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4361045577652525~8232036206"/>
+
+
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+
+
+</application>
+
+
+</manifest>

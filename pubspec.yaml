@@ -1,0 +1,187 @@
+name: woo_english
+version: 1.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment: 
+  sdk: '>=3.0.3 <4.0.0'
+
+dependencies:
+  cupertino_icons: ^1.0.2
+  get: 4.6.5
+  flutter: 
+    sdk: flutter
+  responsive_sizer: ^3.1.1
+  flutter_colorpicker: ^1.0.3
+
+  http: ^0.13.6
+  internet_connection_checker: ^1.0.0+1
+  fluttertoast: ^8.2.2
+  # if use intl latest then device preview is not work  intl: ^0.18.1*
+  intl: ^0.18.0
+
+  pin_code_fields: ^7.4.0
+  flutter_rating_bar: ^4.0.1
+  device_preview: ^1.1.0
+  youtube_player_flutter: ^8.1.2
+  #IOS Installing
+  #Add the following keys to your Info.plist file, located in <project root>/ios/Runner/Info.plist:
+  #<!-- for Image Picker -->
+  #<key>NSPhotoLibraryUsageDescription</key>
+  #<String>This app requires access to the photo library</String>
+  #<key>NSCameraUsageDescription</key>
+  #<string>This app requires access to the camera</string>
+  #<key>NSMicrophoneUsageDescription</key>
+  #<string>This app does not require access to the microphone</string>
+  image_picker: ^1.0.0
+  #ANDROID Installing
+  #Add UCropActivity into your AndroidManifest.xml
+  #<activity
+  #android:name="com.yalantis.ucrop.UCropActivity"
+  #android:screenOrientation="portrait"
+  #android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+  image_cropper: ^4.0.1
+  connectivity_plus: ^4.0.1
+  sqflite: ^2.2.8+4
+  volume_controller: ^2.0.7
+  shimmer: ^3.0.0
+  firebase_core: ^2.15.0
+  firebase_auth: ^4.7.1
+#  firebase_admob: 0.11.2
+
+  #IOS CONFIG REQUIRED USED FOR FIREBASE GOOGLE SIGNING
+    #<!-- Put me in the [my_project]/ios/Runner/Info.plist file -->
+    #<!-- Google Sign-in Section -->
+    #<key>CFBundleURLTypes</key>
+    #<array>
+    #<dict>
+    #<key>CFBundleTypeRole</key>
+    #<string>Editor</string>
+    #<key>CFBundleURLSchemes</key>
+    #<array>
+    #<!-- TODO Replace this value: -->
+    #<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+    #<string>com.googleusercontent.apps.861823949799-vc35cprkp249096uujjn0vvnmcvjppkn</string>
+    #</array>
+    #</dict>
+   #</array>
+   #<!-- End of the Google Sign-in Section -->
+  google_sign_in: ^6.1.4
+  firebase_messaging: ^14.6.5
+  #ANDROID CONFIG :-
+  #Add this in AndroidManifest.xml inside man activity
+  #<intent-filter android:autoVerify="true">
+  #<action android:name="android.intent.action.VIEW" />
+  #<category android:name="android.intent.category.DEFAULT" />
+  #<category android:name="android.intent.category.BROWSABLE" />
+  #<!-- Replace 'example.page.link' with your own dynamic link domain -->
+  #<data
+  #android:host="wooenglish.page.link"
+  #android:scheme="https" />
+  #</intent-filter>
+  firebase_dynamic_links: ^5.3.4
+  share_plus: ^7.0.2
+  device_info_plus: ^9.0.3
+  # please see for config  https://codelabs.developers.google.com/codelabs/admob-ads-in-flutter#0
+  google_mobile_ads: ^3.0.0
+  # please see for config https://facebook.meedu.app
+  # for android setUp  sha1(hex) to base64 convert link  https://base64.guru/converter/encode/hex
+  flutter_facebook_auth: ^5.0.11
+  #ANDROID Installing For Audio Player
+  #<?xml version="1.0" encoding="utf-8"?>
+  #<manifest ...>
+  #<uses-permission android:name="android.permission.INTERNET" />
+  #<application
+  #...
+  #android:usesCleartextTraffic="true"
+  #...
+  #>
+  #...
+  #</application>
+  #</manifest>
+
+  #IOS Installing For Audio Player
+  #<key>NSAppTransportSecurity</key>
+  #<dict>
+  #<key>NSAllowsArbitraryLoads</key>
+  #<true/>
+  #</dict>
+  audioplayers: ^5.1.0
+  just_audio: ^0.9.35
+  just_audio_background: ^0.0.1-beta.10
+  flutter_local_notifications: ^15.1.1
+  flutter_stripe: ^9.5.0+1
+
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+  flutter_test: 
+    sdk: flutter
+
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  image_path_android: "assets/images/woo_english_app_logo.png"
+  image_path_ios: "assets/images/woo_english_app_logo.png"
+  android: true # can specify file name here e.g. "ic_launcher"
+  ios: true # can specify file name here e.g. "My-Launcher-Icon"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  remove_alpha_ios: true
+flutter: 
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/sample_audio/
+
+  fonts:
+    - family: PlayfairDisplay
+      fonts:
+        - asset: assets/fonts/playfair_display/PlayfairDisplay-Medium.ttf
+          weight: 300
+        - asset: assets/fonts/playfair_display/PlayfairDisplay-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/playfair_display/PlayfairDisplay-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/playfair_display/PlayfairDisplay-Bold.ttf
+          weight: 700
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/open_sans/OpenSans-Light.ttf
+          weight: 300
+        - asset: assets/fonts/open_sans/OpenSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/open_sans/OpenSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/open_sans/OpenSans-Bold.ttf
+          weight: 700
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/lato/Lato-Light.ttf
+          weight: 300
+        - asset: assets/fonts/lato/Lato-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/lato/Lato-Bold.ttf
+          weight: 600
+        - asset: assets/fonts/lato/Lato-Black.ttf
+          weight: 700
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter/Inter-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Inter/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter/Inter-Bold.ttf
+          weight: 700
+    - family: Alegreya
+      fonts:
+        - asset: assets/fonts/alegreya/Alegreya-Medium.ttf
+          weight: 300
+        - asset: assets/fonts/alegreya/Alegreya-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/alegreya/Alegreya-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/alegreya/Alegreya-Bold.ttf
+          weight: 700
+

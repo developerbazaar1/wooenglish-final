@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
@@ -6,6 +8,7 @@ import 'package:woo_english/app/api/api_model/get_dashboard_data_model.dart';
 import 'package:woo_english/app/common/common_method/common_method.dart';
 import 'package:woo_english/app/common/common_text_styles/common_text_styles.dart';
 import 'package:woo_english/app/common/common_widget/common_widget.dart';
+import 'package:woo_english/app/modules/splash/controllers/splash_controller.dart';
 import 'package:woo_english/app/theme/colors/colors.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:woo_english/load_more/load_more.dart';
@@ -60,7 +63,7 @@ class ReadBookView extends GetView<ReadBookController> {
     if (controller.chapterList.isNotEmpty) {
       return controller.isZoom.value
           ? Scaffold(
-              backgroundColor: controller.isDarkMode
+              backgroundColor: controller.isDarkMode.value
                   ? Col.darkAppBar
                   : Theme.of(Get.context!).scaffoldBackgroundColor,
               body: Column(
@@ -75,9 +78,12 @@ class ReadBookView extends GetView<ReadBookController> {
                             behavior: ListScrollBehaviour(),
                             child: Scrollbar(
                               child: ListView(
+                                controller: ScrollController(),
                                 physics: const AlwaysScrollableScrollPhysics(),
                                 padding: EdgeInsets.zero,
+                                scrollDirection: Axis.vertical,
                                 children: [
+
                                   Padding(
                                     padding: EdgeInsets.symmetric(
                                         horizontal: C.margin - 6.px,
@@ -85,9 +91,14 @@ class ReadBookView extends GetView<ReadBookController> {
                                     child: Obx(() => Container(
                                         padding: EdgeInsets.symmetric(
                                             vertical: 5.px, horizontal: 6.px),
-                                        color: controller.isDarkMode
-                                            ? Col.darkGray
-                                            : Col.inverseSecondary,
+
+                                        color: controller.modeValue.value
+                                            ? controller
+                                            .changeBackgroundColor(
+                                            Colors.transparent)
+                                            : controller
+                                            .backGroundColor
+                                            .value,
                                         child: textViewChapterContent())),
                                   ),
                                   SizedBox(
@@ -111,17 +122,19 @@ class ReadBookView extends GetView<ReadBookController> {
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerDocked,
               floatingActionButton: audioPlayerView(),
-              backgroundColor: controller.isDarkMode &&
+              backgroundColor: controller.isDarkMode.value &&
                       controller.selectedChapter.value != "Quiz"
                   ? Col.darkAppBar
                   : Theme.of(Get.context!).scaffoldBackgroundColor,
               body: Column(
                 children: [
                   appBarView(),
+
                   if (controller.responseCode.value == 200)
                     Stack(
                       alignment: Alignment.bottomRight,
                       children: [
+
                         SizedBox(
                           height: CM.getDeviceSize() - CM.getAppBarSize(),
                           child: ScrollConfiguration(
@@ -146,12 +159,15 @@ class ReadBookView extends GetView<ReadBookController> {
                                               "Quiz",
                                   onLoadMore: () => controller.onLoadMore(),
                                   child: ListView(
+                                    controller: ScrollController(),
+
                                     shrinkWrap: true,
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     padding:
                                         EdgeInsets.symmetric(vertical: 18.px),
                                     children: [
+
                                       Container(
                                         decoration: BoxDecoration(
                                             border: Border.all(
@@ -159,7 +175,7 @@ class ReadBookView extends GetView<ReadBookController> {
                                                             .selectedChapter
                                                             .value !=
                                                         "Quiz"
-                                                    ? controller.isDarkMode
+                                                    ? controller.isDarkMode.value
                                                         ? Col.secondary
                                                         : Col
                                                             .cardBackgroundColor
@@ -171,6 +187,7 @@ class ReadBookView extends GetView<ReadBookController> {
                                             horizontal: C.margin),
                                         child: buttonViewDropDown(),
                                       ),
+
                                       Obx(() {
                                         if (controller.selectedChapter.value !=
                                             "Quiz") {
@@ -183,10 +200,10 @@ class ReadBookView extends GetView<ReadBookController> {
                                                   padding: EdgeInsets.symmetric(
                                                       vertical: 5.px,
                                                       horizontal: 6.px),
-                                                  color: controller.isDarkMode
+                                                  color: controller.modeValue.value
                                                       ? controller
                                                           .changeBackgroundColor(
-                                                              Colors.black)
+                                                              Colors.transparent)
                                                       : controller
                                                           .backGroundColor
                                                           .value,
@@ -201,8 +218,11 @@ class ReadBookView extends GetView<ReadBookController> {
                                             return Column(
                                               children: [
                                                 listViewQuiz(),
-                                                if (controller.isMamber.value)
+
+
+                                                if (isUserSubscribed==true)
                                                   buttonViewSubmit(),
+                                                if (isUserSubscribed==null)
                                                 Container(
                                                   margin: EdgeInsets.only(
                                                       left: 15,
@@ -220,10 +240,33 @@ class ReadBookView extends GetView<ReadBookController> {
                                                       color:
                                                           Colors.grey.shade100),
                                                   child: Text(
-                                                    "Answer independently, no peeking at others' responses",
+                                                    C.notmemberuser,
                                                     style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.w400),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin: EdgeInsets.only(
+                                                      left: 15,
+                                                      right: 15,
+                                                      bottom: 8),
+                                                  padding: EdgeInsets.only(
+                                                      top: 8,
+                                                      bottom: 8,
+                                                      left: 8,
+                                                      right: 8),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          10),
+                                                      color:
+                                                      Colors.grey.shade200),
+                                                  child: Text(
+                                                    C.userAnswers,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                        FontWeight.w400),
                                                   ),
                                                 ),
                                                 if (controller
@@ -291,7 +334,7 @@ class ReadBookView extends GetView<ReadBookController> {
             );
     } else {
       return Scaffold(
-          backgroundColor: controller.isDarkMode &&
+          backgroundColor: controller.isDarkMode.value &&
                   controller.selectedChapter.value != "Quiz"
               ? Col.darkAppBar
               : Theme.of(Get.context!).scaffoldBackgroundColor,
@@ -311,7 +354,7 @@ class ReadBookView extends GetView<ReadBookController> {
 
   Widget appBarView() => CW.commonAppBarWithActon(
         wantDarkMode:
-            controller.selectedChapter.value != "Quiz" && controller.isDarkMode,
+            controller.selectedChapter.value != "Quiz" && controller.isDarkMode.value,
         wantSelectedBookMarkButton: controller.isBookmark.value,
         wantZoomButton: controller.selectedChapter.value != "Quiz" &&
             controller.chapterList.isNotEmpty,
@@ -344,7 +387,7 @@ class ReadBookView extends GetView<ReadBookController> {
               : 'Select Chapter',
           isQuiz: controller.selectedChapter.value == "Quiz",
           hintStyle: CT.openSansDisplayMedium(),
-          isDarkMode: controller.isDarkMode,
+          isDarkMode: controller.isDarkMode.value,
           items: controller.chapterList
               .map(
                 (Chapters e) => DropdownMenuItem<Chapters>(
@@ -354,7 +397,7 @@ class ReadBookView extends GetView<ReadBookController> {
                       margin: EdgeInsets.only(bottom: 5.px),
                       decoration: BoxDecoration(
                           color: e.chapterName != "Quiz"
-                              ? controller.isDarkMode
+                              ? controller.isDarkMode.value
                                   ? controller.selectedChapterId.value == e.id
                                       ? Col.darkGray
                                       : Col.inverseSecondary
@@ -374,7 +417,7 @@ class ReadBookView extends GetView<ReadBookController> {
                                 ?.copyWith(
                                   fontFamily: C.fontOpenSans,
                                   color: e.chapterName != "Quiz"
-                                      ? controller.isDarkMode
+                                      ? controller.isDarkMode.value
                                           ? controller.selectedChapterId
                                                       .value ==
                                                   e.id
@@ -452,7 +495,7 @@ class ReadBookView extends GetView<ReadBookController> {
         height: 10.px,
         width: 25.px,
         color: controller.selectedChapter.value != "Quiz"
-            ? controller.isDarkMode
+            ? controller.isDarkMode.value
                 ? Col.inverseSecondary
                 : Col.secondary
             : Col.secondary,
@@ -471,15 +514,17 @@ class ReadBookView extends GetView<ReadBookController> {
             fontFamily: controller.setFontFamily.value,
             fontSize: controller.selectFontSize.value,
             fontStyle: controller.setFontStyle.value,
-            color: controller.isDarkMode
-                ? controller.changeTextColor(Colors.white)
-                : controller.textColor.value),
+            color: controller.isDarkMode.value
+            ?Colors.white
+                //? controller.changeTextColor(Colors.white)
+                : Colors.black),
         textAlign: controller.setTextAlign.value,
         onSelectionChanged: (selection, cause) =>
             controller.onTextSelection(selection: selection, cause: cause),
       );
 
   Widget listViewQuiz() => ListView.builder(
+    controller: ScrollController(),
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return Column(
@@ -487,11 +532,12 @@ class ReadBookView extends GetView<ReadBookController> {
             children: [
               if (controller.quizList[index].question != null)
                 textViewQuestion(index: index),
-              if (controller.isMamber.value)
+
+              if (isUserSubscribed==true)
                 SizedBox(
                   height: 10.px,
                 ),
-              if (controller.isMamber.value) textFiledViewReply(index: index),
+              if (isUserSubscribed==true) textFiledViewReply(index: index),
               SizedBox(
                 height: 18.px,
               ),
@@ -525,7 +571,7 @@ class ReadBookView extends GetView<ReadBookController> {
       buttonColor: Col.primaryColor);
 
   Widget textViewComments() => Text(
-        C.textComments,
+        C.viewAnswers,
         style: CT.openSansDisplayMedium(),
       );
 
@@ -550,6 +596,7 @@ class ReadBookView extends GetView<ReadBookController> {
       );
 
   Widget listViewComments() => ListView.builder(
+    controller: ScrollController(),
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return Padding(
@@ -666,8 +713,9 @@ class ReadBookView extends GetView<ReadBookController> {
         controller.selectedChapter.value.isNotEmpty &&
         controller.selectedChapter.value != "Quiz") {
       return Container(
-          color: controller.isDarkMode ? Col.darkGray : Col.borderColor,
+          color: controller.isDarkMode.value ? Col.darkGray : Col.borderColor,
           child: ListView(
+            controller: ScrollController(),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             children: [
@@ -971,7 +1019,7 @@ class ReadBookView extends GetView<ReadBookController> {
       onPressed: null,
       icon: PopupMenuButton(
         padding: EdgeInsets.zero,
-        splashRadius: 30.px,
+        splashRadius: 35.px,
         position: PopupMenuPosition.under,
         color: Colors.white,
         shadowColor: Colors.transparent,
@@ -984,6 +1032,10 @@ class ReadBookView extends GetView<ReadBookController> {
               image: C.imagePopUpIconThree,
               function: BackgroundColorDialog(context),
               setValue: "BG Color"),
+          commonPopUpMenuItem(context,
+              image: C.imagePopUpIconThree,
+              function: BGImagesDialog(context),
+              setValue: "BG Images"),
           commonPopUpMenuItem(context,
               image: C.imagePopUpIconSix,
               function: FontSizeDialog(context),
@@ -1003,7 +1055,7 @@ class ReadBookView extends GetView<ReadBookController> {
         ],
         child: Image.asset(
           C.imageComaLogo,
-          color: controller.isDarkMode ? Col.inverseSecondary : Col.secondary,
+          color: controller.isDarkMode.value ? Col.inverseSecondary : Col.secondary,
           height: 25.px,
           width: 25.px,
         ),
@@ -1032,27 +1084,23 @@ class ReadBookView extends GetView<ReadBookController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: 30.px,
+                height: 35.px,
                 width: 90.px,
-                child: Stack(
-                  children: [
-                    Container(
-                      height: 30.px,
-                      width: 90.px,
-                      padding: EdgeInsets.all(0.px),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Col.surface, width: 1.px),
-                      ),
-                      child: PopupMenuButton(
-                        icon: Text(
-                          setValue,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 11),
-                        ),
-                        itemBuilder: (context) => [function],
-                      ),
+                child: Container(
+                  height: 30.px,
+                  width: 90.px,
+                  padding: EdgeInsets.zero,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Col.surface, width: 1.px),
+                  ),
+                  child: PopupMenuButton(
+                    icon: Text(
+                      setValue,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 11),
                     ),
-                  ],
+                    itemBuilder: (context) => [function],
+                  ),
                 ),
               ),
             ],
@@ -1073,7 +1121,7 @@ class ReadBookView extends GetView<ReadBookController> {
               onColorChanged: (Color color) {
                 //on the color picked
                 controller.changeTextColor(color);
-                print(controller.textColor.value);
+                print('Color updated ${controller.textColor.value}');
               },
               pickerColor: controller.textColor.value,
             ),
@@ -1226,6 +1274,7 @@ class ReadBookView extends GetView<ReadBookController> {
               value: controller.setFontStyle.value,
               onChanged: (newValue) {
 
+
                 controller.changeTextFontStyle(newValue);
                 Navigator.pop(context);
                 Navigator.pop(context);
@@ -1275,6 +1324,78 @@ class ReadBookView extends GetView<ReadBookController> {
             ),
           ])),
     ));
+
+    //   AlertDialog(
+    //
+    //   title: const Text('Pick a color!'),
+    //   content: SingleChildScrollView(
+    //     child: MaterialPicker(
+    //       // pickerColor: mycolor, //default color
+    //       onColorChanged: (Color color) {
+    //         //on the color picked
+    //
+    //       }, pickerColor: controller.textColor.value,
+    //     ),
+    //   ),
+    //   actions: <Widget>[
+    //     ElevatedButton(
+    //       child: const Text('DONE',style: TextStyle(color: Colors.black),),
+    //       onPressed: () {
+    //         Navigator.of(context)
+    //             .pop(); //dismiss the color picker
+    //       },
+    //     ),
+    //   ],
+    // );
+  }
+  PopupMenuItem BGImagesDialog(BuildContext context) {
+    print(" images value ${controller.setFontFamily.value}");
+    return PopupMenuItem(
+        child: Container(
+          child:  Column(
+              children: [
+                DropdownButton<BankListDataModel>(
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                    fontFamily: "verdana_regular",
+                  ),
+                  hint: Text(
+                    "Select Bank",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16,
+                      fontFamily: "verdana_regular",
+                    ),
+                  ),
+                  items: controller.bankDataList
+                      .map<DropdownMenuItem<BankListDataModel>>(
+                          (BankListDataModel value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Row(
+                            children: [
+                              new CircleAvatar(
+                                backgroundImage:
+                                NetworkImage(value.bank_logo),
+                              ),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Text(value.bank_name),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                  isExpanded: true,
+                  isDense: true,
+                  onChanged: (BankListDataModel? newSelectedBank) {
+                    controller.onDropDownItemSelected(newSelectedBank!);
+                  },
+                  value: controller.bankChoose,
+                )
+              ]),
+        ));
 
     //   AlertDialog(
     //
@@ -1403,4 +1524,9 @@ class DropdownView<T> extends StatelessWidget {
               ],
             ));
   }
+}
+class BankListDataModel {
+  String bank_name;
+  String bank_logo;
+  BankListDataModel(this.bank_name, this.bank_logo);
 }

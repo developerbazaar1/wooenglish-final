@@ -206,7 +206,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.SUBSCRIPTION,
-      page: () => const SubscriptionView(),
+      page: () => SubscriptionView(),
       binding: SubscriptionBinding(),
     ),
     GetPage(

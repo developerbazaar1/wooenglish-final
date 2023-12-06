@@ -30,6 +30,7 @@ import 'package:woo_english/firebase/firebase_login_method.dart';
 import 'package:woo_english/main.dart';
 
 import '../../feedback/views/feedback_view.dart';
+import '../views/read_book_view.dart';
 
 class ReadBookController extends AppController with WidgetsBindingObserver {
   int intValue = 1;
@@ -39,7 +40,7 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   final modeValue = false.obs;
   final value = 3.0.obs;
   final clickOnAudioSpeed = false.obs;
-  bool isDarkMode = false;
+  RxBool isDarkMode = false.obs;
   int audioPlayerLoad = 0;
   String id = "";
   String bookId = "";
@@ -47,6 +48,22 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   bool bookmark = false;
   final haveAudio = false.obs;
   String audioUrl = "";
+
+  var selectedValue = 'Option 1'; // Default selected value
+
+  List<BankListDataModel> bankDataList = [
+    BankListDataModel(
+        "SBI", "https://english-e-reader.net/images/reader/1.png"),
+    BankListDataModel(
+        "HDFC", "https://english-e-reader.net/images/reader/3.png"),
+    BankListDataModel(
+        "ICICI", "https://english-e-reader.net/images/reader/2.png"),
+  ];
+  void onDropDownItemSelected(BankListDataModel newSelectedBank) {
+    bankChoose = newSelectedBank;
+  }
+
+  BankListDataModel? bankChoose;
   List<TextEditingController> controllerList = [];
   RxList<DropdownMenuItem<FontStyle>> listFontStyle = [
     DropdownMenuItem(
@@ -80,8 +97,30 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
       value: C.fontPlayfairDisplay,
     )
   ].obs;
-
-
+  RxList<DropdownMenuItem<String>> imageUrlList = [
+    DropdownMenuItem(
+      child: Text('https://english-e-reader.net/images/reader/1.png'),
+      value: C.fontArial,
+    ),
+    DropdownMenuItem(
+      child: Text('https://english-e-reader.net/images/reader/1.png'),
+      value: C.fontInter,
+    ),
+    DropdownMenuItem(
+      child: Text('https://english-e-reader.net/images/reader/1.png'),
+      value: C.fontLato,
+    ),
+  ].obs;
+// RxList<String> imageUrlList = [
+//     'assets/images/Admob.jpg',
+//     'assets/images/Admob.jpg',
+//     'assets/images/Admob.jpg',
+//
+//     // 'https://english-e-reader.net/images/reader/1.png',
+//     // 'https://english-e-reader.net/images/reader/1.png',
+//     // 'https://english-e-reader.net/images/reader/1.png',
+//
+//   ].obs;
 
   RxList<DropdownMenuItem<TextAlign>> listTextAlign = [
     DropdownMenuItem(
@@ -106,7 +145,9 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   final selectedChapterId = 0.obs;
   var setFontStyle = FontStyle.normal.obs;
   var setTextAlign = TextAlign.left.obs;
+  var setImage = 'fontOpenSans'.obs;
   var setFontFamily = C.fontOpenSans.obs;
+  var setBGImage = 'fontOpenSans'.obs;
   final selectedChapterContent = "".obs;
   final selectedChapterObject = Rxn<Chapters?>();
   final isPlaying = false.obs;
@@ -144,8 +185,7 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   String quizLimit = "10";
   int quizOffset = 0;
   final textColor = Colors.black.obs;
-  final Rx<Color> backGroundColor =
-      Color(0xffffffff).obs;
+  final Rx<Color> backGroundColor = Color(0xffffffff).obs;
 
   Map<String, dynamic> bodyParamsForSubmitQuestionAnswerApi = {};
 
@@ -155,13 +195,14 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   final responseCodeQuizReply = 0.obs;
   Map<String, dynamic> queryParametersForQuizReply = {};
   final getDataModelForQuizReply = Rxn<GetDashBoardBooksModel>();
-  List<Books> quizReplyList = [];a
+  List<Books> quizReplyList = [];
   String quizReplyLimit = "10";
   int quizReplyOffset = 0;
   bool isLiked = false;
 
   changeTextColor(color) {
     textColor.value = color;
+    print("@@@@@@@@@@@T$textColor");
   }
 
   changeTextFontStyle(value) {
@@ -170,6 +211,10 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     setFontStyle.value = value;
 
     print(setFontStyle.value);
+  }
+
+  changeBGImage(value) {
+    setImage.value = value;
   }
 
 // Chnages in Text Alignment
@@ -184,8 +229,6 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     print(value);
 
     setFontFamily.value = value;
-
-
   }
 
   changeFontSize(value) {
@@ -208,6 +251,8 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   @override
   Future<void> onInit() async {
     super.onInit();
+    print(' ++++++++++++++++++++++${isDarkMode.value}');
+    bankChoose = bankDataList[0];
 /*
     onReload();
 */
@@ -255,7 +300,8 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   }
 
   Future<void> myOnInit() async {
-    isDarkMode = await DatabaseHelper.databaseHelperInstance
+    bankChoose = bankDataList[0];
+    isDarkMode.value = await DatabaseHelper.databaseHelperInstance
             .getParticularData(key: DatabaseConst.columnMode) ==
         "1";
     modeValue.value = await DatabaseHelper.databaseHelperInstance
@@ -703,8 +749,10 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
       if (await darkModeOnOffApiCalling()) {
         DatabaseHelper.databaseHelperInstance.updateParticularData(
             key: DatabaseConst.columnMode, val: modeValue.value ? "0" : "1");
-        isDarkMode = modeValue.value ? false : true;
+        isDarkMode.value = modeValue.value ? false : true;
         modeValue.value = value;
+        print('dark mode value ${isDarkMode.value}');
+        print(' mode value ${modeValue.value}');
       }
     } catch (e) {
       CM.error();

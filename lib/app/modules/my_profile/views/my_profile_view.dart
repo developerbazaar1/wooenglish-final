@@ -6,6 +6,7 @@ import 'package:woo_english/app/app_controller/app_controller.dart';
 import 'package:woo_english/app/common/common_method/common_method.dart';
 import 'package:woo_english/app/common/common_text_styles/common_text_styles.dart';
 import 'package:woo_english/app/common/common_widget/common_widget.dart';
+import 'package:woo_english/app/modules/splash/controllers/splash_controller.dart';
 import 'package:woo_english/app/theme/colors/colors.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:woo_english/model_progress_bar/model_progress_bar.dart';
@@ -43,20 +44,34 @@ class MyProfileView extends GetView<MyProfileController> {
                             padding: EdgeInsets.symmetric(horizontal: C.margin),
                             child: Row(
                               children: [
-                                if(controller.isMamber.value)
-                                  Stack(
-                                    alignment: Alignment.bottomRight,
-                                    children: [
-                                      ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(50.px),
-                                          child: imageViewUserProfile()),
-                                      Padding(
-                                        padding:  EdgeInsets.only(left: 5.px,top: 2.px),
-                                        child: Image.asset(C.imageViewUserVerifiedIcon,height: 32.px,width: 32.px,),
-                                      )
-                                    ],
-                                  )
+                                if(isUserSubscribed==true)
+                            Center(
+                          child: Stack(
+                          alignment: Alignment.center,
+                            children: [
+
+                              ClipRRect(
+                                  borderRadius:
+                                  BorderRadius.circular(50.px),
+                                  child: imageViewUserProfile()),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child:  Container(
+                                  margin: EdgeInsets.only(left: 70,top:0,bottom: 40),
+                                  child: Image.asset(
+                                    C.imageUserVerified,
+                                    height: 25.px,
+                                    width: 25.px,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+
+
+
+                            ],
+                          ),
+                    )
                                 else
                                   ClipRRect(
                                       borderRadius:
@@ -108,17 +123,23 @@ class MyProfileView extends GetView<MyProfileController> {
                                     textViewCommon(value: C.textCompleted)
                                   ],
                                 ),
-                                Column(
-                                  children: [
-                                    textViewCount(
-                                        value: controller
-                                                .userOnMyCollectionCount ??
-                                            ""),
-                                    SizedBox(
-                                      height: 2.px,
-                                    ),
-                                    textViewCommon(value: C.textMyCollection)
-                                  ],
+                                GestureDetector(
+                                  onTap: (){
+                                    Get.offAllNamed('/my-books');
+                                  },
+
+                                  child: Column(
+                                    children: [
+                                      textViewCount(
+                                          value: controller
+                                                  .userOnMyCollectionCount ??
+                                              ""),
+                                      SizedBox(
+                                        height: 2.px,
+                                      ),
+                                      textViewCommon(value: C.textMyCollection)
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -131,6 +152,8 @@ class MyProfileView extends GetView<MyProfileController> {
                             color: Col.borderColor,
                             thickness: 2.px,
                           ),
+
+                          if(isUserSubscribed==null)
                           Padding(
                             padding: EdgeInsets.only(
                                 top: 25.px,

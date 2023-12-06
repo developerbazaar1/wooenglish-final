@@ -74,6 +74,7 @@ class BookDetailController extends AppController  {
   final addLoadSuccess=false.obs;
   RxBool isload = false.obs;
 BannerAd? bannerAd;
+  InterstitialAd? interstitialAd;
 
 
   @override
@@ -84,6 +85,7 @@ BannerAd? bannerAd;
 
 
     await loadBanner();
+    await loadIndustrial();
 
 
 
@@ -152,6 +154,29 @@ Future<void>loadBanner()async{
     ),
   );
   bannerAd!.load();
+
+
+  }
+  Future<void>loadIndustrial()async{
+
+
+    InterstitialAd.load(
+        adUnitId: AdHelper.interstitialAdUnitId,
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          // Called when an ad is successfully received.
+          onAdLoaded: (ad) {
+            debugPrint('$ad loaded.');
+            // Keep a reference to the ad so you can show it later.
+            interstitialAd = ad;
+          },
+          // Called when an ad request failed.
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('InterstitialAd failed to load: $error');
+          },
+        ));
+
+
 
 
   }

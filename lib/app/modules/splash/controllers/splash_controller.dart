@@ -4,15 +4,18 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:woo_english/app/data/local_database/database_const/database_const.dart';
 import 'package:woo_english/app/data/local_database/database_helper/database_helper.dart';
 import 'package:woo_english/app/routes/app_pages.dart';
 import 'package:woo_english/firebase/firebase_login_method.dart';
 String token = "";
+String isUserLogin = "";
+var isUserSubscribed ;
 class SplashController extends GetxController {
   final count = 0.obs;
 
-  String isUserLogin = "";
+
 
 
   @override
@@ -41,6 +44,8 @@ class SplashController extends GetxController {
   void onClose() {
     super.onClose();
   }
+
+
 
   void increment() => count.value++;
 

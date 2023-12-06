@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -12,56 +13,61 @@ import 'package:woo_english/model_progress_bar/model_progress_bar.dart';
 import '../controllers/subscription_controller.dart';
 
 class SubscriptionView extends GetView<SubscriptionController> {
-  const SubscriptionView({Key? key}) : super(key: key);
-
+  SubscriptionView({Key? key}) : super(key: key);
+  SubscriptionController _controller = Get.put(SubscriptionController());
   @override
   Widget build(BuildContext context) {
-    return Obx(() => ModalProgress(
-      inAsyncCall: controller.inAsyncCall.value,
-      child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: Column(
-          children: [
-            appBarView(),
-            Expanded(
-              child: ScrollConfiguration(
-                behavior: ListScrollBehaviour(),
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.only(
-                      top: 16.px,
-                      left: C.margin,
-                      right: C.margin,
-                      bottom: C.margin + C.margin),
-                  children: [
-                    textViewGetAllAccess(),
-                    SizedBox(
-                      height: 15.px,
-                    ),
-                    textViewSubscriptionDis(),
-                    SizedBox(
-                      height: 10.px,
-                    ),
-
-
-                    listViewPlan(),
-                    SizedBox(
-                      height: 15.px,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        buttonViewSubscription(),
-                      ],
-                    )
-                  ],
+    return Obx(
+      () {
+        return _controller.isLoading.value == true
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ModalProgress(
+                inAsyncCall: controller.inAsyncCall.value,
+                child: Scaffold(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  body: Column(
+                    children: [
+                      appBarView(),
+                      Expanded(
+                        child: ScrollConfiguration(
+                          behavior: ListScrollBehaviour(),
+                          child: ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: EdgeInsets.only(
+                                top: 16.px,
+                                left: C.margin,
+                                right: C.margin,
+                                bottom: C.margin + C.margin),
+                            children: [
+                              textViewGetAllAccess(),
+                              SizedBox(
+                                height: 15.px,
+                              ),
+                              textViewSubscriptionDis(),
+                              SizedBox(
+                                height: 10.px,
+                              ),
+                              listViewPlan(),
+                              SizedBox(
+                                height: 15.px,
+                              ),
+                             // buttonViewSubscription(context),
+                              Obx(() {
+                                return
+                                  _controller.isPaymentLoading.value ==true?Center(child: CircularProgressIndicator(),):
+                                buttonViewSubscription(context);})
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),);
+              );
+      },
+    );
   }
 
   Widget appBarView() => CW.commonAppBarWithoutActon(
@@ -127,65 +133,91 @@ class SubscriptionView extends GetView<SubscriptionController> {
         }
       });
 
-  Widget listViewPlan() => ListView.builder(
-        itemBuilder: (context, index) => Obx(() => Padding(
-              padding: EdgeInsets.only(bottom: 14.px),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(5.px),
-                onTap: () => controller.clickOnParticularPlan(index: index),
-                child: Ink(
-                  padding: EdgeInsets.all(C.margin / 2),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.px),
-                      border: Border.all(color: Col.borderColor, width: 3.px),
-                      color: controller.currentIndexOfPlan.value == index
-                          ? Col.cardBackgroundColor
-                          : Col.inverseSecondary),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            textViewPlanName(index: index,text: 'Golden'),
-                            SizedBox(
-                              height: 2.px,
-                            ),
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: textViewPlanPrice(index: index,price: 1000),
-                                ),
-                                Expanded(child: textViewPerMonth(index: index)),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 2.px,
-                            ),
-                            textViewPlanDis(index: index),
-                          ],
-                        ),
+  Widget listViewPlan() =>Obx(() {
+    print("Subscribe plan called");
+    return ListView.builder(
+      itemBuilder: (context, index) => Obx(() =>
+          Padding(
+            padding: EdgeInsets.only(bottom: 14.px),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(5.px),
+              onTap: () => controller.clickOnParticularPlan(index: index, price:int.parse(_controller.GetSubcriptionData.value['subscription'][index]['plan_price']),ID:_controller.GetSubcriptionData.value['subscription'][index]['id'] ),
+              child: Ink(
+                padding: EdgeInsets.all(C.margin / 2),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.px),
+                    border: Border.all(color: Col.borderColor, width: 3.px),
+                    color: controller.currentIndexOfPlan.value == index
+                        ? Col.cardBackgroundColor
+                        : Col.inverseSecondary),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          textViewPlanName(
+                              index: index,
+                              text: _controller.GetSubcriptionData
+                                  .value['subscription'][index]['plan_name']),
+                          SizedBox(
+                            height: 2.px,
+                          ),
+                          Row(
+                            children: [
+                              Flexible(
+                                child: textViewPlanPrice(
+                                    index: index,
+                                    price: int.parse(_controller
+                                        .GetSubcriptionData
+                                        .value['subscription'][index]
+                                    ['plan_price'])),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 2.px,
+                          ),
+                          Row(
+                            children: [
+
+                              textViewPerMonth(index: index,text: _controller
+                                  .GetSubcriptionData
+                                  .value['subscription'][index]
+                              ['plan_duration']),
+                              SizedBox(width: 4.px,),
+                              Expanded(child: textViewPerMonth(index: index,text: _controller
+                                  .GetSubcriptionData
+                                  .value['subscription'][index]
+                              ['plan_period'])),
+                            ],
+                          ),
+
+                        ],
                       ),
-                      SizedBox(
-                        height: 50.px,
-                        width: 50.px,
-                        child: Transform.scale(
-                          scale: 1.5,
-                          child: radioButtonViewForPlan(index: index),
-                        ),
-                      )
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      height: 50.px,
+                      width: 50.px,
+                      child: Transform.scale(
+                        scale: 1.5,
+                        child: radioButtonViewForPlan(index: index),
+                      ),
+                    )
+                  ],
                 ),
               ),
-            )),
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        itemCount: 3,
-      );
+            ),
+          )),
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      itemCount: _controller.GetSubcriptionDataLength.value,
+    );
+  });
 
-  Widget textViewPlanName({required int index,required text}) => Text(
+
+  Widget textViewPlanName({required int index, required text}) => Text(
         text,
         style: Theme.of(Get.context!)
             .textTheme
@@ -193,7 +225,7 @@ class SubscriptionView extends GetView<SubscriptionController> {
             ?.copyWith(fontFamily: C.fontOpenSans, color: Col.onSecondary),
       );
 
-  Widget textViewPlanPrice({required int index,required int price}) => Text(
+  Widget textViewPlanPrice({required int index, required int price}) => Text(
         "\$$price",
         style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(
               fontFamily: C.fontOpenSans,
@@ -201,11 +233,11 @@ class SubscriptionView extends GetView<SubscriptionController> {
             ),
       );
 
-  Widget textViewPerMonth({required int index,i}) => Text(
-        C.textPerMonthRupee,
-        style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(
+  Widget textViewPerMonth({required int index, i,required String text}) => Text(
+        text,
+        style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
             fontFamily: C.fontOpenSans,
-            fontSize: 12.px,
+            fontSize: 14.px,
             color: Col.onSecondary),
       );
 
@@ -230,8 +262,22 @@ class SubscriptionView extends GetView<SubscriptionController> {
         }
       });
 
-  Widget buttonViewSubscription() => CW.commonElevatedButton(
-        onPressed: () => controller.clickOnSubscriptionButton(),
+  Widget buttonViewSubscription(BuildContext context) =>
+      CW.commonElevatedButton(
+        onPressed: () {
+          if (controller.selectedRadioButton.value == null ||
+              controller.selectedRadioButton.value <=0) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(
+              'Please select any Payment',
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),duration: Duration(microseconds: 1500),));
+          } else {
+            controller.clickOnSubscriptionButton();
+          }
+        },
         child: textViewSubscriptionButton(),
         buttonColor: Col.primaryColor,
         borderRadius: 15.px,

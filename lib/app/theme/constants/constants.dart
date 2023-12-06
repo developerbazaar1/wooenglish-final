@@ -63,8 +63,8 @@ class C {
   static const imageFacebookLogo = "assets/images/facebook_logo.png";
   static const imageGoogleLogo = "assets/images/google_logo.png";
   static const imageWooEnglishAppLogo = "assets/images/woo_english_app_logo.png";
-  static const textHelloAgain = "Hello again!";
-  static const textWelcomeBack = "Welcome back";
+  static const textHelloAgain = "Hello Again!";
+  static const textWelcomeBack = "Welcome Back";
   static const textMobileNumber = "Mobile Number";
   static const textEnterNumber = "Enter your mobile number ";
   static const textGetOtp = "GET OTP";
@@ -74,7 +74,7 @@ class C {
 
   ///SignUp
   static const textHello = "Hello!";
-  static const textToGetStarted = "Signup to get started";
+  static const textToGetStarted = "Signup To Get Started";
   static const textName = "Name";
   static const textEnterName = "Enter your name";
   static const textEmail = "Email Address";
@@ -137,7 +137,7 @@ class C {
   static const textApplyFilter= "Apply Filter";
   static const textLanguage = "Dialect:";
   static const textWhatYouWant = "What You Want";
-  static const textCategories = "Categories";
+  static const textCategories = "Genre";
   static const textEnglishAssent = "English Accent";
           static const textLevel = "Level";
   static const textLength = "Length";
@@ -178,6 +178,7 @@ class C {
 
   ///EditProfile
   static const imageUserProfile = "assets/images/user_profile.png";
+  static const imageUserVerified = "assets/images/verified_user.png";
   static const imageAuthorProfile = "assets/images/author_profile.png";
   static const imageChangeImageLogo = "assets/images/change_image_logo.png";
   static const textEnterPhoneNumber = "Enter Phone number";
@@ -344,6 +345,10 @@ class C {
   static String imageEyeShowLogo = "assets/images/eye_show_logo.png";
   static var textReply = "Reply";
   static String textComments = "Comments";
+  static String viewAnswers = "View Answers";
+  static String userAnswers ="Answer independently, no peeking at others' responses";
+  static String notmemberuser ="To unlock quiz access, kindly subscribe. Your support is greatly appreciated!";
+
 
 
   ///FEEDBACK

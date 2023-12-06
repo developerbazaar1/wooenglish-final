@@ -11,6 +11,7 @@ import 'package:woo_english/app/common/common_widget/common_widget.dart';
 import 'package:woo_english/app/theme/colors/colors.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:woo_english/model_progress_bar/model_progress_bar.dart';
+import '../../splash/controllers/splash_controller.dart';
 import '../controllers/book_detail_controller.dart';
 
 // ignore: must_be_immutable
@@ -76,8 +77,15 @@ class BookDetailView extends GetView<BookDetailController> {
                           children: [
                             buttonViewBottomBar(
                               title: C.textRead,
-                              onPressed: () =>
-                                  controller.clickOnReadAndListenButton(),
+                              onPressed: () {
+                                controller.interstitialAd!.show();
+                                controller.clickOnReadAndListenButton();
+
+
+                              }
+
+
+                             //
                             ),
                             buttonViewBottomBar(
                               title: C.textListen,
@@ -333,6 +341,7 @@ class BookDetailView extends GetView<BookDetailController> {
                                                   vertical: 10.px),
                                               child: textViewOverViewDis(),
                                             ),
+                                          if(isUserSubscribed==null)
                                           Obx(() {
                                             return controller.isload.value ==true
                                                 ?bannerAdWidget()

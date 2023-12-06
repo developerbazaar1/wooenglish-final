@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:woo_english/app/api/api_constant/api_constant.dart';
 import 'package:woo_english/app/api/http_methods/http_methods.dart';
 import 'package:woo_english/app/app_controller/app_controller.dart';
@@ -9,10 +10,14 @@ import 'package:woo_english/app/modules/navigator/controllers/navigator_controll
 import 'package:woo_english/app/routes/app_pages.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:http/http.dart' as http;
+
+import '../../splash/controllers/splash_controller.dart';
 class MyProfileController extends AppController {
   final count = 0.obs;
   final inAsyncCall=false.obs;
   final  isMamber = false.obs;
+
+  var _key;
 
   List<String> listOfTitles = [
     C.textMyBookMark,
@@ -36,6 +41,14 @@ class MyProfileController extends AppController {
   @override
   Future<void> onInit() async {
     super.onInit();
+
+
+    if(isUserSubscribed==true)
+    {
+      isMamber.value= true;
+    }else{
+      isMamber.value= false;
+    }
     inAsyncCall.value=true;
     isMamber.value = await DatabaseHelper.databaseHelperInstance
         .getParticularData(key: DatabaseConst.columnStatus) ==
@@ -118,15 +131,29 @@ class MyProfileController extends AppController {
 */
     inAsyncCall.value = false;
   }
+  void _deletetoken() async {
+    print('running');
+    final prefs = await SharedPreferences.getInstance();
+    final key = prefs.remove('subscribe');
+
+      _key = key;
+
+    print('YOUR KEY - "$key"');
+    print('key deleted');
+  }
 
   Future<void> clickOnLogOutButton() async {
     inAsyncCall.value = true;
     try{
       if(await logOutApiCalling())
       {
+
+        _deletetoken();
         await DatabaseHelper.databaseHelperInstance.update(db: DatabaseHelper.db, data: CM.insertDataInModel());
         await Get.offAllNamed(Routes.SIGN_IN);
         selectedViewIndex.value = 0;
+
+
       }
     }catch (e) {
       CM.error();

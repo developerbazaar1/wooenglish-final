@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:woo_english/app/api/api_constant/api_constant.dart';
 import 'package:woo_english/app/api/api_model/get_dashboard_data_model.dart';
 import 'package:woo_english/app/api/api_model/user_data_model.dart';
@@ -24,6 +26,7 @@ import 'package:woo_english/firebase/firebase_login_method.dart';
 import 'package:woo_english/main.dart';
 
 import '../../../../services/ad_mob_services.dart';
+import '../../splash/controllers/splash_controller.dart';
 import '../../subscription/controllers/subscription_controller.dart';
 import '../../subscription/views/subscription_view.dart';
 
@@ -37,6 +40,7 @@ class HomeController extends AppController {
   List<Widget> listOfBanner = [];
   UserData? getUserDataModel;
   Map<String, dynamic> responseMapForGreeting = {};
+  RxList SlplitScreen  =[].obs;
 
   RxBool isload = false.obs;
   // Rx<BannerAd> bannerAd =  BannerAd(
@@ -61,9 +65,12 @@ class HomeController extends AppController {
   //
   //   ),
   // ).obs;
-  BannerAd? bannerAd;
+  BannerAd? bannerAdd;
 
   String greeting = "";
+
+// pop up variables
+  RxInt firstPopUp = 0.obs;
   int i = 1;
   Map<String, dynamic> queryParametersForDashboard = {};
   final getDashBoarDataForPopularBooks = Rxn<GetDashBoardBooksModel>();
@@ -79,10 +86,13 @@ class HomeController extends AppController {
   Future<void> onInit() async {
     super.onInit();
 
+    _getKey();
+
     await loadBanner();
 
 
     await initializeNotificationSetting();
+    await GMusername();
 
 
 
@@ -130,10 +140,23 @@ class HomeController extends AppController {
   void onReady() {
     super.onReady();
   }
+
+
+  void _getKey() async {
+    print('running');
+    final prefs = await SharedPreferences.getInstance();
+    final key = prefs.get('subscribe');
+
+    isUserSubscribed  = key;
+
+    print('YOUR SUBSCRIBE KEY - $isUserSubscribed');
+    print('YOUR USER KEY - $Key');
+  }
+
   Future<void>loadBanner()async{
 
 
-    bannerAd =  BannerAd(
+    bannerAdd =  BannerAd(
 
       adUnitId: AdHelper.bannerAdUnitId,
       request: AdRequest(),
@@ -160,12 +183,17 @@ class HomeController extends AppController {
         },
       ),
     );
-    bannerAd!.load();
+    bannerAdd!.load();
+
+    print("${isGoldenSubscribed.value} ${isSilverSubscribed.value}==false||${isPlatinumSubscribed.value}==false");
+
 
 
 
   }
+   Future<void>GMusername()async{
 
+  }
   @override
   void onClose() {
     super.onClose();
@@ -180,7 +208,7 @@ class HomeController extends AppController {
 
     super.dispose();
     isload.value = false;
-    bannerAd!.dispose();
+    bannerAdd!.dispose();
 
   }
 
@@ -248,7 +276,13 @@ class HomeController extends AppController {
 
     if (CM.responseCheckForGetMethod(response: response)) {
       getUserDataModel = UserData.fromJson(jsonDecode(response?.body ?? ""));
+
       await CM.insertDataIntoDataBase(userData: getUserDataModel);
+     String Name = '${getUserDataModel?.user?.name}' ?? "";
+
+       SlplitScreen.value = (Name.split(' '));
+      print('********************${SlplitScreen.value[0]}');
+
       return true;
     } else {
       return false;
@@ -320,6 +354,7 @@ class HomeController extends AppController {
   Future<void> clickOnUserProfileButton() async {
     inAsyncCall.value = true;
     await Get.toNamed(Routes.EDIT_PROFILE);
+
     await onInit();
   }
 
@@ -427,5 +462,17 @@ class HomeController extends AppController {
   void clickOnLikeButton({required int index}) {
     inAsyncCall.value = true;
     inAsyncCall.value = false;
+  }
+  Future<bool> shouldShowPopup() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool hasShownPopup = prefs.getBool('hasShownPopup') ?? false;
+
+    if (!hasShownPopup) {
+      // Set the flag to true so the popup won't be shown again
+      await prefs.setBool('hasShownPopup', true);
+      return true;
+    }
+
+    return false;
   }
 }

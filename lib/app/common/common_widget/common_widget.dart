@@ -309,6 +309,7 @@ class CW {
             }
           },
       validator: validator,
+
       keyboardType: keyboardType ?? TextInputType.streetAddress,
       readOnly: readOnly,
       autofocus: autofocus,
@@ -324,6 +325,7 @@ class CW {
         fillColor: fillColor ?? Col.inverseSecondary,
         filled: true,
         prefix: prefixIcon,
+
         contentPadding:
             contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
         hintStyle: hintStyle ??

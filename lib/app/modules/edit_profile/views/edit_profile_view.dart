@@ -189,7 +189,8 @@ class EditProfileView extends GetView<EditProfileController> {
 
   Widget textFieldCountryCode() =>CW.textFieldCountryCode(
     borderRadius: 25.px,
-    onTap: () => controller.clickOnCountryCode(),
+   onTap: (){},
+   // onTap: () => controller.clickOnCountryCode(),
     code:controller.countryCodeController.text ,
     logo: controller.countyLogo.value,
 
@@ -201,15 +202,17 @@ class EditProfileView extends GetView<EditProfileController> {
         hintText: C.textUserNumber,
         controller: controller.mobileController,
         keyboardType: TextInputType.number,
+        readOnly: true,
         inputFormatters: <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly
         ],
         onChanged: (value) {},
-        validator: (value) => Validator.isValid(value: value,title: 'Number'),
+        //validator: (value) => Validator.isValid(value: value,title: 'Number'),
       );
 
   Widget textFiledViewEmail() => CW.commonTextFieldForLoginSignUP(
         borderRadius: 25.px,
+        readOnly: true,
         hintText: C.textUserEmail,
         controller: controller.emailController,
         keyboardType: TextInputType.emailAddress,

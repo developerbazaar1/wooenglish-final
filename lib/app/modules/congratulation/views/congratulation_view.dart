@@ -1,4 +1,5 @@
 
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -8,6 +9,8 @@ import 'package:woo_english/app/common/common_widget/common_widget.dart';
 import 'package:woo_english/app/theme/colors/colors.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:woo_english/model_progress_bar/model_progress_bar.dart';
+import '../../splash/controllers/splash_controller.dart';
+import '../../subscription/controllers/subscription_controller.dart';
 import '../controllers/congratulation_controller.dart';
 
 class CongratulationView extends GetView<CongratulationController> {
@@ -35,6 +38,7 @@ class CongratulationView extends GetView<CongratulationController> {
                 SizedBox(
                   height: 15.px,
                 ),
+                Text(isUserSubscribed.toString()??''),
                 textViewDis(value: C.textYourPayment),
                 textViewDis(value: C.textNowYouCanListen),
                 SizedBox(

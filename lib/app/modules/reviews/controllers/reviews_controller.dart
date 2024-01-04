@@ -143,6 +143,7 @@ class ReviewsController extends AppController {
     await Navigator.of(Get.context!).push(MaterialPageRoute(
       builder: (context) => BookDetailView(
         tag: tag,
+        showbookto: reviewList[index].bookdetails?.showbookto.toString(),
         bookId: reviewList[index].bookId.toString(),
         isLiked: getDataModel.value!.favorite!
             .contains(reviewList[index].bookId.toString()),

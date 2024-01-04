@@ -1,5 +1,6 @@
 // @dart=2.12
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:woo_english/app/app_controller/app_controller.dart';
 import 'package:woo_english/app/data/local_database/database_helper/database_helper.dart';
 import 'package:woo_english/app/theme/theme_data/theme_data.dart';
@@ -29,7 +31,7 @@ Future<void> main() async {
   print(C.stripePublicKey);
 
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize();
+ // MobileAds.instance.initialize();
 
 
 
@@ -37,8 +39,17 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  MobileAds.instance.initialize();
 
+
+  Future<Directory?>? _tempDirectory;
+  Future<Directory?>? _appSupportDirectory;
+  Future<Directory?>? _appLibraryDirectory;
+  Future<Directory?>? _appDocumentsDirectory;
+  Future<Directory?>? _appCacheDirectory;
+  Future<Directory?>? _externalDocumentsDirectory;
+  Future<List<Directory>?>? _externalStorageDirectories;
+  Future<List<Directory>?>? _externalCacheDirectories;
+  Future<Directory?>? _downloadsDirectory;
 
   late StreamSubscription streamSubscription;
   AppController().getNetworkConnectionType();
@@ -47,8 +58,10 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
     await DatabaseHelper.databaseHelperInstance.openDB();
+    clearAppDataOnInstall();
 
        runApp(GetMaterialApp(
+
 
       title: "Application",
       initialRoute: AppPages.INITIAL,
@@ -56,4 +69,41 @@ Future<void> main() async {
       theme: AppThemeData.themeDataLight(),
     ));
   });
+}
+Future<void> clearAppDataOnInstall() async {
+  Future<Directory?>? _tempDirectory;
+  Future<Directory?>? _appSupportDirectory;
+  Future<Directory?>? _appLibraryDirectory;
+  Future<Directory?>? _appDocumentsDirectory;
+  Future<Directory?>? _appCacheDirectory;
+  Future<Directory?>? _externalDocumentsDirectory;
+  Future<List<Directory>?>? _externalStorageDirectories;
+  Future<List<Directory>?>? _externalCacheDirectories;
+  Future<Directory?>? _downloadsDirectory;
+  try {
+    // Get the application documents directory
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+
+    // Replace 'your_folder_name' with the actual folder name where your data is stored
+    String folderPath = appDocDir.path;
+    _tempDirectory = getTemporaryDirectory();
+    _appSupportDirectory = getApplicationSupportDirectory();
+
+    _appCacheDirectory = getApplicationCacheDirectory();
+    _externalDocumentsDirectory = getExternalStorageDirectory();
+    _externalCacheDirectories = getExternalCacheDirectories();
+    _downloadsDirectory = getDownloadsDirectory();
+
+
+    // Check if the folder exists
+    if (await Directory(folderPath).exists()) {
+      // Delete the folder and its content
+      await Directory(folderPath).delete(recursive: true);
+    }
+
+    // Add additional code to clear other data if necessary
+
+  } catch (e) {
+    print('Error clearing app data: $e');
+  }
 }

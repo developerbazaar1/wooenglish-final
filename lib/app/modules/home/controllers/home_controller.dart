@@ -87,12 +87,13 @@ class HomeController extends AppController {
     super.onInit();
 
     _getKey();
+    getPopupKey();
 
     await loadBanner();
 
 
     await initializeNotificationSetting();
-    await GMusername();
+
 
 
 
@@ -138,20 +139,14 @@ class HomeController extends AppController {
 
   @override
   void onReady() {
+
     super.onReady();
+
+
   }
 
 
-  void _getKey() async {
-    print('running');
-    final prefs = await SharedPreferences.getInstance();
-    final key = prefs.get('subscribe');
 
-    isUserSubscribed  = key;
-
-    print('YOUR SUBSCRIBE KEY - $isUserSubscribed');
-    print('YOUR USER KEY - $Key');
-  }
 
   Future<void>loadBanner()async{
 
@@ -191,16 +186,16 @@ class HomeController extends AppController {
 
 
   }
-   Future<void>GMusername()async{
 
-  }
   @override
   void onClose() {
     super.onClose();
+    bannerAdd!.dispose();
   }
 
   Future<void> onRefresh() async {
     await onInit();
+    bannerAdd!.dispose();
   }
   @override
   void dispose() {
@@ -235,6 +230,36 @@ class HomeController extends AppController {
               .initialize(initializationSettings);
         }
       }
+  }
+  void _getKey() async {
+    print('running');
+    final prefs = await SharedPreferences.getInstance();
+    final key = prefs.get('subscribe');
+
+    isUserSubscribed  = key;
+
+    print('YOUR SUBSCRIBE KEY - $isUserSubscribed');
+    print('YOUR USER KEY - $Key');
+  }
+
+  void setPopupKey( key) async {
+
+
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setInt('popup', key);
+    print('set popup $key');
+  }
+
+  void getPopupKey() async {
+    print('Popup running');
+    final prefs = await SharedPreferences.getInstance();
+    final key = prefs.get('popup');
+
+    popupvalue  = key;
+
+    print('YOUR Popup KEY - $popupvalue');
+    print('YOUR USER KEY - $Key');
   }
 
   Future<bool> fcmIdApiCalling() async {
@@ -370,7 +395,11 @@ class HomeController extends AppController {
     Get.put(BookDetailController(), tag: tag);
     await Navigator.of(Get.context!).push(
       MaterialPageRoute(
-        builder: (context) => BookDetailView(
+        builder: (context) => BookDetailView
+          (
+          showbookto: getDashBoarDataForContinueBooks.value?.book?.bookdetails?.showbookto.toString(),
+
+
             tag: tag,
             bookId: getDashBoarDataForContinueBooks.value?.book?.bookId
                     .toString() ??
@@ -403,6 +432,8 @@ class HomeController extends AppController {
     await Navigator.of(Get.context!).push(
       MaterialPageRoute(
         builder: (context) => BookDetailView(
+          showbookto:getDashBoardBooksModel.books![index].showbookto  ,
+          bookNameId: id,
             tag: tag,
             bookId: id == C.textYourFavorite
                 ? getDashBoardBooksModel.books![index].bookId ?? "0"
@@ -463,16 +494,5 @@ class HomeController extends AppController {
     inAsyncCall.value = true;
     inAsyncCall.value = false;
   }
-  Future<bool> shouldShowPopup() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool hasShownPopup = prefs.getBool('hasShownPopup') ?? false;
 
-    if (!hasShownPopup) {
-      // Set the flag to true so the popup won't be shown again
-      await prefs.setBool('hasShownPopup', true);
-      return true;
-    }
-
-    return false;
-  }
 }

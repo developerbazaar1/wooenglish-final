@@ -78,7 +78,9 @@ class MyBooksView extends GetView<MyBooksController> {
   }
 
   Widget appBarView() =>
-      CW.commonAppBarWithoutActon(wantBackButton: false, title: C.textMyBooks);
+      CW.commonAppBarWithoutActon(wantBackButton: false, title: C.textMyBooks,
+      );
+
 
   Widget gridView() => SingleChildScrollView(
         child: Wrap(

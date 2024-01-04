@@ -31,6 +31,9 @@ class SearchScreenController extends AppController {
   final responseCodeForCategory = 0.obs;
   final getDataForCategory = Rxn<GetDashBoardBooksModel>();
   List<Filters> categoryList = [];
+  final responseCodeForGenre = 0.obs;
+  final getDataForGenre = Rxn<GetDashBoardBooksModel>();
+  List<Filters> genreList = [];
   InterstitialAd? _interstitialAd ;
 
   RxBool bannerReady = false.obs;
@@ -47,7 +50,7 @@ class SearchScreenController extends AppController {
         inAsyncCall.value = true;
         try{
           await getNewReleaseBookDataApiCalling();
-          await getCategoryApiCalling();
+          await getGenreApiCalling();
         }catch (e) {
           inAsyncCall.value = false;
         }
@@ -113,17 +116,27 @@ class SearchScreenController extends AppController {
         ));
   }
 
-  Future<void> getCategoryApiCalling() async {
+  Future<void> getGenreApiCalling() async {
     http.Response? response = await HttpMethod.instance
-        .getRequest(url: UriConstant.endPointGetCategory);
-    responseCodeForCategory.value = response?.statusCode ?? 0;
+        .getRequest(url: UriConstant.endPointGetGenre);
+    responseCodeForGenre.value = response?.statusCode ?? 0;
     if (CM.responseCheckForGetMethod(response: response)) {
-      getDataForCategory.value =
+
+
+      getDataForGenre.value =
           GetDashBoardBooksModel.fromJson(jsonDecode(response?.body ?? ""));
-      if (getDataForCategory.value?.category != null) {
-        categoryList.clear();
-        getDataForCategory.value?.category?.forEach((element) {
-          categoryList.add(element);
+
+      if (getDataForGenre.value?.level != null) {
+        genreList.clear();
+        print("3");
+        print("gerne ${getDataForGenre.value?.level}");
+        getDataForGenre.value?.level?.forEach((element) {
+          print("4");
+
+
+          genreList.add(element);
+
+          print("gerne value ${genreList}");
         });
       }
     }
@@ -144,6 +157,7 @@ class SearchScreenController extends AppController {
       MaterialPageRoute(
         builder: (context) => BookDetailView(
           tag: tag,
+          showbookto: bookList[index].showbookto.toString(),
           bookId: bookList[index].id.toString(),
           isLiked: getDataNewReleaseBook.value?.favorite
               ?.contains(bookList[index].id.toString()),

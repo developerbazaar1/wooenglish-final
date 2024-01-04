@@ -38,7 +38,7 @@ class CongratulationView extends GetView<CongratulationController> {
                 SizedBox(
                   height: 15.px,
                 ),
-                Text(isUserSubscribed.toString()??''),
+
                 textViewDis(value: C.textYourPayment),
                 textViewDis(value: C.textNowYouCanListen),
                 SizedBox(

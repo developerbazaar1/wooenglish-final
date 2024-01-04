@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -9,10 +11,12 @@ import 'package:woo_english/app/theme/colors/colors.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 
 class FilterBottomSheet extends GetView<SearchSuggestionListController> {
-  const FilterBottomSheet({super.key});
+  FilterBottomSheet({super.key});
 
   @override
+  RxBool value = false.obs;
   Widget build(BuildContext context) {
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: C.margin),
       child: ScrollConfiguration(
@@ -97,9 +101,10 @@ class FilterBottomSheet extends GetView<SearchSuggestionListController> {
                 selectedList: controller.selectedLanguage,
                 key: 0),
             commonFilterView(
-                list: controller.categoryList,
-                title: C.textCategories,
-                selectedList: controller.selectedCategory,
+                list: controller.genreList,
+                title: C.textGenre,
+                selectedList: controller.selectedGenre,
+
                 key: 1),
             commonFilterView(
                 list: controller.englishAccentList,
@@ -207,8 +212,18 @@ class FilterBottomSheet extends GetView<SearchSuggestionListController> {
             list.length,
             (index) => list[index].name!.isNotEmpty
                 ? InkWell(
-                    onTap: () => controller.clickOnParticularFilter(
-                        index: index, key: key),
+                    onTap: () {
+                      if(selectedList[index] == list[index].id){
+                        value.value = true;
+                      }else{
+                        value.value = false;
+                      }
+
+                      controller.clickOnParticularFilter(
+
+                          index: index, key: key,name: "${list[index].name}",
+                      value: value.value);
+                    },
                     child: Container(
                       margin: EdgeInsets.only(right: 10.px, bottom: 2.px),
                       padding: EdgeInsets.symmetric(horizontal: 5.px),

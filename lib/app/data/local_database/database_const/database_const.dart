@@ -5,6 +5,10 @@ class DatabaseConst {
   static const columnPrimaryKey = "primary_key";
   static const columnId = "id";
   static const columnName = "name";
+  static const columnMembershipPlan = "membership_plan";
+  static const columnMembershipDate = "membership_date";
+  static const columnMembershipExpireDate = "membership_expire_date";
+
   static const columnEmail = "email";
   static const columnMobile = "mobile";
   static const columnUserImage = "user_image";
@@ -12,8 +16,7 @@ class DatabaseConst {
   static const columnUserRole = "user_role";
   static const columnStatus = "status";
   static const columnUserId = "user_id";
-  static const columnMembershipPlan = "membership_plan";
-  static const columnMembershipDate = "membership_date";
+
   static const columnIp = "ip";
   static const columnDeviceType = "device_type";
   static const columnCreatedAt = "created_at";
@@ -40,6 +43,11 @@ class DatabaseConst {
 class UserLocalData {
   String? columnId;
   String? columnName;
+
+
+  String? columnMembershipPlan;
+  String? columnMembershipDate;
+  String? columnMembershipExpireDate;
   String? columnEmail;
   String? columnMobile;
   String? columnUserImage;
@@ -47,8 +55,7 @@ class UserLocalData {
   String? columnUserRole;
   String? columnStatus;
   String? columnUserId;
-  String? columnMembershipPlan;
-  String? columnMembershipDate;
+
   String? columnIp;
   String? columnDeviceType;
   String? columnCreatedAt;
@@ -92,6 +99,9 @@ class UserLocalData {
     final Map<String, dynamic> data = <String, dynamic>{};
     data[DatabaseConst.columnId] = columnId;
     data[DatabaseConst.columnName] = columnName;
+    data[DatabaseConst.columnMembershipPlan] = columnMembershipPlan;
+    data[DatabaseConst.columnMembershipDate] = columnMembershipDate;
+    data[DatabaseConst.columnMembershipExpireDate] = columnMembershipExpireDate;
     data[DatabaseConst.columnEmail] = columnEmail;
     data[DatabaseConst.columnMobile] = columnMobile;
     data[DatabaseConst.columnUserImage] = columnUserImage;
@@ -101,6 +111,7 @@ class UserLocalData {
     data[DatabaseConst.columnUserId] = columnUserId;
     data[DatabaseConst.columnMembershipPlan] = columnMembershipPlan;
     data[DatabaseConst.columnMembershipDate] = columnMembershipDate;
+    data[DatabaseConst.columnMembershipExpireDate] = columnMembershipExpireDate;
     data[DatabaseConst.columnIp] = columnIp;
     data[DatabaseConst.columnDeviceType] = columnDeviceType;
     data[DatabaseConst.columnCreatedAt] = columnCreatedAt;

@@ -1,5 +1,7 @@
+
 import 'dart:ffi';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
@@ -13,6 +15,9 @@ import 'package:woo_english/app/theme/colors/colors.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:woo_english/load_more/load_more.dart';
 import 'package:woo_english/model_progress_bar/model_progress_bar.dart';
+import '../../../../custom_image_picker/custom_image_view.dart';
+import '../../Showpopup/showpopup.dart';
+import '../../book_detail/views/book_detail_view.dart';
 import '../controllers/read_book_controller.dart';
 
 // ignore: must_be_immutable
@@ -60,59 +65,84 @@ class ReadBookView extends GetView<ReadBookController> {
   }
 
   Widget getView() {
+    ShowPopup showPopup = ShowPopup();
     if (controller.chapterList.isNotEmpty) {
       return controller.isZoom.value
           ? Scaffold(
               backgroundColor: controller.isDarkMode.value
                   ? Col.darkAppBar
                   : Theme.of(Get.context!).scaffoldBackgroundColor,
-              body: Column(
+              body: Stack(
                 children: [
-                  SafeArea(
-                    child: Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        SizedBox(
-                          height: CM.getDeviceSize(),
-                          child: ScrollConfiguration(
-                            behavior: ListScrollBehaviour(),
-                            child: Scrollbar(
-                              child: ListView(
-                                controller: ScrollController(),
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                padding: EdgeInsets.zero,
-                                scrollDirection: Axis.vertical,
-                                children: [
-
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: C.margin - 6.px,
-                                        vertical: C.margin + 12.px),
-                                    child: Obx(() => Container(
+                  Column(
+                    children: [
+                      SafeArea(
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            SizedBox(
+                              height: CM.getDeviceSize(),
+                              child: ScrollConfiguration(
+                                behavior: ListScrollBehaviour(),
+                                child: Scrollbar(
+                                  child: ListView(
+                                    controller: ScrollController(),
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
+                                    padding: EdgeInsets.zero,
+                                    scrollDirection: Axis.vertical,
+                                    children: [
+                                      Padding(
                                         padding: EdgeInsets.symmetric(
-                                            vertical: 5.px, horizontal: 6.px),
-
-                                        color: controller.modeValue.value
-                                            ? controller
-                                            .changeBackgroundColor(
-                                            Colors.transparent)
-                                            : controller
-                                            .backGroundColor
-                                            .value,
-                                        child: textViewChapterContent())),
+                                            horizontal: C.margin - 6.px,
+                                            vertical: C.margin + 12.px),
+                                        child: Obx(() => Container(
+                                            decoration: BoxDecoration(
+                                                color: controller
+                                                    .modeValue
+                                                    .value
+                                                    ? controller
+                                                    .changeBackgroundColor(
+                                                    Colors
+                                                        .transparent)
+                                                    : controller
+                                                    .backGroundColor
+                                                    .value,
+                                                image: controller
+                                                    .isBGColorSelected
+                                                    .value ==
+                                                    false
+                                                    ? DecorationImage(
+                                                    image:
+                                                    AssetImage(
+                                                      controller
+                                                          .bankChoose
+                                                          .value
+                                                          .bank_logo
+                                                          .value,
+                                                    ),
+                                                    fit: BoxFit
+                                                        .cover)
+                                                    : null),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 5.px,
+                                                horizontal: 6.px),
+                                            child: textViewChapterContent())),
+                                      ),
+                                      SizedBox(
+                                        height: 30.px,
+                                      )
+                                    ],
                                   ),
-                                  SizedBox(
-                                    height: 30.px,
-                                  )
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                            floatingButtonForZoomIn()
+                          ],
                         ),
-                        floatingButtonForZoomIn()
-                      ],
-                    ),
-                  )
+                      )
+                    ],
+                  ),
                 ],
               ),
             )
@@ -126,208 +156,699 @@ class ReadBookView extends GetView<ReadBookController> {
                       controller.selectedChapter.value != "Quiz"
                   ? Col.darkAppBar
                   : Theme.of(Get.context!).scaffoldBackgroundColor,
-              body: Column(
+              body: Stack(
                 children: [
-                  appBarView(),
-
-                  if (controller.responseCode.value == 200)
-                    Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-
-                        SizedBox(
-                          height: CM.getDeviceSize() - CM.getAppBarSize(),
-                          child: ScrollConfiguration(
-                            behavior: ListScrollBehaviour(),
-                            child: Scrollbar(
-                              child: Obx(() {
-                                controller.count.value;
-                                return RefreshLoadMoreForController(
-                                  scrollControllerMain:
-                                      controller.scrollController,
-                                  wantValueUpdate:
-                                      controller.selectedChapter.value ==
-                                          "Quiz",
-                                  onValueUpdate: (value) {
-                                    controller.wantScrollBackButton.value =
-                                        value;
-                                  },
-                                  isLastPage: controller.isLastPage.value,
-                                  wantLoadMore:
-                                      !controller.isCommentHidden.value &&
+                  Column(
+                    children: [
+                      appBarView(),
+                      if (controller.responseCode.value == 200)
+                        Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            SizedBox(
+                              height: CM.getDeviceSize() - CM.getAppBarSize(),
+                              child: ScrollConfiguration(
+                                behavior: ListScrollBehaviour(),
+                                child: Scrollbar(
+                                  child: Obx(() {
+                                    controller.count.value;
+                                    return RefreshLoadMoreForController(
+                                      scrollControllerMain:
+                                          controller.scrollController,
+                                      wantValueUpdate:
                                           controller.selectedChapter.value ==
                                               "Quiz",
-                                  onLoadMore: () => controller.onLoadMore(),
-                                  child: ListView(
-                                    controller: ScrollController(),
-
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 18.px),
-                                    children: [
-
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: controller
-                                                            .selectedChapter
-                                                            .value !=
-                                                        "Quiz"
-                                                    ? controller.isDarkMode.value
-                                                        ? Col.secondary
+                                      onValueUpdate: (value) {
+                                        controller.wantScrollBackButton.value =
+                                            value;
+                                      },
+                                      isLastPage: controller.isLastPage.value,
+                                      wantLoadMore: !controller
+                                              .isCommentHidden.value &&
+                                          controller.selectedChapter.value ==
+                                              "Quiz",
+                                      onLoadMore: () => controller.onLoadMore(),
+                                      child: ListView(
+                                        controller: ScrollController(),
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 18.px),
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: controller
+                                                                .selectedChapter
+                                                                .value !=
+                                                            "Quiz"
+                                                        ? controller.isDarkMode
+                                                                .value
+                                                            ? Col.secondary
+                                                            : Col
+                                                                .cardBackgroundColor
                                                         : Col
-                                                            .cardBackgroundColor
-                                                    : Col.cardBackgroundColor,
-                                                width: 2.px),
-                                            borderRadius:
-                                                BorderRadius.circular(9.px)),
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: C.margin),
-                                        child: buttonViewDropDown(),
-                                      ),
+                                                            .cardBackgroundColor,
+                                                    width: 2.px),
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        9.px)),
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: C.margin),
+                                            child: buttonViewDropDown(),
+                                          ),
 
-                                      Obx(() {
-                                        if (controller.selectedChapter.value !=
-                                            "Quiz") {
-                                          return Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: C.margin - 6.px,
-                                                vertical: C.margin + 12.px),
-                                            child: SingleChildScrollView(
-                                              child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 5.px,
-                                                      horizontal: 6.px),
-                                                  color: controller.modeValue.value
-                                                      ? controller
-                                                          .changeBackgroundColor(
-                                                              Colors.transparent)
-                                                      : controller
-                                                          .backGroundColor
-                                                          .value,
-                                                  child:
-                                                      textViewChapterContent()),
-                                            ),
-                                          );
-                                        } else {
+                                            if (controller.selectedChapter.value !="Quiz")
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: C.margin - 6.px,
+                                                    vertical: C.margin + 12.px),
+                                                child: SingleChildScrollView(
+                                                  child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: controller
+                                                                  .modeValue
+                                                                  .value
+                                                              ? controller
+                                                                  .changeBackgroundColor(
+                                                                      Colors
+                                                                          .transparent)
+                                                              : controller
+                                                                  .backGroundColor
+                                                                  .value,
+                                                          image: controller
+                                                                      .isBGColorSelected
+                                                                      .value ==
+                                                                  false
+                                                              ? DecorationImage(
+                                                                  image:
+                                                                      AssetImage(
+                                                                    controller
+                                                                        .bankChoose
+                                                                        .value
+                                                                        .bank_logo
+                                                                        .value,
+                                                                  ),
+                                                                  fit: BoxFit
+                                                                      .cover)
+                                                              : null),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 5.px,
+                                                              horizontal: 6.px),
+                                                      child:
+                                                          textViewChapterContent()),
+                                                ),
+                                              ),
+                                    if (controller.selectedChapter.value =="Quiz")
+                                     if (controller.responseCodeQuiz.value ==200)
+                                                Column(
+                                                  children: [
+                                                    listViewQuiz(),
+                                                    if (isUserSubscribed ==
+                                                        true)
+                                                      buttonViewSubmit(),
+                                                    if (isUserSubscribed ==
+                                                        null)
+                                                      Padding(
+                                                        padding: EdgeInsets.only(
+                                                            top: 15.px,
+                                                            bottom: 15.px,
+                                                            left: C.margin,
+                                                            right: C.margin),
+                                                        child: InkWell(
+                                                          onTap: () => controller.clickOnGetPremium(),
+                                                          borderRadius: BorderRadius.circular(5.px),
+                                                          child: Container(
+                                                            padding: EdgeInsets.symmetric(
+                                                                vertical: 10.px, horizontal: 10.px),
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(5.px),
+                                                              border: Border.all(
+                                                                  color: Col.primary, width: 2.px),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                              MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Expanded(
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                    CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      textViewGetPremium(),
+                                                                      SizedBox(
+                                                                        height: 10.px,
+                                                                      ),
+                                                                      textViewDownload()
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                imageViewPremium()
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    if (isUserSubscribed ==
+                                                        null)
+                                                      Container(
+                                                        margin: EdgeInsets.only(
+                                                            left: 15,
+                                                            right: 15,
+                                                            bottom: 8),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 8,
+                                                                bottom: 8,
+                                                                left: 8,
+                                                                right: 8),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            color: Colors
+                                                                .orange.shade100),
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(Icons.info_outline),
+                                                            SizedBox(width: 10.px,),
+                                                            Flexible(
+                                                              child: Text(
+                                                                C.userAnswers,
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    if (isUserSubscribed ==
+                                                        true)
+                                                      Container(
+                                                        margin: EdgeInsets.only(
+                                                            left: 15,
+                                                            right: 15,
+                                                            bottom: 8,
+                                                            top: 10),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 8,
+                                                                bottom: 8,
+                                                                left: 8,
+                                                                right: 8),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            color: Colors
+                                                                .orange.shade100),
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(Icons.info_outline),
+                                                            SizedBox(width: 10,),
+                                                            Flexible(
+                                                              child: Text(
+                                                                C.userupdate,
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    if (controller
+                                                                .responseCodeQuizReply
+                                                                .value ==
+                                                            200 &&
+                                                        controller.quizReplyList
+                                                            .isNotEmpty)
+                                                      Padding(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal:
+                                                                    C.margin),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            textViewComments(),
+                                                            SizedBox(
+                                                              height: 30.px,
+                                                              child:
+                                                                  buttonViewEyeShowHide(),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    if (!controller
+                                                            .isCommentHidden
+                                                            .value &&
+                                                        controller
+                                                                .responseCodeQuizReply
+                                                                .value ==
+                                                            200 &&
+                                                        controller.quizReplyList
+                                                            .isNotEmpty)
+                                                      listViewComments(),
+                                                  ],
+                                                ),
+
+
+
                                           if (controller
-                                                  .responseCodeQuiz.value ==
-                                              200) {
-                                            return Column(
+                                                  .selectedChapter.value !=
+                                              "Quiz")
+                                            SizedBox(
+                                              height: 150.px,
+                                            )
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              ),
+                            ),
+                            if (controller.haveAudio.value &&
+                                !controller.isShowMusicPlayer.value &&
+                                controller.selectedChapter.value.isNotEmpty &&
+                                controller.selectedChapter.value != "Quiz")
+                              floatingButtonForShowMusicPlayer(),
+                            if (controller.quizpopupvalue.value == 0 &&
+                                controller.selectedChapter.value == "Quiz" &&popupvalue==4)
+                              FutureBuilder<bool>(
+                                future: showPopup.shouldShowPopup(),
+                                builder: (context, snapshot) {
+                                  if (isUserLogin.isEmpty) {
+                                    // Show your popup here
+                                    return Dialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                      ),
+                                      insetPadding: EdgeInsets.only(
+                                        bottom: 400,
+                                        left: 60,
+                                        right: 60,
+                                      ),
+                                      alignment: Alignment.topCenter,
+                                      elevation: 3.0,
+                                      backgroundColor: Colors.red,
+                                      child: CustomPaint(
+                                        painter: ArrowDialogPainter(),
+                                        child: DottedBorder(
+                                          borderType: BorderType.RRect,
+                                          strokeWidth: 1,
+                                          dashPattern: [10, 7],
+                                          color: Col.primary,
+                                          radius: Radius.circular(5),
+                                          padding: EdgeInsets.all(5),
+                                          child: Container(
+                                            padding: EdgeInsets.only(
+                                                top: 10, left: 10),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                listViewQuiz(),
-
-
-                                                if (isUserSubscribed==true)
-                                                  buttonViewSubmit(),
-                                                if (isUserSubscribed==null)
-                                                Container(
-                                                  margin: EdgeInsets.only(
-                                                      left: 15,
-                                                      right: 15,
-                                                      bottom: 8),
-                                                  padding: EdgeInsets.only(
-                                                      top: 8,
-                                                      bottom: 8,
-                                                      left: 8,
-                                                      right: 8),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      color:
-                                                          Colors.grey.shade100),
-                                                  child: Text(
-                                                    C.notmemberuser,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w400),
+                                                Flexible(
+                                                    child: Text(
+                                                        'Write answers to quizzes related to the book.',
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontFamily:
+                                                              "Open Sans",
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ))),
+                                                Center(
+                                                  child: TextButton(
+                                                    style: TextButton.styleFrom(
+                                                      padding: EdgeInsets.zero,
+                                                    ),
+                                                    onPressed: () {
+                                                      controller.quizpopupvalue
+                                                          .value++;
+                                                      print(controller
+                                                          .quizpopupvalue
+                                                          .value++);
+                                                    },
+                                                    child: Text('Got It'),
                                                   ),
                                                 ),
-                                                Container(
-                                                  margin: EdgeInsets.only(
-                                                      left: 15,
-                                                      right: 15,
-                                                      bottom: 8),
-                                                  padding: EdgeInsets.only(
-                                                      top: 8,
-                                                      bottom: 8,
-                                                      left: 8,
-                                                      right: 8),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                      BorderRadius.circular(
-                                                          10),
-                                                      color:
-                                                      Colors.grey.shade200),
-                                                  child: Text(
-                                                    C.userAnswers,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight.w400),
-                                                  ),
-                                                ),
-                                                if (controller
-                                                            .responseCodeQuizReply
-                                                            .value ==
-                                                        200 &&
-                                                    controller.quizReplyList
-                                                        .isNotEmpty)
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal:
-                                                                C.margin),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    // Loading indicator or placeholder
+                                    return SizedBox();
+                                  }
+                                },
+                              ),
+                            if (controller.quizpopupvalue.value == 1&&popupvalue==4)
+                              Obx(() {
+                                print(
+                                    " value called ${controller.quizpopupvalue.value}");
+                                return controller.quizpopupvalue.value == 1
+                                    ? FutureBuilder<bool>(
+                                        future: showPopup.shouldShowPopup(),
+                                        builder: (context, snapshot) {
+                                          if (isUserLogin.isEmpty) {
+                                            // Show your popup here
+                                            return Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              insetPadding: EdgeInsets.only(
+                                                bottom: 400,
+                                                left: 60,
+                                                right: 60,
+                                              ),
+                                              alignment: Alignment.topCenter,
+                                              elevation: 3.0,
+                                              backgroundColor: Colors.red,
+                                              child: CustomPaint(
+                                                painter: ArrowDialogPainter(),
+                                                child: DottedBorder(
+                                                  borderType: BorderType.RRect,
+                                                  strokeWidth: 1,
+                                                  dashPattern: [10, 7],
+                                                  color: Col.primary,
+                                                  radius: Radius.circular(5),
+                                                  padding: EdgeInsets.all(5),
+                                                  child: Container(
+                                                    padding: EdgeInsets.only(
+                                                        top: 10, left: 10),
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
                                                       children: [
-                                                        textViewComments(),
-                                                        SizedBox(
-                                                          height: 30.px,
-                                                          child:
-                                                              buttonViewEyeShowHide(),
+                                                        Flexible(
+                                                            child: Text(
+                                                                'Write answers to quizzes related to the book.',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontFamily:
+                                                                      "Open Sans",
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                ))),
+                                                        Center(
+                                                          child: TextButton(
+                                                            style: TextButton
+                                                                .styleFrom(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .zero,
+                                                            ),
+                                                            onPressed: () {
+                                                              controller
+                                                                  .quizpopupvalue
+                                                                  .value++;
+                                                            },
+                                                            child:
+                                                                Text('Got It'),
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
                                                   ),
-                                                if (!controller.isCommentHidden
-                                                        .value &&
-                                                    controller
-                                                            .responseCodeQuizReply
-                                                            .value ==
-                                                        200 &&
-                                                    controller.quizReplyList
-                                                        .isNotEmpty)
-                                                  listViewComments(),
-                                              ],
+                                                ),
+                                              ),
                                             );
                                           } else {
-                                            return const SizedBox();
+                                            // Loading indicator or placeholder
+                                            return SizedBox();
                                           }
-                                        }
-                                      }),
-                                      if (controller.selectedChapter.value !=
-                                          "Quiz")
-                                        SizedBox(
-                                          height: 150.px,
-                                        )
+                                        },
+                                      )
+                                    : SizedBox();
+                              }),
+                          ],
+                        ),
+                    ],
+                  ),
+                  if (controller.popupValue.value == 4 && popupvalue==4)
+                    FutureBuilder<bool>(
+                      future: showPopup.shouldShowPopup(),
+                      builder: (context, snapshot) {
+                        if (isUserLogin.isEmpty) {
+                          // Show your popup here
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            insetPadding: EdgeInsets.only(
+                              top: 170,
+                              left: 70,
+                              right: 50,
+                            ),
+                            alignment: Alignment.topCenter,
+                            elevation: 3.0,
+                            backgroundColor: Colors.red,
+                            child: CustomPaint(
+                              painter: ArrowDialogPainter(),
+                              child: DottedBorder(
+                                borderType: BorderType.RRect,
+                                strokeWidth: 1,
+                                dashPattern: [10, 7],
+                                color: Col.primary,
+                                radius: Radius.circular(5),
+                                padding: EdgeInsets.all(5),
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 10, left: 10),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      showPopup.widgetRow(  Image.asset(C.imageArrowUpKeyBoardLogo,height: 20,width: 20,), C.readbookPopupFirst),
+                                      SizedBox(height: 8,),
+
+                                      Center(
+                                        child: TextButton(
+                                          style: TextButton.styleFrom(
+                                            padding: EdgeInsets.zero,
+                                          ),
+                                          onPressed: () {
+                                            controller.popupValue.value++;
+                                            controller.setPopupKey(controller.popupValue.value);
+                                          },
+                                          child: Text('Got It'),
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                );
-                              }),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        if (controller.haveAudio.value &&
-                            !controller.isShowMusicPlayer.value &&
-                            controller.selectedChapter.value.isNotEmpty &&
-                            controller.selectedChapter.value != "Quiz")
-                          floatingButtonForShowMusicPlayer()
-                      ],
+                          );
+                        } else {
+                          // Loading indicator or placeholder
+                          return SizedBox();
+                        }
+                      },
+                    ),
+                  if (controller.popupValue.value ==5&&popupvalue==4)
+                    FutureBuilder<bool>(
+                      future: showPopup.shouldShowPopup(),
+                      builder: (context, snapshot) {
+                        if (isUserLogin.isEmpty) {
+                          // Show your popup here
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            insetPadding: EdgeInsets.only(
+                              top: 100,
+                              left: 70,
+                              right: 10,
+                            ),
+                            alignment: Alignment.topCenter,
+                            elevation: 3.0,
+                            backgroundColor: Colors.red,
+                            child: CustomPaint(
+                              painter: ArrowDialogPainter(),
+                              child: DottedBorder(
+                                borderType: BorderType.RRect,
+                                strokeWidth: 1,
+                                dashPattern: [10, 7],
+                                color: Col.primary,
+                                radius: Radius.circular(5),
+                                padding: EdgeInsets.all(5),
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 10, left: 10),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      showPopup.widgetRow(  Image.asset(C.imageComaLogo,height: 20,width: 20,), C.readbookPopupSecond),
+
+                                      Center(
+                                        child: TextButton(
+                                          style: TextButton.styleFrom(
+                                            padding: EdgeInsets.zero,
+                                          ),
+                                          onPressed: () {
+                                            controller.popupValue.value++;
+                                            controller.setPopupKey(controller.popupValue.value);
+                                          },
+                                          child: Text('Got It'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          // Loading indicator or placeholder
+                          return SizedBox();
+                        }
+                      },
+                    ),
+                  if (controller.popupValue.value == 6&&popupvalue==4)
+                    FutureBuilder<bool>(
+                      future: showPopup.shouldShowPopup(),
+                      builder: (context, snapshot) {
+                        if (isUserLogin.isEmpty) {
+                          // Show your popup here
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            insetPadding: EdgeInsets.only(
+                              bottom: 140,
+                              left: 40,
+                              right: 20,
+                            ),
+                            alignment: Alignment.bottomCenter,
+                            elevation: 3.0,
+                            backgroundColor: Colors.red,
+                            child: CustomPaint(
+                              painter: ArrowDialogPainter(),
+                              child: DottedBorder(
+                                borderType: BorderType.RRect,
+                                strokeWidth: 1,
+                                dashPattern: [10, 7],
+                                color: Col.primary,
+                                radius: Radius.circular(5),
+                                padding: EdgeInsets.all(5),
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 10, left: 10),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                          child: Text(
+                                              'Control audio playback with options for pause, play, forward, backward, speed adjustment, and hiding/unhiding the audio panel.',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: "Open Sans",
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ))),
+                                      Center(
+                                        child: TextButton(
+                                          style: TextButton.styleFrom(
+                                            padding: EdgeInsets.zero,
+                                          ),
+                                          onPressed: () {
+                                            controller.popupValue.value++;
+                                            controller.setPopupKey(controller.popupValue.value);
+                                          },
+                                          child: Text('Got It'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          // Loading indicator or placeholder
+                          return SizedBox();
+                        }
+                      },
+                    ),
+                  if (controller.popupValue.value == 7&&popupvalue==4)
+                    FutureBuilder<bool>(
+                      future: showPopup.shouldShowPopup(),
+                      builder: (context, snapshot) {
+                        if (isUserLogin.isEmpty) {
+                          // Show your popup here
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            insetPadding: EdgeInsets.only(
+                              bottom: 10,
+                              left: 40,
+                              right: 20,
+                            ),
+                            alignment: Alignment.center,
+                            elevation: 3.0,
+                            backgroundColor: Colors.red,
+                            child: CustomPaint(
+                              painter: ArrowDialogPainter(),
+                              child: DottedBorder(
+                                borderType: BorderType.RRect,
+                                strokeWidth: 1,
+                                dashPattern: [10, 7],
+                                color: Col.primary,
+                                radius: Radius.circular(5),
+                                padding: EdgeInsets.all(5),
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 10, left: 10),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                          child: Text(
+                                              'Tap and hold on a word for its dictionary definition',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: "Open Sans",
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ))),
+                                      Center(
+                                        child: TextButton(
+                                          style: TextButton.styleFrom(
+                                            padding: EdgeInsets.zero,
+                                          ),
+                                          onPressed: () {
+                                            controller.popupValue.value++;
+                                            controller.setPopupKey(controller.popupValue.value);
+                                          },
+                                          child: Text('Got It'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          // Loading indicator or placeholder
+                          return SizedBox();
+                        }
+                      },
                     ),
                 ],
               ),
@@ -338,23 +859,28 @@ class ReadBookView extends GetView<ReadBookController> {
                   controller.selectedChapter.value != "Quiz"
               ? Col.darkAppBar
               : Theme.of(Get.context!).scaffoldBackgroundColor,
-          body: Column(
+          body: Stack(
             children: [
-              appBarView(),
-              if (controller.responseCode.value == 0)
-                const SizedBox()
-              else
-                CW.commonNoDataFoundImage(
-                  onRefresh: () async {},
-                ),
+              Column(
+                children: [
+                  appBarView(),
+                  if (controller.responseCode.value == 0)
+                    const SizedBox()
+                  else
+                    CW.commonNoDataFoundImage(
+                      onRefresh: () async {},
+                    ),
+                ],
+              ),
             ],
           ));
     }
   }
 
-  Widget appBarView() => CW.commonAppBarWithActon(
-        wantDarkMode:
-            controller.selectedChapter.value != "Quiz" && controller.isDarkMode.value,
+  Widget appBarView() {
+    return CW.commonAppBarWithActon(
+        wantDarkMode: controller.selectedChapter.value != "Quiz" &&
+            controller.isDarkMode.value,
         wantSelectedBookMarkButton: controller.isBookmark.value,
         wantZoomButton: controller.selectedChapter.value != "Quiz" &&
             controller.chapterList.isNotEmpty,
@@ -374,8 +900,35 @@ class ReadBookView extends GetView<ReadBookController> {
         wantSwitch: controller.selectedChapter.value != "Quiz" &&
             controller.chapterList.isNotEmpty,
         modeValue: controller.modeValue.value,
-        onChanged: (value) => controller.modeOnChange(value: value),
-      );
+        isSelected: [controller.modeValue.value].obs,
+        onChanged: (value) {
+          if (controller.onchangeValue == 0) {
+            controller.modeValue.value=!controller.modeValue.value;
+            controller.modeOnChange(value: !controller.modeValue.value);
+            print("mode value${controller.modeValue.value}");
+            if (controller.modeValue.value == false) {
+              controller.modeValue.value = true;
+
+              controller.modeOnChange(value: controller.modeValue.value);
+            } else {
+              controller.modeValue.value = false;
+
+              controller.modeOnChange(value: controller.modeValue.value);
+            }
+
+            controller.onchangeValue++;
+            print("Onchange value called ${controller.onchangeValue}");
+          } else if (controller.modeValue.value == true) {
+            controller.modeValue.value = false;
+            controller.modeOnChange(value: controller.modeValue.value);
+
+          } else {
+            controller.modeValue.value = true;
+            controller.modeOnChange(value: controller.modeValue.value);
+
+          }
+        });
+  }
 
   Widget appBarViewForZoom() =>
       CW.commonAppBarWithoutActon(title: "", wantBackButton: false);
@@ -459,7 +1012,6 @@ class ReadBookView extends GetView<ReadBookController> {
             controller.selectedChapterId.value = value.id ?? 0;
             controller.selectedChapterObject.value = value;
             if (controller.selectedChapter.value == "Quiz") {
-              CM.showSnackBar(message: C.textMessageForQuiz);
               if (controller.quizList.isEmpty) {
                 controller.inAsyncCall.value = true;
                 await controller.getQuizForBook();
@@ -510,34 +1062,37 @@ class ReadBookView extends GetView<ReadBookController> {
   Widget textViewChapterContent() => SelectableText(
         CM.parseHtmlString(controller.selectedChapterContent.value),
         style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(
-
             fontFamily: controller.setFontFamily.value,
             fontSize: controller.selectFontSize.value,
             fontStyle: controller.setFontStyle.value,
-            color: controller.isDarkMode.value
-            ?Colors.white
-                //? controller.changeTextColor(Colors.white)
-                : Colors.black),
+            color:
+
+            // controller.isDarkMode.value
+            //     ? Colors.white
+            //     :
+            controller.textColor.value),
+        //: Colors.black),
         textAlign: controller.setTextAlign.value,
         onSelectionChanged: (selection, cause) =>
             controller.onTextSelection(selection: selection, cause: cause),
       );
 
   Widget listViewQuiz() => ListView.builder(
-    controller: ScrollController(),
+        controller: ScrollController(),
         physics: const NeverScrollableScrollPhysics(),
+        scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (controller.quizList[index].question != null)
                 textViewQuestion(index: index),
-
-              if (isUserSubscribed==true)
+            //  if (isUserSubscribed == true)
                 SizedBox(
                   height: 10.px,
                 ),
-              if (isUserSubscribed==true) textFiledViewReply(index: index),
+             // if (isUserSubscribed == true)
+                textFiledViewReply(index: index,context: context),
               SizedBox(
                 height: 18.px,
               ),
@@ -551,15 +1106,179 @@ class ReadBookView extends GetView<ReadBookController> {
 
   Widget textViewQuestion({required int index}) =>
       Text("Q${index + 1}. ${controller.quizList[index].question ?? ""}");
+  PopupMenuItem BGImagesDialog(BuildContext context) {
+    print(" images value ${controller.setFontFamily.value}");
+    return PopupMenuItem(
+        child: Container(
+          child: Column(children: [
+            DropdownButton<BankListDataModel>(
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+                fontFamily: "verdana_regular",
+              ),
+              hint: Text(
+                "Select Image",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16,
+                  fontFamily: "verdana_regular",
+                ),
+              ),
+              items: controller.bankDataList
+                  .map<DropdownMenuItem<BankListDataModel>>(
+                      (BankListDataModel value) {
+                    return DropdownMenuItem(
+                      value: value,
+                      child: Row(
+                        children: [
+                          Container(
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(shape: BoxShape.circle),
+                              child: CustomImageView(
+                                imagePath: value.bank_logo.value,
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.cover,
+                                radius: BorderRadius.circular(30),
+                              )),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            value.bank_name.value,
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+              isExpanded: true,
+              isDense: true,
+              onChanged: (BankListDataModel? newSelectedBank) {
+                controller.onDropDownItemSelected(newSelectedBank!);
+                Navigator.pop(context);
+              },
+              value: controller.bankChoose.value,
+            )
+          ]),
+        ));
 
-  Widget textFiledViewReply({required int index}) =>
-      CW.commonTextFieldForLoginSignUP(
-        borderRadius: 20.px,
-        hintText: C.textReply,
-        maxHeight: 40.px,
-        elevation: 0,
-        controller: controller.controllerList[index],
-      );
+    //   AlertDialog(
+    //
+    //   title: const Text('Pick a color!'),
+    //   content: SingleChildScrollView(
+    //     child: MaterialPicker(
+    //       // pickerColor: mycolor, //default color
+    //       onColorChanged: (Color color) {
+    //         //on the color picked
+    //
+    //       }, pickerColor: controller.textColor.value,
+    //     ),
+    //   ),
+    //   actions: <Widget>[
+    //     ElevatedButton(
+    //       child: const Text('DONE',style: TextStyle(color: Colors.black),),
+    //       onPressed: () {
+    //         Navigator.of(context)
+    //             .pop(); //dismiss the color picker
+    //       },
+    //     ),
+    //   ],
+    // );
+  }
+  Widget textViewGetPremium() => Text(
+    C.textGetPremium,
+    style: CT.alegreyaDisplaySmall(),
+  );
+  Widget textViewDownload() => Text(
+    C.textDownloadNowAnd,
+    style: CT.openSansBodySmall(),
+  );
+  Widget imageViewPremium() => Image.asset(
+    C.imageGetPremium,
+    height: 100.px,
+    width: 100.px,
+  );
+
+  Widget textFiledViewReply({required int index,required BuildContext context}) {
+
+    return isUserSubscribed==true
+        ?CW.commonTextFieldForLoginSignUP(
+      borderRadius: 20.px,
+      hintText: C.textReply,
+      maxHeight: 40.px,
+
+
+
+
+
+      elevation: 0,
+
+
+
+      controller: controller.controllerList[index],
+    )
+    :TextFormField(
+      readOnly: true,
+      onTap: () {
+        _showDialog(context);
+      },
+
+      style: Theme.of(Get.context!)
+          .textTheme
+          .bodyMedium
+          ?.copyWith(fontFamily: C.fontOpenSans, color: Col.onSecondary),
+
+
+      decoration: InputDecoration(
+        contentPadding:  EdgeInsets.symmetric(horizontal: 20.px),
+        prefixIcon: Icon(Icons.lock_outline,color: Colors.black,),
+        border: OutlineInputBorder(
+            borderSide:
+                 BorderSide.none,
+            borderRadius:
+            BorderRadius.circular( C.loginTextFieldRadius)),
+
+        fillColor: Colors.white,
+        filled: true,
+
+
+
+
+
+      ),
+
+
+
+
+
+
+
+      controller: controller.controllerList[index],
+    );
+  }
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+
+          content: Text('Please subscribe to access this feature.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'
+                  ''),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget buttonViewSubmit() => CW.commonElevatedButton(
       onPressed: () => controller.clickOnSubmitButton(),
@@ -582,22 +1301,26 @@ class ReadBookView extends GetView<ReadBookController> {
         elevation: 0.px,
         heroTag: null,
         highlightElevation: 0.px,
-        child: controller.isCommentHidden.value
-            ? Image.asset(
-                C.imageEyeShowLogo,
-                height: 25.px,
-                width: 25.px,
-              )
-            : Image.asset(
-                C.imageEyeHideLogo,
-                height: 25.px,
-                width: 25.px,
-              ),
+        child: Obx(() {
+          return controller.isCommentHidden.value
+              ? Image.asset(
+            C.imageEyeShowLogo,
+            height: 25.px,
+            width: 25.px,
+          )
+              : Image.asset(
+            C.imageEyeHideLogo,
+            height: 25.px,
+            width: 25.px,
+          );
+        }),
       );
 
   Widget listViewComments() => ListView.builder(
-    controller: ScrollController(),
+        controller: ScrollController(),
         physics: const NeverScrollableScrollPhysics(),
+        scrollDirection: Axis.vertical,
+
         itemBuilder: (context, index) {
           return Padding(
             padding: EdgeInsets.only(
@@ -735,9 +1458,9 @@ class ReadBookView extends GetView<ReadBookController> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            textViewCommonForSlider("80"),
                             textViewCommonForSlider("85"),
-                            textViewCommonForSlider(" 90"),
+                            textViewCommonForSlider("90"),
+                            textViewCommonForSlider("95"),
                             textViewCommonForSlider("100"),
                             textViewCommonForSlider("105"),
                             textViewCommonForSlider("110"),
@@ -767,7 +1490,7 @@ class ReadBookView extends GetView<ReadBookController> {
                         ),
                       ),
                       Text(
-                        "Click on Bar to Choose Listening Speed : Speed = ${controller.selectedMenu.value}",
+                        "Click on Bar to Choose Listening Speed = ${controller.selectedMenu.value}",
                         style: CT.openSansTitleSmall(),
                         textAlign: TextAlign.center,
                       )
@@ -964,8 +1687,8 @@ class ReadBookView extends GetView<ReadBookController> {
           onPressed: () => controller.clickOnZoomButton(),
           child: Image.asset(
             C.imageZoomInLogo,
-            height: 50.px,
-            width: 50.px,
+            height: 35.px,
+            width: 35.px,
           ),
         ),
       );
@@ -1014,7 +1737,6 @@ class ReadBookView extends GetView<ReadBookController> {
       );
 
   Widget popUpMenuView() {
-
     return IconButton(
       onPressed: null,
       icon: PopupMenuButton(
@@ -1033,9 +1755,9 @@ class ReadBookView extends GetView<ReadBookController> {
               function: BackgroundColorDialog(context),
               setValue: "BG Color"),
           commonPopUpMenuItem(context,
-              image: C.imagePopUpIconThree,
+              image: C.imagePopUpIconBGImage,
               function: BGImagesDialog(context),
-              setValue: "BG Images"),
+              setValue: "BG Texture"),
           commonPopUpMenuItem(context,
               image: C.imagePopUpIconSix,
               function: FontSizeDialog(context),
@@ -1055,7 +1777,9 @@ class ReadBookView extends GetView<ReadBookController> {
         ],
         child: Image.asset(
           C.imageComaLogo,
-          color: controller.isDarkMode.value ? Col.inverseSecondary : Col.secondary,
+          color: controller.isDarkMode.value
+              ? Col.inverseSecondary
+              : Col.secondary,
           height: 25.px,
           width: 25.px,
         ),
@@ -1068,7 +1792,6 @@ class ReadBookView extends GetView<ReadBookController> {
       required PopupMenuItem<dynamic> function,
       required String setValue}) {
     return PopupMenuItem(
-
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -1116,14 +1839,19 @@ class ReadBookView extends GetView<ReadBookController> {
           child: Obx(
         () => Column(
           children: [
-            MaterialPicker(
-              // pickerColor: mycolor, //default color
-              onColorChanged: (Color color) {
-                //on the color picked
-                controller.changeTextColor(color);
-                print('Color updated ${controller.textColor.value}');
-              },
-              pickerColor: controller.textColor.value,
+            Container(
+              width: 140,
+              height: 350,
+              padding: EdgeInsets.zero,
+              child: MaterialPicker(
+                // pickerColor: mycolor, //default color
+                onColorChanged: (Color color) {
+                  //on the color picked
+                  controller.changeTextColor(color);
+                  print('Color updated ${controller.textColor.value}');
+                },
+                pickerColor: controller.textColor.value,
+              ),
             ),
             ElevatedButton(
                 onPressed: () {
@@ -1169,12 +1897,30 @@ class ReadBookView extends GetView<ReadBookController> {
           child: Obx(
         () => Column(
           children: [
-            BlockPicker(
-              pickerColor: controller.backGroundColor.value, //default color
-              onColorChanged: (Color color) {
-                //on the color picked
-                controller.changeBackgroundColor(color);
-              },
+            Container(
+              width: 200.px,
+              height: 150,
+              child: BlockPicker(
+                pickerColor: controller.backGroundColor.value, //default color
+                availableColors: [
+                  Colors.red,
+                  Colors.pink,
+                  Colors.green,
+                  Colors.blue,
+                  Colors.purple,
+                  Colors.yellow,
+                  Colors.orange,
+                  Colors.grey,
+                  Colors.brown,
+                  Colors.white,
+                  Colors.black,
+                ],
+
+                onColorChanged: (Color color) {
+                  //on the color picked
+                  controller.changeBackgroundColor(color);
+                },
+              ),
             ),
             ElevatedButton(
                 onPressed: () {
@@ -1216,10 +1962,7 @@ class ReadBookView extends GetView<ReadBookController> {
 
   PopupMenuItem FontSizeDialog(BuildContext context) {
     return PopupMenuItem(
-
-
         child: Container(
-
       child: Obx(() => Column(children: [
             DropdownButton<double>(
               dropdownColor: Colors.white,
@@ -1268,13 +2011,10 @@ class ReadBookView extends GetView<ReadBookController> {
   PopupMenuItem FontStyleDialog(BuildContext context) {
     return PopupMenuItem(
         child: Container(
-      child: Obx(() => Column(
-          children: [
+      child: Obx(() => Column(children: [
             DropdownButton<FontStyle>(
               value: controller.setFontStyle.value,
               onChanged: (newValue) {
-
-
                 controller.changeTextFontStyle(newValue);
                 Navigator.pop(context);
                 Navigator.pop(context);
@@ -1307,15 +2047,14 @@ class ReadBookView extends GetView<ReadBookController> {
     //   ],
     // );
   }
+
   PopupMenuItem FontFamilyDialog(BuildContext context) {
     return PopupMenuItem(
         child: Container(
-      child: Obx(() => Column(
-          children: [
+      child: Obx(() => Column(children: [
             DropdownButton<String>(
               value: controller.setFontFamily.value,
               onChanged: (newValue) {
-
                 controller.changeFontFamily(newValue);
                 Navigator.pop(context);
                 Navigator.pop(context);
@@ -1348,89 +2087,16 @@ class ReadBookView extends GetView<ReadBookController> {
     //   ],
     // );
   }
-  PopupMenuItem BGImagesDialog(BuildContext context) {
-    print(" images value ${controller.setFontFamily.value}");
-    return PopupMenuItem(
-        child: Container(
-          child:  Column(
-              children: [
-                DropdownButton<BankListDataModel>(
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                    fontFamily: "verdana_regular",
-                  ),
-                  hint: Text(
-                    "Select Bank",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16,
-                      fontFamily: "verdana_regular",
-                    ),
-                  ),
-                  items: controller.bankDataList
-                      .map<DropdownMenuItem<BankListDataModel>>(
-                          (BankListDataModel value) {
-                        return DropdownMenuItem(
-                          value: value,
-                          child: Row(
-                            children: [
-                              new CircleAvatar(
-                                backgroundImage:
-                                NetworkImage(value.bank_logo),
-                              ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              Text(value.bank_name),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                  isExpanded: true,
-                  isDense: true,
-                  onChanged: (BankListDataModel? newSelectedBank) {
-                    controller.onDropDownItemSelected(newSelectedBank!);
-                  },
-                  value: controller.bankChoose,
-                )
-              ]),
-        ));
 
-    //   AlertDialog(
-    //
-    //   title: const Text('Pick a color!'),
-    //   content: SingleChildScrollView(
-    //     child: MaterialPicker(
-    //       // pickerColor: mycolor, //default color
-    //       onColorChanged: (Color color) {
-    //         //on the color picked
-    //
-    //       }, pickerColor: controller.textColor.value,
-    //     ),
-    //   ),
-    //   actions: <Widget>[
-    //     ElevatedButton(
-    //       child: const Text('DONE',style: TextStyle(color: Colors.black),),
-    //       onPressed: () {
-    //         Navigator.of(context)
-    //             .pop(); //dismiss the color picker
-    //       },
-    //     ),
-    //   ],
-    // );
-  }
 
 
   PopupMenuItem FontAlignDialog(BuildContext context) {
     return PopupMenuItem(
         child: Container(
-      child: Obx(() => Column(
-          children: [
+      child: Obx(() => Column(children: [
             DropdownButton<TextAlign>(
               value: controller.setTextAlign.value,
               onChanged: (newValue) {
-
                 controller.changeTextAlignment(newValue);
                 Navigator.pop(context);
                 Navigator.pop(context);
@@ -1525,8 +2191,9 @@ class DropdownView<T> extends StatelessWidget {
             ));
   }
 }
+
 class BankListDataModel {
-  String bank_name;
-  String bank_logo;
+  RxString bank_name;
+  RxString bank_logo;
   BankListDataModel(this.bank_name, this.bank_logo);
 }

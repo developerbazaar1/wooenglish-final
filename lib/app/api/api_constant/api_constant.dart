@@ -145,6 +145,7 @@ class UriConstant {
   static const endPointGetLanguage = "${baseUrl}api/get-language";
   static const endPointGetLength = "${baseUrl}api/get-length";
   static const endPointGetCategory = "${baseUrl}api/get-category";
+  static const endPointGetGenre = "${baseUrl}api/get-genre";
   static const endPointGetLevel = "${baseUrl}api/get-level";
   static const endPointGetEnglishAssent = "${baseUrl}api/get-english-accent";
   static const endPointGetSearchList = "/WooEnglish/api/search-by-filter";

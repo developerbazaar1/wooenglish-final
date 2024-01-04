@@ -50,6 +50,7 @@ class User {
   String? userId;
   String? membershipPlan;
   String? membershipDate;
+  String? membership_expire_date;
   String? ip;
   String? deviceType;
   String? createdAt;
@@ -71,6 +72,7 @@ class User {
       this.userId,
       this.membershipPlan,
       this.membershipDate,
+      this.membership_expire_date,
       this.ip,
       this.deviceType,
       this.createdAt,
@@ -91,6 +93,7 @@ class User {
     userId = json['user_id'];
     membershipPlan = json['membership_plan'];
     membershipDate = json['membership_date'];
+    membership_expire_date = json['membership_expire_date'];
     ip = json['ip'];
     deviceType = json['device_type'];
     countryCode = json['country_code'].toString();
@@ -114,6 +117,7 @@ class User {
     data['user_id'] = userId;
     data['membership_plan'] = membershipPlan;
     data['membership_date'] = membershipDate;
+    data['membership_expire_date'] = membership_expire_date;
     data['ip'] = ip;
     data['country_code'] = countryCode;
     data['device_type'] = deviceType;

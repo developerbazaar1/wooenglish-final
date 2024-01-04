@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:woo_english/app/modules/my_subcription_plane/view/my_subscription_plane.dart';
 
 import '../modules/all_reviews/bindings/all_reviews_binding.dart';
 import '../modules/all_reviews/views/all_reviews_view.dart';
@@ -34,6 +35,7 @@ import '../modules/my_books/bindings/my_books_binding.dart';
 import '../modules/my_books/views/my_books_view.dart';
 import '../modules/my_profile/bindings/my_profile_binding.dart';
 import '../modules/my_profile/views/my_profile_view.dart';
+import '../modules/my_subcription_plane/binding/my_subcription_plan_binding.dart';
 import '../modules/navigator/bindings/navigator_binding.dart';
 import '../modules/navigator/views/navigator_view.dart';
 import '../modules/notifications/bindings/notifications_binding.dart';
@@ -153,6 +155,11 @@ class AppPages {
       name: _Paths.BOOK_MARKS,
       page: () => const BookMarksView(),
       binding: BookMarksBinding(),
+    ),
+    GetPage(
+      name: _Paths.MY_PLAN,
+      page: () =>  MyPlanSubscriptionView(),
+      binding: MyPlanBinding(),
     ),
     GetPage(
       name: _Paths.REVIEWS,

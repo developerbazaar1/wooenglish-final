@@ -12,6 +12,8 @@ dependencies:
     sdk: flutter
   responsive_sizer: ^3.1.1
   flutter_colorpicker: ^1.0.3
+  cached_network_image: ^3.2.1
+  flutter_svg: ^1.1.6
 
   http: ^0.13.6
   internet_connection_checker: ^1.0.0+1
@@ -44,8 +46,9 @@ dependencies:
   sqflite: ^2.2.8+4
   volume_controller: ^2.0.7
   shimmer: ^3.0.0
-  firebase_core: ^2.15.0
+  firebase_core: ^2.24.2
   firebase_auth: ^4.7.1
+  path_provider: ^2.1.1
 #  firebase_admob: 0.11.2
 
   #IOS CONFIG REQUIRED USED FOR FIREBASE GOOGLE SIGNING
@@ -79,7 +82,7 @@ dependencies:
   #android:scheme="https" />
   #</intent-filter>
   firebase_dynamic_links: ^5.3.4
-  share_plus: ^7.0.2
+  share_plus:
   device_info_plus: ^9.0.3
   # please see for config  https://codelabs.developers.google.com/codelabs/admob-ads-in-flutter#0
   google_mobile_ads: ^3.0.0
@@ -111,7 +114,7 @@ dependencies:
   flutter_local_notifications: ^15.1.1
   shared_preferences: ^2.2.2
   flutter_stripe: ^9.5.0+1
-
+  dotted_border: ^2.1.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -186,3 +189,36 @@ flutter:
         - asset: assets/fonts/alegreya/Alegreya-Bold.ttf
           weight: 700
 
+
+    - family: Arial
+      fonts:
+        - asset: assets/fonts/arial/ARIAL.TTF
+        - asset: assets/fonts/arial/ArialMdm.ttf
+        - asset: assets/fonts/arial/ARIALNB.TTF
+        - asset: assets/fonts/arial/ARIALLGT.TTF
+        - asset: assets/fonts/arial/ARIALBD 1.TTF
+    - family: Georgia
+      fonts:
+        - asset: assets/fonts/georgia/georgia.ttf
+          weight: 300
+        - asset: assets/fonts/georgia/georgiab.ttf
+          weight: 400
+        - asset: assets/fonts/georgia/georgiai.ttf
+          weight: 600
+        - asset: assets/fonts/georgia/georgiaz.ttf
+          weight: 700
+
+    - family: Times New Roman
+      fonts:
+        - asset: assets/fonts/Times New Roman/times new roman.ttf
+          weight: 300
+        - asset: assets/fonts/Times New Roman/times new roman bold.ttf
+          weight: 400
+        - asset: assets/fonts/Times New Roman/times new roman bold italic.ttf
+          weight: 600
+        - asset: assets/fonts/Times New Roman/times new roman italic.ttf
+          weight: 700
+    - family: Verdana
+      fonts:
+        - asset: assets/fonts/verdana/Verdana.ttf
+        - asset: assets/fonts/verdana/verdanab.ttf

@@ -199,6 +199,9 @@ class CM {
     UserLocalData userLocalData = UserLocalData();
     userLocalData.columnId = userData?.user?.id.toString() ?? "";
     userLocalData.columnName = userData?.user?.name.toString() ?? "";
+    userLocalData.columnMembershipPlan = userData?.user?.membershipPlan.toString() ?? "";
+    userLocalData.columnMembershipDate= userData?.user?.membershipDate.toString() ?? "";
+    userLocalData.columnMembershipExpireDate= userData?.user?.membership_expire_date.toString() ?? "";
     userLocalData.columnEmail = userData?.user?.email.toString() ?? "";
     userLocalData.columnMobile = userData?.user?.mobile.toString() ?? "";
     userLocalData.columnUserImage = userData?.user?.userImage.toString() ?? "";
@@ -211,6 +214,8 @@ class CM {
         userData?.user?.membershipPlan.toString() ?? "";
     userLocalData.columnMembershipDate =
         userData?.user?.membershipDate.toString() ?? "";
+    userLocalData.columnMembershipExpireDate=
+        userData?.user?.membership_expire_date.toString() ?? "";
     userLocalData.columnIp = userData?.user?.ip.toString() ?? "";
     userLocalData.columnDeviceType =
         userData?.user?.deviceType.toString() ?? "";

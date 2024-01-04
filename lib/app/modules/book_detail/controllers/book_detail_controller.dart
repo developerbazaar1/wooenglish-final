@@ -8,6 +8,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:woo_english/app/api/api_constant/api_constant.dart';
 import 'package:woo_english/app/api/http_methods/http_methods.dart';
 import 'package:woo_english/app/app_controller/app_controller.dart';
@@ -33,6 +34,7 @@ import 'package:woo_english/firebase/firebase_login_method.dart';
 
 import '../../../../services/ad_mob_services.dart';
 import '../../../api/api_model/get_dashboard_data_model.dart';
+import '../../splash/controllers/splash_controller.dart';
 
 class BookDetailController extends AppController  {
   int intValue = 1;
@@ -65,6 +67,7 @@ class BookDetailController extends AppController  {
   String rating = "4.5";
   Map<String, dynamic> bodyParamsForPostReview = {};
   static Map<String, String> params = Get.arguments;
+  RxInt popupValue = 2.obs;
 
   /*AdmobBannerSize? bannerSize;
   late AdmobInterstitial interstitialAd;*/
@@ -80,18 +83,15 @@ BannerAd? bannerAd;
   @override
   void onInit() async{
     super.onInit();
+    WidgetsBinding.instance!.addPostFrameCallback((_) async{
+      await loadBanner();
+      await loadIndustrial();
+
+      getPopupKey();
 
 
-
-
-    await loadBanner();
-    await loadIndustrial();
-
-
-
-
-
-    onReload();
+    //  onReload();
+    });
 
   }
   @override
@@ -126,6 +126,27 @@ BannerAd? bannerAd;
         load = 0;
       }
     });
+  }
+
+
+  void setPopupKey( key) async {
+
+
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setInt('popup', key);
+    print('set popup key');
+  }
+
+  void getPopupKey() async {
+    print('Popup running');
+    final prefs = await SharedPreferences.getInstance();
+    final key = prefs.get('popup');
+
+    popupvalue  = key;
+
+    print('YOUR Popup book details - $popupvalue');
+    print('YOUR USER KEY - $Key');
   }
 Future<void>loadBanner()async{
   bannerAd =  BannerAd(
@@ -500,6 +521,7 @@ Future<void>loadBanner()async{
     await Navigator.of(Get.context!).push(
       MaterialPageRoute(
         builder: (context) => BookDetailView(
+          showbookto: bookList[index].showbookto.toString(),
           tag: tag,
           bookId: bookList[index].id.toString(),
           categoryId: bookList[index].category.toString(),

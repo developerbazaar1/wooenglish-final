@@ -233,6 +233,7 @@ class VideoBookController extends AppController {
       MaterialPageRoute(
         builder: (context) => BookDetailView(
           tag: tag,
+          showbookto: bookList[index].showbookto.toString(),
           bookId: bookList[index].id.toString(),
           categoryId: bookList[index].category.toString(),
           isLiked: getSimilarBookModel.value?.favorite

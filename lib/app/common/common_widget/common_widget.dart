@@ -570,7 +570,10 @@ class CW {
     String? title,
     bool wantSwitch=false,
     bool modeValue=false,
-     ValueChanged<bool>? onChanged,
+     ValueChanged<int>? onChanged,
+
+
+
     bool wantBookMarkButton = false,
     bool wantShareButton = true,
     bool wantInfoButton = true,
@@ -581,7 +584,16 @@ class CW {
     bool wantSelectedBookMarkButton = false,
     bool wantDarkMode = false,
     Color? color,
-  }) {
+    RxList<bool>? isSelected
+
+
+
+
+  })
+
+
+  {
+    RxList<bool> value = [modeValue].obs;
     return Column(
       children: [
         Container(
@@ -626,10 +638,52 @@ class CW {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       if(wantSwitch)
-                        commonSwitchView(
-                          changeValue: modeValue,
-                          onChanged: onChanged,
-                        ),
+                         ToggleButtons(
+                          children: [
+                            Image.asset('assets/images/popup_menu_icon_one.png',height: 25,width: 25,),
+
+                          ],
+                          isSelected: [modeValue],
+                          onPressed: onChanged,
+                          color: Colors.white,
+                          hoverColor: Colors.white,
+                          selectedColor: Colors.white,
+
+                          focusColor: Colors.white,
+                          borderColor: Colors.white,
+                          disabledColor: Colors.white,
+                          disabledBorderColor: Colors.white,
+
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderWidth: 2.0,
+                        )
+                        ,
+
+                        // ToggleButtons(
+                        //   children: [
+                        //     Image.asset('assets/images/popup_menu_icon_one.png',height: 20,width: 20,),
+                        //
+                        //   ],
+                        //   isSelected:isSelected!=null?isSelected:value,
+                        //   onPressed: (index){
+                        //     isSelected![index]= !isSelected[index];
+                        //     print(isSelected[index]);
+                        //     print(onChanged);
+                        //     print(modeValue);
+                        //     modeValue = isSelected[index];
+                        //
+                        //
+                        //   },
+                        //   selectedColor: Colors.white,
+                        //   fillColor: Color(0xffFEC26F),
+                        //   borderColor: Color(0xffDA640D),
+                        //   borderRadius: BorderRadius.circular(8.0),
+                        //   borderWidth: 2.0,
+                        // ),
+                       //  commonSwitchView(
+                       //    changeValue: modeValue,
+                       //    onChanged: onChanged,
+                       // ),
                       if (wantZoomButton)
                         IconButton(
                           onPressed: clickOnZoomButton,

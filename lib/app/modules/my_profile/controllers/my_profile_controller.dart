@@ -7,6 +7,7 @@ import 'package:woo_english/app/common/common_method/common_method.dart';
 import 'package:woo_english/app/data/local_database/database_const/database_const.dart';
 import 'package:woo_english/app/data/local_database/database_helper/database_helper.dart';
 import 'package:woo_english/app/modules/navigator/controllers/navigator_controller.dart';
+import 'package:woo_english/app/modules/my_subcription_plane/view/my_subscription_plane.dart';
 import 'package:woo_english/app/routes/app_pages.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +21,7 @@ class MyProfileController extends AppController {
   var _key;
 
   List<String> listOfTitles = [
+    C.textMyPlan,
     C.textMyBookMark,
     C.textMyReview,
     C.textMyeBooks,
@@ -101,24 +103,27 @@ class MyProfileController extends AppController {
   void clickOnParticularItem({required int index}) {
     inAsyncCall.value = true;
     if (index == 0) {
+      Get.toNamed(Routes.MY_PLAN);
+
+    }else if (index == 1) {
       Get.toNamed(Routes.BOOK_MARKS);
-    } else if (index == 1) {
-      Get.toNamed(Routes.REVIEWS);
     } else if (index == 2) {
-      Get.toNamed(Routes.E_BOOK);
+      Get.toNamed(Routes.REVIEWS);
     } else if (index == 3) {
-      Get.toNamed(Routes.FAVORITES_BOOKS);
+      Get.toNamed(Routes.E_BOOK);
     } else if (index == 4) {
+      Get.toNamed(Routes.FAVORITES_BOOKS);
+    } else if (index ==5) {
       Get.toNamed(Routes.FINISHED_BOOKS);
-    } else if (index == 5) {
-      Get.toNamed(Routes.QUIZZES);
     } else if (index == 6) {
-      Get.toNamed(Routes.APP_SETTING);
+      Get.toNamed(Routes.QUIZZES);
     } else if (index == 7) {
-      Get.toNamed(Routes.TERMS_CONDITION);
+      Get.toNamed(Routes.APP_SETTING);
     } else if (index == 8) {
-      Get.toNamed(Routes.PRIVACY_POLICY);
+      Get.toNamed(Routes.TERMS_CONDITION);
     } else if (index == 9) {
+      Get.toNamed(Routes.PRIVACY_POLICY);
+    } else if (index == 10) {
       Get.toNamed(Routes.HELP_SUPPORT);
     }
     inAsyncCall.value = false;
@@ -126,9 +131,9 @@ class MyProfileController extends AppController {
 
   void clickOnGetPremium() {
     inAsyncCall.value = true;
-/*
+
     Get.toNamed(Routes.SUBSCRIPTION);
-*/
+
     inAsyncCall.value = false;
   }
   void _deletetoken() async {

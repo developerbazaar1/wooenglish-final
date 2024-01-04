@@ -1,5 +1,7 @@
 import 'dart:ffi';
-
+import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:woo_english/app/modules/Showpopup/showpopup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -12,6 +14,7 @@ import 'package:woo_english/app/common/common_widget/common_widget.dart';
 import 'package:woo_english/app/theme/colors/colors.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:woo_english/model_progress_bar/model_progress_bar.dart';
+import '../../book_detail/views/book_detail_view.dart';
 import '../../splash/controllers/splash_controller.dart';
 import '../../subscription/controllers/subscription_controller.dart';
 import '../controllers/home_controller.dart';
@@ -22,11 +25,745 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     SubscriptionController _controller = Get.put(SubscriptionController());
+    ShowPopup showPopup = ShowPopup();
 
-    return Obx(
+    return
+
+    //   Obx(() {
+    //   controller.count.value;
+    //   return Scaffold(
+    //     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    //     body: Stack(
+    //       children: [
+    //         Column(
+    //           children: [
+    //             appBarView(),
+    //             Obx(() {
+    //               if (AppController.isConnect.value) {
+    //                 if (controller.responseCode.value == 200) {
+    //                   return Expanded(
+    //                     child: ScrollConfiguration(
+    //                       behavior: ListScrollBehaviour(),
+    //                       child: CW.commonRefreshIndicator(
+    //                         onRefresh: () => controller.onRefresh(),
+    //                         child: ListView(
+    //                           controller: ScrollController(),
+    //                           padding: EdgeInsets.only(top: 20.px),
+    //                           children: [
+    //                             if (isUserSubscribed == null)
+    //                               Padding(
+    //                                 padding: EdgeInsets.only(
+    //                                     left: C.margin - 9.px,
+    //                                     right: C.margin - 9.px),
+    //                                 child: GestureDetector(
+    //                                   onTap: () {},
+    //                                   child: ClipRRect(
+    //                                     borderRadius:
+    //                                     BorderRadius.circular(10.px),
+    //                                     child: Container(
+    //                                       margin:
+    //                                       EdgeInsets.only(bottom: 20),
+    //                                       padding: EdgeInsets.only(
+    //                                           right: 15,
+    //                                           top: 15,
+    //                                           left: 15,
+    //                                           bottom: 0),
+    //                                       decoration: BoxDecoration(
+    //                                           borderRadius:
+    //                                           BorderRadius.circular(8),
+    //                                           gradient: LinearGradient(
+    //                                             begin: Alignment.topCenter,
+    //                                             end: Alignment.bottomCenter,
+    //                                             colors: [
+    //                                               Color(0xffDB7E2E),
+    //                                               Color(0xffDB972D),
+    //                                             ],
+    //                                           )),
+    //                                       height: 165.px,
+    //                                       width: MediaQuery.of(context)
+    //                                           .size
+    //                                           .width,
+    //                                       child: Row(
+    //                                         mainAxisAlignment:
+    //                                         MainAxisAlignment
+    //                                             .spaceBetween,
+    //                                         children: [
+    //                                           Column(
+    //                                             mainAxisAlignment:
+    //                                             MainAxisAlignment
+    //                                                 .spaceBetween,
+    //                                             crossAxisAlignment:
+    //                                             CrossAxisAlignment
+    //                                                 .start,
+    //                                             children: [
+    //                                               Text(
+    //                                                 C.textGetPremium,
+    //                                                 style: TextStyle(
+    //                                                   color: Col
+    //                                                       .inverseSecondary,
+    //                                                   fontSize: 28,
+    //                                                   fontFamily:
+    //                                                   'BeausiteClassic',
+    //                                                   fontWeight:
+    //                                                   FontWeight.w500,
+    //                                                   letterSpacing: 0.8,
+    //                                                 ),
+    //                                               ),
+    //                                               Text(
+    //                                                   'Download and listen',
+    //                                                   style: TextStyle(
+    //                                                       fontSize: 16,
+    //                                                       fontWeight:
+    //                                                       FontWeight
+    //                                                           .w400,
+    //                                                       color: Col
+    //                                                           .inverseSecondary,
+    //                                                       height: 1.5,
+    //                                                       letterSpacing:
+    //                                                       0.8)),
+    //                                               Text(
+    //                                                 'your book',
+    //                                                 style: TextStyle(
+    //                                                     fontSize: 16,
+    //                                                     fontWeight:
+    //                                                     FontWeight.w400,
+    //                                                     color: Col
+    //                                                         .inverseSecondary,
+    //                                                     height: 1.5,
+    //                                                     letterSpacing: 0.8),
+    //                                               ),
+    //                                               Container(
+    //                                                 margin: EdgeInsets.only(
+    //                                                     top: 10,
+    //                                                     bottom: 14),
+    //                                                 height: 35,
+    //                                                 decoration: BoxDecoration(
+    //                                                     color: Color(
+    //                                                         0xffDB7E2E),
+    //                                                     border: Border.all(
+    //                                                         color: Col
+    //                                                             .inverseSecondary,
+    //                                                         width: 1.2),
+    //                                                     borderRadius:
+    //                                                     BorderRadius
+    //                                                         .circular(
+    //                                                         4)),
+    //                                                 child: ElevatedButton(
+    //                                                     style:
+    //                                                     ElevatedButton
+    //                                                         .styleFrom(
+    //                                                       elevation: 10,
+    //                                                       backgroundColor:
+    //                                                       Colors
+    //                                                           .transparent,
+    //                                                       shadowColor: Colors
+    //                                                           .transparent,
+    //                                                     ),
+    //                                                     onPressed: () {
+    //                                                       controller
+    //                                                           .clickOnSubscription();
+    //                                                     },
+    //                                                     child: Text(
+    //                                                       "Subscribe Now",
+    //                                                       style: TextStyle(
+    //                                                         color: Col
+    //                                                             .inverseSecondary,
+    //                                                         fontSize: 20,
+    //                                                         fontWeight:
+    //                                                         FontWeight
+    //                                                             .w500,
+    //                                                         letterSpacing:
+    //                                                         0.5,
+    //                                                       ),
+    //                                                     )),
+    //                                               )
+    //                                             ],
+    //                                           ),
+    //                                           Image(
+    //                                               image: AssetImage(
+    //                                                   'assets/images/Girl.png'))
+    //                                         ],
+    //                                       ),
+    //                                     ),
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                             if (isUserSubscribed == null)
+    //                               Obx(() {
+    //                                 return controller.isload.value == true
+    //                                     ? bannerAdWidget()
+    //                                     : Container(
+    //                                   margin: EdgeInsets.only(
+    //                                       top: 10,
+    //                                       bottom: 20,
+    //                                       left: 20,
+    //                                       right: 20),
+    //                                   child: Image(
+    //                                     image: AssetImage(
+    //                                         'assets/images/Admob.jpg'),
+    //                                   ),
+    //                                 );
+    //                               }),
+    //                             if (controller
+    //                                 .getDashBoarDataForContinueBooks
+    //                                 .value !=
+    //                                 null &&
+    //                                 controller
+    //                                     .getDashBoarDataForContinueBooks
+    //                                     .value
+    //                                     ?.book !=
+    //                                     null)
+    //                               Padding(
+    //                                 padding: EdgeInsets.symmetric(
+    //                                     horizontal: C.margin),
+    //                                 child: SizedBox(
+    //                                   height: 128.px,
+    //                                   child: Card(
+    //                                     margin: EdgeInsets.zero,
+    //                                     color: Col.cardBackgroundColor,
+    //                                     shape: RoundedRectangleBorder(
+    //                                         borderRadius:
+    //                                         BorderRadius.circular(
+    //                                             C.buttonRadius / 2)),
+    //                                     child: InkWell(
+    //                                       onTap: () => controller
+    //                                           .clickOnContinueBook(),
+    //                                       borderRadius:
+    //                                       BorderRadius.circular(
+    //                                           C.buttonRadius / 2),
+    //                                       child: Padding(
+    //                                         padding: EdgeInsets.all(6.px),
+    //                                         child: Row(
+    //                                           crossAxisAlignment:
+    //                                           CrossAxisAlignment.center,
+    //                                           mainAxisAlignment:
+    //                                           MainAxisAlignment
+    //                                               .spaceBetween,
+    //                                           children: [
+    //                                             Column(
+    //                                               mainAxisAlignment:
+    //                                               MainAxisAlignment
+    //                                                   .center,
+    //                                               children: [
+    //                                                 SizedBox(
+    //                                                   height: 110.px,
+    //                                                   width: 100.px,
+    //                                                   child: ClipRRect(
+    //                                                     borderRadius:
+    //                                                     BorderRadius
+    //                                                         .circular(
+    //                                                         12.px),
+    //                                                     child:
+    //                                                     imageViewContinueBook(),
+    //                                                   ),
+    //                                                 ),
+    //                                               ],
+    //                                             ),
+    //                                             SizedBox(
+    //                                               width: 10.px,
+    //                                             ),
+    //                                             Expanded(
+    //                                               child: Column(
+    //                                                 crossAxisAlignment:
+    //                                                 CrossAxisAlignment
+    //                                                     .start,
+    //                                                 mainAxisAlignment:
+    //                                                 MainAxisAlignment
+    //                                                     .center,
+    //                                                 children: [
+    //                                                   Row(
+    //                                                     mainAxisAlignment:
+    //                                                     MainAxisAlignment
+    //                                                         .spaceBetween,
+    //                                                     children: [
+    //                                                       textViewContinueReading(),
+    //                                                       imageViewPlayImage(),
+    //                                                     ],
+    //                                                   ),
+    //                                                   SizedBox(
+    //                                                       height: 5.px),
+    //                                                   if (controller
+    //                                                       .getDashBoarDataForContinueBooks
+    //                                                       .value
+    //                                                       ?.book
+    //                                                       ?.bookdetails
+    //                                                       ?.title !=
+    //                                                       null)
+    //                                                     textBookNameTextView(),
+    //                                                   SizedBox(
+    //                                                       height: 5.px),
+    //                                                   Row(
+    //                                                     mainAxisAlignment:
+    //                                                     MainAxisAlignment
+    //                                                         .spaceBetween,
+    //                                                     children: [
+    //                                                       if (controller
+    //                                                           .getDashBoarDataForContinueBooks
+    //                                                           .value
+    //                                                           ?.book
+    //                                                           ?.chapter !=
+    //                                                           null)
+    //                                                         textViewChapter(),
+    //                                                       if (controller
+    //                                                           .getDashBoarDataForContinueBooks
+    //                                                           .value
+    //                                                           ?.book
+    //                                                           ?.percentage !=
+    //                                                           null)
+    //                                                         textViewPercent(),
+    //                                                     ],
+    //                                                   ),
+    //                                                   SizedBox(
+    //                                                       height: 8.px),
+    //                                                   if (controller
+    //                                                       .getDashBoarDataForContinueBooks
+    //                                                       .value
+    //                                                       ?.book
+    //                                                       ?.percentage !=
+    //                                                       null)
+    //                                                     progressBarView()
+    //                                                 ],
+    //                                               ),
+    //                                             ),
+    //                                           ],
+    //                                         ),
+    //                                       ),
+    //                                     ),
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                             Column(
+    //                               children: [
+    //                                 if (controller
+    //                                     .getDashBoarDataForNewReleaseBooks
+    //                                     .value !=
+    //                                     null &&
+    //                                     controller
+    //                                         .getDashBoarDataForNewReleaseBooks
+    //                                         .value
+    //                                         ?.books !=
+    //                                         null &&
+    //                                     controller
+    //                                         .getDashBoarDataForNewReleaseBooks
+    //                                         .value!
+    //                                         .books!
+    //                                         .isNotEmpty)
+    //                                   listTitleView(
+    //                                     text: C.textNewRelease,
+    //                                     onPressed: () =>
+    //                                         controller.clickOnSeeMore(
+    //                                             id: C.textNewRelease),
+    //                                   ),
+    //                                 if (controller
+    //                                     .getDashBoarDataForNewReleaseBooks
+    //                                     .value !=
+    //                                     null &&
+    //                                     controller
+    //                                         .getDashBoarDataForNewReleaseBooks
+    //                                         .value
+    //                                         ?.books !=
+    //                                         null &&
+    //                                     controller
+    //                                         .getDashBoarDataForNewReleaseBooks
+    //                                         .value!
+    //                                         .books!
+    //                                         .isNotEmpty)
+    //                                   listViewBooks(
+    //                                       listOfBooks: controller
+    //                                           .getDashBoarDataForNewReleaseBooks
+    //                                           .value
+    //                                           ?.books ??
+    //                                           [],
+    //                                       id: C.textNewRelease,
+    //                                       dashBoardModel: controller
+    //                                           .getDashBoarDataForNewReleaseBooks
+    //                                           .value!),
+    //                                 if (controller
+    //                                     .getDashBoarDataForPopularBooks
+    //                                     .value !=
+    //                                     null &&
+    //                                     controller
+    //                                         .getDashBoarDataForPopularBooks
+    //                                         .value
+    //                                         ?.books !=
+    //                                         null &&
+    //                                     controller
+    //                                         .getDashBoarDataForPopularBooks
+    //                                         .value!
+    //                                         .books!
+    //                                         .isNotEmpty)
+    //                                   listTitleView(
+    //                                     text: C.textMostPopularBooks,
+    //                                     onPressed: () =>
+    //                                         controller.clickOnSeeMore(
+    //                                             id: C.textMostPopularBooks),
+    //                                   ),
+    //                                 if (controller
+    //                                     .getDashBoarDataForPopularBooks
+    //                                     .value !=
+    //                                     null &&
+    //                                     controller
+    //                                         .getDashBoarDataForPopularBooks
+    //                                         .value
+    //                                         ?.books !=
+    //                                         null &&
+    //                                     controller
+    //                                         .getDashBoarDataForPopularBooks
+    //                                         .value!
+    //                                         .books!
+    //                                         .isNotEmpty)
+    //                                   listViewBooks(
+    //                                       listOfBooks: controller
+    //                                           .getDashBoarDataForPopularBooks
+    //                                           .value
+    //                                           ?.books ??
+    //                                           [],
+    //                                       id: C.textMostPopularBooks,
+    //                                       dashBoardModel: controller
+    //                                           .getDashBoarDataForPopularBooks
+    //                                           .value!),
+    //                                 if (controller
+    //                                     .getDashBoarDataForRecommendedBooks
+    //                                     .value !=
+    //                                     null &&
+    //                                     controller
+    //                                         .getDashBoarDataForRecommendedBooks
+    //                                         .value
+    //                                         ?.books !=
+    //                                         null &&
+    //                                     controller
+    //                                         .getDashBoarDataForRecommendedBooks
+    //                                         .value!
+    //                                         .books!
+    //                                         .isNotEmpty)
+    //                                   listTitleView(
+    //                                       text: C.textRecommendedForYou,
+    //                                       onPressed: () =>
+    //                                           controller.clickOnSeeMore(
+    //                                               id: C
+    //                                                   .textRecommendedForYou)),
+    //                                 if (controller
+    //                                     .getDashBoarDataForRecommendedBooks
+    //                                     .value !=
+    //                                     null &&
+    //                                     controller
+    //                                         .getDashBoarDataForRecommendedBooks
+    //                                         .value
+    //                                         ?.books !=
+    //                                         null &&
+    //                                     controller
+    //                                         .getDashBoarDataForRecommendedBooks
+    //                                         .value!
+    //                                         .books!
+    //                                         .isNotEmpty)
+    //                                   listViewBooks(
+    //                                       listOfBooks: controller
+    //                                           .getDashBoarDataForRecommendedBooks
+    //                                           .value
+    //                                           ?.books ??
+    //                                           [],
+    //                                       id: C.textRecommendedForYou,
+    //                                       dashBoardModel: controller
+    //                                           .getDashBoarDataForRecommendedBooks
+    //                                           .value!),
+    //                                 //   if (isUserSubscribed == true)
+    //                                 Column(
+    //                                   children: [
+    //                                     if (controller
+    //                                         .getDashBoarDataForMemberBooks
+    //                                         .value !=
+    //                                         null &&
+    //                                         controller
+    //                                             .getDashBoarDataForMemberBooks
+    //                                             .value
+    //                                             ?.books !=
+    //                                             null &&
+    //                                         controller
+    //                                             .getDashBoarDataForMemberBooks
+    //                                             .value!
+    //                                             .books!
+    //                                             .isNotEmpty)
+    //                                       listTitleView(
+    //                                           text: C.textMemberOnlyBooks,
+    //                                           onPressed: () {
+    //                                             controller
+    //                                                 .clickOnSeeMore(
+    //                                                 id: C
+    //                                                     .textMemberOnlyBooks);
+    //                                           }
+    //                                       ),
+    //                                     if (controller
+    //                                         .getDashBoarDataForMemberBooks
+    //                                         .value !=
+    //                                         null &&
+    //                                         controller
+    //                                             .getDashBoarDataForMemberBooks
+    //                                             .value
+    //                                             ?.books !=
+    //                                             null &&
+    //                                         controller
+    //                                             .getDashBoarDataForMemberBooks
+    //                                             .value!
+    //                                             .books!
+    //                                             .isNotEmpty)
+    //                                       listViewBooks(
+    //                                           listOfBooks: controller
+    //                                               .getDashBoarDataForMemberBooks
+    //                                               .value
+    //                                               ?.books ??
+    //                                               [],
+    //                                           id: C.textMemberOnlyBooks,
+    //                                           dashBoardModel: controller
+    //                                               .getDashBoarDataForMemberBooks
+    //                                               .value!),
+    //                                   ],
+    //                                 ),
+    //                                 if (controller
+    //                                     .getDashBoarDataForUserFavoriteBooks
+    //                                     .value !=
+    //                                     null &&
+    //                                     controller
+    //                                         .getDashBoarDataForUserFavoriteBooks
+    //                                         .value
+    //                                         ?.books !=
+    //                                         null &&
+    //                                     controller
+    //                                         .getDashBoarDataForUserFavoriteBooks
+    //                                         .value!
+    //                                         .books!
+    //                                         .isNotEmpty)
+    //                                   listTitleView(
+    //                                     text: C.textYourFavorite,
+    //                                     onPressed: () =>
+    //                                         controller.clickOnSeeMore(
+    //                                             id: C.textYourFavorite),
+    //                                   ),
+    //                                 if (controller
+    //                                     .getDashBoarDataForUserFavoriteBooks
+    //                                     .value !=
+    //                                     null &&
+    //                                     controller
+    //                                         .getDashBoarDataForUserFavoriteBooks
+    //                                         .value
+    //                                         ?.books !=
+    //                                         null &&
+    //                                     controller
+    //                                         .getDashBoarDataForUserFavoriteBooks
+    //                                         .value!
+    //                                         .books!
+    //                                         .isNotEmpty)
+    //                                   listViewFavBooks(
+    //                                     listOfBooks: controller
+    //                                         .getDashBoarDataForUserFavoriteBooks
+    //                                         .value
+    //                                         ?.books ??
+    //                                         [],
+    //                                     id: C.textYourFavorite,
+    //                                   ),
+    //                                 if (controller.getDashBoarDataAuthors
+    //                                     .value !=
+    //                                     null &&
+    //                                     controller.getDashBoarDataAuthors
+    //                                         .value?.authors !=
+    //                                         null &&
+    //                                     controller.getDashBoarDataAuthors
+    //                                         .value!.authors!.isNotEmpty)
+    //                                   listTitleView(
+    //                                       text: C.textFamousAuthors,
+    //                                       onPressed: () => controller
+    //                                           .clickOnAuthorSeeMore(
+    //                                           id: C.textFamousAuthors)),
+    //                                 if (controller.getDashBoarDataAuthors
+    //                                     .value !=
+    //                                     null &&
+    //                                     controller.getDashBoarDataAuthors
+    //                                         .value?.authors !=
+    //                                         null &&
+    //                                     controller.getDashBoarDataAuthors
+    //                                         .value!.authors!.isNotEmpty)
+    //                                   listViewAuthor(),
+    //                                 if (controller.isLoading.value)
+    //                                   Padding(
+    //                                     padding: EdgeInsets.all(50.px),
+    //                                     child: CW.commonProgressBarView(),
+    //                                   ),
+    //                                 SizedBox(
+    //                                   height: C.margin,
+    //                                 )
+    //                               ],
+    //                             ),
+    //                           ],
+    //                         ),
+    //                       ),
+    //                     ),
+    //                   );
+    //                 } else {
+    //                   if (controller.responseCode.value == 0) {
+    //                     return const SizedBox();
+    //                   }
+    //                   return CW.commonSomethingWentWrongImage(
+    //                     onRefresh: () => controller.onRefresh(),
+    //                   );
+    //                 }
+    //               } else {
+    //                 return CW.commonNoInternetImage(
+    //                   onRefresh: () => controller.onRefresh(),
+    //                 );
+    //               }
+    //             }),
+    //           ],
+    //         ),
+    //
+    //         if(popupvalue == null&& controller.firstPopUp.value == 0)
+    //           FutureBuilder<bool>(
+    //             future: showPopup.shouldShowPopup(),
+    //             builder: (context, snapshot) {
+    //               if (isUserLogin.isEmpty) {
+    //
+    //                 return Dialog(
+    //                   shape: RoundedRectangleBorder(
+    //                     borderRadius: BorderRadius.circular(20.0),
+    //                   ),
+    //                   insetPadding: EdgeInsets.only(bottom: 10,left:60,right: 60,),
+    //                   alignment: Alignment.bottomCenter,
+    //                   elevation: 3.0,
+    //                   backgroundColor: Colors.white,
+    //                   child: CustomPaint(
+    //                     painter: ArrowDialogPainter(
+    //
+    //                     ),
+    //                     child: DottedBorder(
+    //                       borderType: BorderType.RRect,
+    //                       strokeWidth: 1,
+    //                       dashPattern: [10, 7],
+    //                       color: Col.primary,
+    //                       radius: Radius.circular(5 ),
+    //                       padding: EdgeInsets.all(5),
+    //
+    //                       child: Container(
+    //                         padding: EdgeInsets.only(top: 10,left: 10),
+    //                         child: Column(
+    //                           mainAxisSize: MainAxisSize.min,
+    //                           children: [
+    //                             showPopup.widgetRow( Icon(Icons.search,size: 20,weight: 2), 'Tap to go to the search page.'),
+    //                             SizedBox(height: 8,),
+    //                             showPopup.widgetRow( Image.asset('assets/images/bottombar_favorite_logo.png',height: 20,width: 20,), 'Access your personal book collection'),
+    //                             SizedBox(height: 8,),
+    //                             showPopup.widgetRow( Icon(Icons.person_outline_outlined,size: 20,), ''
+    //                                 'Manage your profile settings.'),
+    //                             Center(
+    //                               child: TextButton(
+    //                                 style:TextButton.styleFrom(
+    //                                   padding: EdgeInsets.zero,
+    //
+    //                                 ),
+    //
+    //                                 onPressed: () {
+    //                                   controller.firstPopUp.value++;
+    //                                   controller.setPopupKey(controller.firstPopUp.value);
+    //                                 },
+    //                                 child: Text('Got It'),
+    //                               ),
+    //                             ),
+    //                           ],
+    //                         ),
+    //                       ),
+    //                     ),
+    //                   ),
+    //                 );
+    //
+    //
+    //
+    //               } else {
+    //                 // Loading indicator or placeholder
+    //                 return SizedBox();
+    //               }
+    //             },
+    //           ),
+    //
+    //         //
+    //         if(popupvalue == null&&controller.firstPopUp.value == 1)
+    //
+    //           FutureBuilder<bool>(
+    //             future: showPopup.shouldShowPopup(),
+    //             builder: (context, snapshot) {
+    //               if (isUserLogin.isEmpty) {
+    //                 // Show your popup here
+    //                 return  Dialog(
+    //                   shape: RoundedRectangleBorder(
+    //                     borderRadius: BorderRadius.circular(20.0),
+    //                   ),
+    //                   insetPadding: EdgeInsets.only(bottom: 100,left:60,right: 60,),
+    //                   alignment: Alignment.bottomLeft,
+    //                   elevation: 3.0,
+    //                   backgroundColor: Colors.red,
+    //                   child: CustomPaint(
+    //                     painter: ArrowDialogPainter(
+    //
+    //                     ),
+    //                     child: DottedBorder(
+    //                       borderType: BorderType.RRect,
+    //                       strokeWidth: 1,
+    //                       dashPattern: [10, 7],
+    //                       color: Col.primary,
+    //                       radius: Radius.circular(5 ),
+    //                       padding: EdgeInsets.all(5),
+    //
+    //                       child: Container(
+    //                         padding: EdgeInsets.only(top: 10,left: 10),
+    //                         child: Column(
+    //                           mainAxisSize: MainAxisSize.min,
+    //                           children: [
+    //                             Flexible(child: Text('Tap on a book to open its page.',
+    //                                 style: TextStyle(
+    //                                   color: Colors.black,
+    //                                   fontFamily: "Open Sans",
+    //                                   fontSize: 14,
+    //
+    //                                   fontWeight:FontWeight.w400,
+    //
+    //
+    //                                 ))),
+    //                             Center(
+    //                               child: TextButton(
+    //                                 style:TextButton.styleFrom(
+    //                                   padding: EdgeInsets.zero,
+    //
+    //                                 ),
+    //
+    //                                 onPressed: () {
+    //                                   controller.firstPopUp.value++;
+    //                                   controller.setPopupKey(controller.firstPopUp.value);
+    //                                 },
+    //                                 child: Text('Got It'),
+    //                               ),
+    //                             ),
+    //                           ],
+    //                         ),
+    //                       ),
+    //                     ),
+    //                   ),
+    //                 );
+    //
+    //
+    //               } else {
+    //                 // Loading indicator or placeholder
+    //                 return SizedBox();
+    //               }
+    //             },
+    //           ),
+    //       ],
+    //     ),
+    //   );
+    // });
+
+
+      Obx(
       () {
         controller.count.value;
-        return ModalProgress(
+        return
+
+          ModalProgress(
           inAsyncCall: controller.inAsyncCall.value,
           child: Scaffold(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -44,6 +781,7 @@ class HomeView extends GetView<HomeController> {
                               child: CW.commonRefreshIndicator(
                                 onRefresh: () => controller.onRefresh(),
                                 child: ListView(
+                                  controller: ScrollController(),
                                   padding: EdgeInsets.only(top: 20.px),
                                   children: [
                                     if (isUserSubscribed == null)
@@ -462,7 +1200,7 @@ class HomeView extends GetView<HomeController> {
                                               dashBoardModel: controller
                                                   .getDashBoarDataForRecommendedBooks
                                                   .value!),
-                                        if (isUserSubscribed == true)
+                                     //   if (isUserSubscribed == true)
                                           Column(
                                             children: [
                                               if (controller
@@ -481,10 +1219,13 @@ class HomeView extends GetView<HomeController> {
                                                       .isNotEmpty)
                                                 listTitleView(
                                                     text: C.textMemberOnlyBooks,
-                                                    onPressed: () => controller
-                                                        .clickOnSeeMore(
-                                                            id: C
-                                                                .textMemberOnlyBooks)),
+                                                    onPressed: () {
+                                                      controller
+                                                          .clickOnSeeMore(
+                                                          id: C
+                                                              .textMemberOnlyBooks);
+                                                    }
+                                                ),
                                               if (controller
                                                           .getDashBoarDataForMemberBooks
                                                           .value !=
@@ -606,112 +1347,139 @@ class HomeView extends GetView<HomeController> {
                     }),
                   ],
                 ),
-                 if(controller.firstPopUp.value == 0)
+
+                 if(popupvalue == null&& controller.firstPopUp.value == 0)
+                   FutureBuilder<bool>(
+                     future: showPopup.shouldShowPopup(),
+                     builder: (context, snapshot) {
+                       if (isUserLogin.isEmpty) {
+
+                         return Dialog(
+                           shape: RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(20.0),
+                           ),
+                           insetPadding: EdgeInsets.only(bottom: 10,left:60,right: 60,),
+                           alignment: Alignment.bottomCenter,
+                           elevation: 3.0,
+                           backgroundColor: Colors.white,
+                           child: CustomPaint(
+                             painter: ArrowDialogPainter(
+
+                             ),
+                             child: DottedBorder(
+                               borderType: BorderType.RRect,
+                               strokeWidth: 1,
+                               dashPattern: [10, 7],
+                               color: Col.primary,
+                               radius: Radius.circular(5 ),
+                               padding: EdgeInsets.all(5),
+
+                               child: Container(
+                                 padding: EdgeInsets.only(top: 10,left: 10),
+                                 child: Column(
+                                   mainAxisSize: MainAxisSize.min,
+                                   children: [
+                                     showPopup.widgetRow( Icon(Icons.search,size: 20,weight: 2), 'Tap to go to the search page.'),
+                                     SizedBox(height: 8,),
+                                     showPopup.widgetRow( Image.asset('assets/images/bottombar_favorite_logo.png',height: 20,width: 20,), 'Access your personal book collection'),
+                                     SizedBox(height: 8,),
+                                     showPopup.widgetRow( Icon(Icons.person_outline_outlined,size: 20,), ''
+                                         'Manage your profile settings.'),
+                                     Center(
+                                       child: TextButton(
+                                         style:TextButton.styleFrom(
+                                           padding: EdgeInsets.zero,
+
+                                         ),
+
+                                         onPressed: () {
+                                           controller.firstPopUp.value++;
+                                           controller.setPopupKey(controller.firstPopUp.value);
+                                         },
+                                         child: Text('Got It'),
+                                       ),
+                                     ),
+                                   ],
+                                 ),
+                               ),
+                             ),
+                           ),
+                         );
+
+
+
+                       } else {
+                         // Loading indicator or placeholder
+                         return SizedBox();
+                       }
+                     },
+                   ),
+
+  //
+                if(popupvalue == null&&controller.firstPopUp.value == 1)
 
                 FutureBuilder<bool>(
-                  future: controller.shouldShowPopup(),
+                  future: showPopup.shouldShowPopup(),
                   builder: (context, snapshot) {
                     if (isUserLogin.isEmpty) {
                       // Show your popup here
-                      return AlertDialog(
-
-                        alignment: Alignment.bottomRight,
-                        shape: RoundedRectangleBorder(),
-                        contentPadding: EdgeInsets.zero,
-                        elevation: 5,
-                        clipBehavior: Clip.antiAlias,
-                        content: Container(
-                          color: Colors.white,
-                          margin: EdgeInsets.only(top: 10,left: 5,right: 0),
-                          height: 125,
-                          width: 100,
-                          child: Column(
-                            children: [
-                              widgetRow( Icon(Icons.search,size: 20,weight: 2), 'Tap to go to the search page.'),
-                              SizedBox(height: 8,),
-                              widgetRow( Icon(Icons.heart_broken_outlined,size: 20,), 'Access your personal book collection'),
-                              SizedBox(height: 8,),
-                              widgetRow( Icon(Icons.person_outline_outlined,size: 20,), ''
-                                  'Manage your profile settings.'),
-                              Center(
-                                child: TextButton(
-                                  style:TextButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-
-                                  ),
-
-                                  onPressed: () {
-                                    controller.firstPopUp.value++;
-                                  },
-                                  child: Text('Got It'),
-                                ),
-                              ),
-                            ],
-                          ),
+                      return  Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
+                        insetPadding: EdgeInsets.only(bottom: 100,left:60,right: 60,),
+                        alignment: Alignment.bottomLeft,
+                        elevation: 3.0,
+                        backgroundColor: Colors.red,
+                        child: CustomPaint(
+                          painter: ArrowDialogPainter(
 
-                      );
-                    } else {
-                      // Loading indicator or placeholder
-                      return SizedBox();
-                    }
-                  },
-                ),
-                if(controller.firstPopUp.value == 1)
+                          ),
+                          child: DottedBorder(
+                            borderType: BorderType.RRect,
+                            strokeWidth: 1,
+                            dashPattern: [10, 7],
+                            color: Col.primary,
+                            radius: Radius.circular(5 ),
+                            padding: EdgeInsets.all(5),
 
-                FutureBuilder<bool>(
-                  future: controller.shouldShowPopup(),
-                  builder: (context, snapshot) {
-                    if (isUserLogin.isEmpty) {
-                      // Show your popup here
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 100),
-                        child: AlertDialog(
+                            child: Container(
+                              padding: EdgeInsets.only(top: 10,left: 10),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(child: Text('Tap on a book to open its page.',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontFamily: "Open Sans",
+                                        fontSize: 14,
 
-
-                          alignment: Alignment.bottomLeft,
-                          shape: RoundedRectangleBorder(),
-                          contentPadding: EdgeInsets.zero,
-                          elevation: 5,
-                          clipBehavior: Clip.antiAlias,
-                          content: Container(
-                            color: Colors.white,
-                            margin: EdgeInsets.only(top: 10,left: 5,right: 0),
-                            padding: EdgeInsets.only(top: 10),
-                            height: 90.px,
-                            width: 80.px,
-                            child: Column(
-                              children: [
-
-                               Flexible(child: Text('Tap on a book to open its page.',
-                                   style: TextStyle(
-                                     color: Colors.black,
-                                     fontFamily: "Open Sans",
-                                     fontSize: 14,
-
-                                     fontWeight:FontWeight.w400,
+                                        fontWeight:FontWeight.w400,
 
 
-                                   ))),
-                                Center(
-                                  child: TextButton(
-                                    style:TextButton.styleFrom(
-                                      padding: EdgeInsets.zero,
+                                      ))),
+                                  Center(
+                                    child: TextButton(
+                                      style:TextButton.styleFrom(
+                                        padding: EdgeInsets.zero,
 
+                                      ),
+
+                                      onPressed: () {
+                                        controller.firstPopUp.value++;
+                                        controller.setPopupKey(controller.firstPopUp.value);
+                                      },
+                                      child: Text('Got It'),
                                     ),
-
-                                    onPressed: () {
-                                      controller.firstPopUp.value++;
-                                    },
-                                    child: Text('Got It'),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-
                         ),
                       );
+
+
                     } else {
                       // Loading indicator or placeholder
                       return SizedBox();
@@ -722,32 +1490,12 @@ class HomeView extends GetView<HomeController> {
             ),
           ),
         );
+
       },
     );
   }
 
-  Row widgetRow(Icon icon, String text) {
-    return Row(
-                              children: [
-                               icon,
-                                SizedBox(width: 10,),
-                                Flexible(
-                                  child: Text(
-                                   text,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                    fontFamily: "Open Sans",
-                                    fontSize: 14,
 
-                                    fontWeight:FontWeight.w400,
-
-
-                                    ),
-                                  ),
-                                )
-                              ],
-                            );
-  }
 
   Widget appBarView() {
     return Column(
@@ -789,7 +1537,7 @@ class HomeView extends GetView<HomeController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (controller.getUserDataModel?.user?.name != null)
-                        textViewGoodMorning(),
+                         textViewGoodMorning(),
                       if (controller.getUserDataModel?.user?.name != null)
                         textViewItsTimeToRead()
                     ],
@@ -967,7 +1715,7 @@ class HomeView extends GetView<HomeController> {
   Widget listTitleView(
           {required String text, required VoidCallback onPressed}) =>
       Padding(
-        padding: EdgeInsets.symmetric(vertical: 15.px, horizontal: C.margin),
+        padding: EdgeInsets.symmetric(vertical: 15.px, horizontal:10.px),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -1001,10 +1749,29 @@ class HomeView extends GetView<HomeController> {
         height: C.bookHorizontalListCardHeight,
         alignment: Alignment.centerLeft,
         margin: EdgeInsets.only(left: C.margin),
+
         child: ListView.builder(
+          controller: ScrollController(),
+
           itemBuilder: (context, index) => GestureDetector(
-            onTap: () => controller.clickOnParticularBook(
-                index: index, id: id, getDashBoardBooksModel: dashBoardModel),
+            onTap: () {
+              // if(id==C.textMemberOnlyBooks){
+              //   if(isUserSubscribed == true){
+              //     controller.clickOnParticularBook(
+              //         index: index, id: id, getDashBoardBooksModel: dashBoardModel);
+              //   }else{
+              //     _showDialog(context);
+              //   }
+              // }else{
+                controller.clickOnParticularBook(
+                    index: index, id: id, getDashBoardBooksModel: dashBoardModel);
+              // }
+
+
+
+            },
+
+
             child: Container(
                 height: C.bookHorizontalListCardHeight,
                 width: C.bookHorizontalListCardWidth,
@@ -1024,15 +1791,20 @@ class HomeView extends GetView<HomeController> {
                             ),
                             child: Stack(
                               children: [
-                                SizedBox(
-                                  height: C.bookHorizontalListHeight,
-                                  width: C.bookHorizontalListWidth,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        C.bookHorizontalListRadius),
-                                    child: imageViewBook(
-                                        value:
-                                            listOfBooks[index].bookThumbnail),
+                                Opacity(
+                                  opacity:
+                                  id==C.textMemberOnlyBooks&&isUserSubscribed==null?0.3:
+                                      1 ,
+                                  child: SizedBox(
+                                    height: C.bookHorizontalListHeight,
+                                    width: C.bookHorizontalListWidth,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          C.bookHorizontalListRadius),
+                                      child: imageViewBook(
+                                          value:
+                                              listOfBooks[index].bookThumbnail),
+                                    ),
                                   ),
                                 ),
                                 Padding(
@@ -1063,6 +1835,8 @@ class HomeView extends GetView<HomeController> {
                                     ],
                                   ),
                                 ),
+                                if(id==C.textMemberOnlyBooks && isUserSubscribed != true)
+                                Center(child: Icon(Icons.lock_outline,size: 30,),)
                               ],
                             )),
                         CW.commonPaddingForBookContent(
@@ -1070,6 +1844,7 @@ class HomeView extends GetView<HomeController> {
                             children: [
                               SizedBox(
                                 height: 5.px,
+
                               ),
                               if (listOfBooks[index].title != null)
                                 Align(
@@ -1086,7 +1861,7 @@ class HomeView extends GetView<HomeController> {
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
-                                              bottom: 2.px, right: 4.px),
+                                              bottom: 2.px, right: 3.px),
                                           child: imageViewStar(),
                                         ),
                                         textViewRatting(
@@ -1145,6 +1920,8 @@ class HomeView extends GetView<HomeController> {
         alignment: Alignment.centerLeft,
         margin: EdgeInsets.only(left: C.margin),
         child: ListView.builder(
+          controller: ScrollController(),
+
           itemBuilder: (context, index) => GestureDetector(
             onTap: () => controller.clickOnParticularBook(
                 index: index,
@@ -1360,7 +2137,9 @@ class HomeView extends GetView<HomeController> {
         value,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: CT.alegreyaBodyLarge(),
+        style: TextStyle(
+          fontFamily: 'Helvetica'
+        ),
         textAlign: TextAlign.start,
       );
 
@@ -1396,6 +2175,7 @@ class HomeView extends GetView<HomeController> {
       height: 134.px,
       margin: EdgeInsets.only(left: C.margin),
       child: ListView.builder(
+        controller: ScrollController(),
         itemBuilder: (context, index) => Container(
           height: 134.px,
           width: 100.px,
@@ -1467,6 +2247,28 @@ class HomeView extends GetView<HomeController> {
           alignment: Alignment.center,
         ),
       ),
+    );
+  }
+  void _showDialog(BuildContext context) {
+    showDialog(
+
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+
+          content: Text('Please subscribe to access this feature.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'
+                  ''),
+            ),
+          ],
+        );
+      },
     );
   }
 }

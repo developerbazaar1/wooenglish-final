@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:sqflite/sql.dart';
 import 'package:woo_english/app/api/api_constant/api_constant.dart';
 import 'package:woo_english/app/api/http_methods/http_methods.dart';
 import 'package:woo_english/app/app_controller/app_controller.dart';
@@ -25,20 +26,28 @@ class SearchSuggestionListController extends AppController {
   final responseCode = 0.obs;
   Map<String, dynamic> queryParametersForSearchBook = {};
   final getDataNewReleaseBook = Rxn<GetDashBoardBooksModel>();
-  List<Books> bookList = [];
+  RxList<Books> bookList = <Books>[].obs;
 
   final getDataForCategory = Rxn<GetDashBoardBooksModel>();
+  final getDataForGenre = Rxn<GetDashBoardBooksModel>();
+
+  List<String> myaudioList= ['Any','With',"Without"];
+  int index = 0;
   List<Filters> categoryList = [];
+  List<Filters> genreList = [];
   List<Filters> englishAccentList = [];
   List<Filters> levelList = [];
   List<Filters> languageList = [];
+  List<Filters> audioList = [];
   List<Filters> lengthList = [];
 
   List<int> selectedCategory = [];
+  List<int> selectedGenre = [];
   List<int> selectedEnglishAssent = [];
   List<int> selectedLevel = [];
   List<int> selectedLanguage = [];
   List<int> selectedLength = [];
+  List<int> selectedAudio = [];
 
   List<int> category = [];
   List<int> englishAssent = [];
@@ -47,17 +56,21 @@ class SearchSuggestionListController extends AppController {
   List<int> length = [];
 
   String categoryValue = "";
-  String englishAssentValue = "";
-  String levelValue = "";
+  String englishAssentValue = "3";
+  String levelValue = "5";
   String languageValue = "";
-  String lengthValue = "";
+  String lengthValue = "4";
+  RxString isAudioValue = "".obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
+    await getSearchBookDataApiCalling();
     inAsyncCall.value = true;
     try {
+      await getGenreApiCalling();
       await getCategoryApiCalling();
+
       await getEnglishAccentApiCalling();
       await getLevelApiCalling();
       await getLanguageApiCalling();
@@ -66,6 +79,7 @@ class SearchSuggestionListController extends AppController {
     } catch (e) {
       inAsyncCall.value = false;
     }
+    print(bookList);
     inAsyncCall.value = false;
 
     onReload();
@@ -91,14 +105,18 @@ class SearchSuggestionListController extends AppController {
 
   void increment() => count.value++;
 
+
   Future<void> getSearchBookDataApiCalling() async {
     queryParametersForSearchBook = {
-      ApiKey.category: categoryValue,
-      ApiKey.englishAccent: englishAssentValue,
-      ApiKey.level: levelValue,
-      ApiKey.language: languageValue,
-      ApiKey.length: lengthValue,
-      ApiKey.bookName: searchController.text.toString().trim(),
+       //ApiKey.category: categoryValue,
+     // ApiKey.englishAccent: englishAssentValue.toString(),
+     // ApiKey.level: levelValue.toString(),
+      ////? ApiKey.language: languageValue,
+      //ApiKey.length: lengthValue.toString(),
+       ApiKey.bookName: searchController.text.toString().trim(),
+     // ApiKey.genre:6.toString(),
+        ApiKey.isAudio:isAudioValue.value
+
     };
 
     http.Response? response = await HttpMethod.instance.getRequestForParams(
@@ -107,11 +125,18 @@ class SearchSuggestionListController extends AppController {
         queryParameters: queryParametersForSearchBook);
     responseCode.value = response?.statusCode ?? 0;
     queryParametersForSearchBook.clear();
+    print('this is search fitler data '+" ${jsonDecode(response?.body ?? "")}");
+   // print(" id value ${languageList[Filters.fromJson(json as Map<String, dynamic>).id!]}");
+    print(" $categoryValue 1 $englishAssentValue 2 $levelValue 3 $languageValue 4 $lengthValue 5 ${searchController.text.toString().trim()}");
+
     if (CM.responseCheckForGetMethod(response: response)) {
       getDataNewReleaseBook.value =
           GetDashBoardBooksModel.fromJson(jsonDecode(response?.body ?? ""));
+      print('this is search data '+" ${getDataNewReleaseBook.value!.book}");
+     print( 'this is audio fitler data '+
+        ' ${getDataNewReleaseBook.value?.is_audio}');
       if (getDataNewReleaseBook.value?.books != null) {
-        bookList = getDataNewReleaseBook.value?.books ?? [];
+        bookList.value = getDataNewReleaseBook.value?.books ?? [];
       }
     }
     loaderForSearch.value = false;
@@ -129,6 +154,22 @@ class SearchSuggestionListController extends AppController {
           selectedCategory.add(-1);
         });
       }
+    }
+  }
+  Future<void> getGenreApiCalling() async {
+    http.Response? response = await HttpMethod.instance
+        .getRequest(url: UriConstant.endPointGetGenre);
+    if (CM.responseCheckForGetMethod(response: response)) {
+      getDataForGenre.value =
+          GetDashBoardBooksModel.fromJson(jsonDecode(response?.body ?? ""));
+      if (getDataForGenre.value?.level != null) {
+        getDataForGenre.value?.level?.forEach((element) {
+          genreList.add(element);
+          selectedGenre.add(-1);
+          print("this is genre value ${genreList[index].name}");
+        });
+      }
+
     }
   }
 
@@ -168,10 +209,19 @@ class SearchSuggestionListController extends AppController {
       getDataForCategory.value =
           GetDashBoardBooksModel.fromJson(jsonDecode(response?.body ?? ""));
       if (getDataForCategory.value?.language != null) {
+        print(getDataForCategory.value?.is_audio);
         getDataForCategory.value?.language?.forEach((element) {
-          languageList.add(element);
-          selectedLanguage.add(-1);
+
+
+          languageList.add(Filters(name: myaudioList[index],id: index-1),);
+          selectedLanguage.add(index);
+          print("ELEvamt ${selectedLanguage}");
+          index++;
+
+
         });
+      }else{
+        print("audio is null");
       }
     }
   }
@@ -208,7 +258,7 @@ class SearchSuggestionListController extends AppController {
     CM.unFocsKeyBoard();
     showModalBottomSheet(
         context: Get.context!,
-        builder: (context) => const FilterBottomSheet(),
+        builder: (context) =>  FilterBottomSheet(),
         isDismissible: true,
         enableDrag: true,
         shape: OutlineInputBorder(
@@ -228,6 +278,7 @@ class SearchSuggestionListController extends AppController {
     await Navigator.of(Get.context!).push(
       MaterialPageRoute(
         builder: (context) => BookDetailView(
+          showbookto:  bookList[index].showbookto.toString(),
             tag: tag,
             bookId: bookList[index].id.toString(),
             categoryId: bookList[index].category,
@@ -266,10 +317,28 @@ class SearchSuggestionListController extends AppController {
   }
 
   Future<void> clickOnParticularFilter(
-      {required int index, required int key}) async {
+      {required int index, required int key, String? name,bool? value}) async {
+
+
     increment();
     CM.unFocsKeyBoard();
+
     if (key == 0) {
+      if(value==false) {
+        if (name == "Without".toString()) {
+          isAudioValue.value = 0.toString();
+          print(isAudioValue.value);
+          print("${isAudioValue.value} + $name!");
+        } else if (name == "With".toString()) {
+          isAudioValue.value = 1.toString();
+          print(isAudioValue.value);
+          print("${isAudioValue.value} + $name!");
+        }
+      }else{
+        isAudioValue.value = '';
+        print("${isAudioValue.value} + $name!");
+      }
+
       if ((selectedLanguage[index] == languageList[index].id) &&
           language.contains(selectedLanguage[index])) {
         language.remove(selectedLanguage[index]);
@@ -281,14 +350,16 @@ class SearchSuggestionListController extends AppController {
       }
     }
     else if (key == 1) {
-      if ((selectedCategory[index] == categoryList[index].id) &&
-          category.contains(selectedCategory[index])) {
-        category.remove(selectedCategory[index]);
+      print("${selectedGenre[index]} == ${genreList[index].id} && ${category.contains(selectedGenre[index])}");
+      if ((selectedGenre[index] == genreList[index].id) &&
+          category.contains(selectedGenre[index])) {
+        category.remove(selectedGenre[index]);
 
-        selectedCategory[index] = -1;
+
+        selectedGenre[index] = -1;
       } else {
-        selectedCategory[index] = categoryList[index].id ?? -1;
-        category.add(categoryList[index].id ?? -1);
+        selectedGenre[index] = genreList[index].id ?? -1;
+        category.add(genreList[index].id ?? -1);
       }
     } else if (key == 2) {
       if ((selectedEnglishAssent[index] == englishAccentList[index].id) &&
@@ -336,6 +407,8 @@ class SearchSuggestionListController extends AppController {
 
   }
 
+
+
   void clickOnSearchKeyBordButton({required String value}) async {
     CM.unFocsKeyBoard();
     if (bookList.isNotEmpty) {
@@ -346,6 +419,7 @@ class SearchSuggestionListController extends AppController {
         MaterialPageRoute(
           builder: (context) => BookDetailView(
               tag: tag,
+              showbookto: bookList[0].showbookto.toString(),
               bookId: bookList[0].id.toString(),
               categoryId: bookList[0].category,
               isLiked: getDataNewReleaseBook.value?.favorite

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -53,11 +52,18 @@ class SubscriptionView extends GetView<SubscriptionController> {
                               SizedBox(
                                 height: 15.px,
                               ),
-                             // buttonViewSubscription(context),
+                              // buttonViewSubscription(context),
                               Obx(() {
-                                return
-                                  _controller.isPaymentLoading.value ==true?Center(child: CircularProgressIndicator(),):
-                                buttonViewSubscription(context);})
+                                return _controller.isPaymentLoading.value ==
+                                        true
+                                    ? Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : buttonViewSubscription(context);
+                              }),
+                              SizedBox(
+                                height: 10,
+                              )
                             ],
                           ),
                         ),
@@ -131,91 +137,99 @@ class SubscriptionView extends GetView<SubscriptionController> {
         } else {
           controller.currentIndexOfIncludePlan[index] = flag!;
         }
-      });
+      }
+      );
 
-  Widget listViewPlan() =>Obx(() {
+  Widget listViewPlan() {
     print("Subscribe plan called");
-    return ListView.builder(
-      itemBuilder: (context, index) => Obx(() =>
-          Padding(
-            padding: EdgeInsets.only(bottom: 14.px),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(5.px),
-              onTap: () => controller.clickOnParticularPlan(index: index, price:int.parse(_controller.GetSubcriptionData.value['subscription'][index]['plan_price']),ID:_controller.GetSubcriptionData.value['subscription'][index]['id'] ),
-              child: Ink(
-                padding: EdgeInsets.all(C.margin / 2),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5.px),
-                    border: Border.all(color: Col.borderColor, width: 3.px),
-                    color: controller.currentIndexOfPlan.value == index
-                        ? Col.cardBackgroundColor
-                        : Col.inverseSecondary),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          textViewPlanName(
-                              index: index,
-                              text: _controller.GetSubcriptionData
-                                  .value['subscription'][index]['plan_name']),
-                          SizedBox(
-                            height: 2.px,
-                          ),
-                          Row(
+    return Obx(() => ListView.builder(
+          itemBuilder: (context, index) => Obx(() => Padding(
+                padding: EdgeInsets.only(bottom: 14.px),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(5.px),
+                  onTap: () => controller.clickOnParticularPlan(
+                      index: index,
+                      price: int.parse(_controller.GetSubcriptionData
+                          .value['subscription'][index]['plan_price']),
+                      ID: _controller.GetSubcriptionData.value['subscription']
+                          [index]['id']),
+                  child: Ink(
+                    padding: EdgeInsets.all(C.margin / 2),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.px),
+                        border: Border.all(color: Col.borderColor, width: 3.px),
+                        color: controller.currentIndexOfPlan.value == index
+                            ? Col.cardBackgroundColor
+                            : Col.inverseSecondary),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Flexible(
-                                child: textViewPlanPrice(
-                                    index: index,
-                                    price: int.parse(_controller
-                                        .GetSubcriptionData
-                                        .value['subscription'][index]
-                                    ['plan_price'])),
+                              textViewPlanName(
+                                  index: index,
+                                  text: _controller.GetSubcriptionData
+                                          .value['subscription'][index]
+                                      ['plan_name']),
+                              SizedBox(
+                                height: 2.px,
+                              ),
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: textViewPlanPrice(
+                                        index: index,
+                                        price: int.parse(_controller
+                                                .GetSubcriptionData
+                                                .value['subscription'][index]
+                                            ['plan_price'])),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 2.px,
+                              ),
+                              Row(
+                                children: [
+                                  textViewPerMonth(
+                                      index: index,
+                                      text: _controller.GetSubcriptionData
+                                              .value['subscription'][index]
+                                          ['plan_duration']),
+                                  SizedBox(
+                                    width: 4.px,
+                                  ),
+                                  Expanded(
+                                      child: textViewPerMonth(
+                                          index: index,
+                                          text: _controller.GetSubcriptionData
+                                                  .value['subscription'][index]
+                                              ['plan_period'])),
+                                ],
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: 2.px,
-                          ),
-                          Row(
-                            children: [
-
-                              textViewPerMonth(index: index,text: _controller
-                                  .GetSubcriptionData
-                                  .value['subscription'][index]
-                              ['plan_duration']),
-                              SizedBox(width: 4.px,),
-                              Expanded(child: textViewPerMonth(index: index,text: _controller
-                                  .GetSubcriptionData
-                                  .value['subscription'][index]
-                              ['plan_period'])),
-                            ],
-                          ),
-
-                        ],
-                      ),
+                        ),
+                        // SizedBox(
+                        //   height: 50.px,
+                        //   width: 50.px,
+                        //   child: Transform.scale(
+                        //     scale: 1.5,
+                        //     child: radioButtonViewForPlan(index: index),
+                        //   ),
+                        // )
+                      ],
                     ),
-                    SizedBox(
-                      height: 50.px,
-                      width: 50.px,
-                      child: Transform.scale(
-                        scale: 1.5,
-                        child: radioButtonViewForPlan(index: index),
-                      ),
-                    )
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          )),
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      itemCount: _controller.GetSubcriptionDataLength.value,
-    );
-  });
-
+              )),
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          itemCount: _controller.GetSubcriptionDataLength.value,
+        ));
+  }
 
   Widget textViewPlanName({required int index, required text}) => Text(
         text,
@@ -233,7 +247,8 @@ class SubscriptionView extends GetView<SubscriptionController> {
             ),
       );
 
-  Widget textViewPerMonth({required int index, i,required String text}) => Text(
+  Widget textViewPerMonth({required int index, i, required String text}) =>
+      Text(
         text,
         style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
             fontFamily: C.fontOpenSans,
@@ -255,6 +270,10 @@ class SubscriptionView extends GetView<SubscriptionController> {
       value: index,
       groupValue: controller.currentIndexOfPlan.value,
       onChanged: (flag) {
+        print("this is index $index");
+        print("this is currentIndexOfPlan ${controller.currentIndexOfPlan.value}");
+        controller.selectedRadioButton.value=index+1;
+    //   controller.currentIndexOfPlan.value= controller.selectedRadioButton.value;
         if (controller.currentIndexOfPlan.value == index) {
           controller.currentIndexOfPlan.value = -1;
         } else {
@@ -265,15 +284,18 @@ class SubscriptionView extends GetView<SubscriptionController> {
   Widget buttonViewSubscription(BuildContext context) =>
       CW.commonElevatedButton(
         onPressed: () {
+          print('Subcription value ${controller.selectedRadioButton.value}');
           if (controller.selectedRadioButton.value == null ||
-              controller.selectedRadioButton.value <=0) {
+              controller.selectedRadioButton.value == 0) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(
-              'Please select any Payment',
-              style: TextStyle(
-                color: Colors.black,
+              content: Text(
+                'Please select any Payment',
+                style: TextStyle(
+                  color: Colors.black,
+                ),
               ),
-            ),duration: Duration(microseconds: 1500),));
+              duration: Duration(microseconds: 1500),
+            ));
           } else {
             controller.clickOnSubscriptionButton();
           }

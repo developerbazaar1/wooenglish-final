@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:woo_english/app/api/api_constant/api_constant.dart';
 import 'package:woo_english/app/api/api_model/get_dashboard_data_model.dart';
@@ -30,14 +31,20 @@ import 'package:woo_english/firebase/firebase_login_method.dart';
 import 'package:woo_english/main.dart';
 
 import '../../feedback/views/feedback_view.dart';
+import '../../splash/controllers/splash_controller.dart';
 import '../views/read_book_view.dart';
 
 class ReadBookController extends AppController with WidgetsBindingObserver {
   int intValue = 1;
   final count = 0.obs;
+  //final isAudioPlaying = '1'.obs;
   final inAsyncCall = false.obs;
+
   final isLastPage = false.obs;
   final modeValue = false.obs;
+  RxInt popupValue = 4.obs;
+  RxInt quizpopupvalue = 0.obs;
+  RxBool isBGColorSelected = false.obs;
   final value = 3.0.obs;
   final clickOnAudioSpeed = false.obs;
   RxBool isDarkMode = false.obs;
@@ -52,18 +59,26 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   var selectedValue = 'Option 1'; // Default selected value
 
   List<BankListDataModel> bankDataList = [
-    BankListDataModel(
-        "SBI", "https://english-e-reader.net/images/reader/1.png"),
-    BankListDataModel(
-        "HDFC", "https://english-e-reader.net/images/reader/3.png"),
-    BankListDataModel(
-        "ICICI", "https://english-e-reader.net/images/reader/2.png"),
+    BankListDataModel("Bg 1".obs, C.imageBG1.obs),
+    BankListDataModel("Bg 2".obs, C.imageBG2.obs),
+    BankListDataModel("Bg 3".obs, C.imageBG3.obs),
+    BankListDataModel("Bg 4".obs, C.imageBG4.obs),
+    BankListDataModel("Bg 5".obs, C.imageBG5.obs),
+    BankListDataModel("Bg 6".obs, C.imageBG6.obs),
+    BankListDataModel("Bg 7".obs, C.imageBG7.obs),
+    BankListDataModel("Bg 8".obs, C.imageBG8.obs),
+    BankListDataModel("Bg 9".obs, C.imageBG9.obs),
+    BankListDataModel("Bg 10".obs, C.imageBG10.obs),
   ];
   void onDropDownItemSelected(BankListDataModel newSelectedBank) {
-    bankChoose = newSelectedBank;
+    isBGColorSelected.value = false;
+    backGroundColor.value = Colors.transparent;
+    bankChoose.value = newSelectedBank;
+
+    print('djkfhddjkfhk' + bankChoose.value.bank_logo.value);
   }
 
-  BankListDataModel? bankChoose;
+  Rx<BankListDataModel> bankChoose = BankListDataModel(''.obs, ''.obs).obs;
   List<TextEditingController> controllerList = [];
   RxList<DropdownMenuItem<FontStyle>> listFontStyle = [
     DropdownMenuItem(
@@ -82,20 +97,16 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     ),
     DropdownMenuItem(
       child: Text(C.fontTimes_New_Roman),
-      value: C.fontInter,
+      value: C.fontTimes_New_Roman,
     ),
     DropdownMenuItem(
-      child: Text(C.fontLato),
-      value: C.fontLato,
+      child: Text(C.fontgeorgia),
+      value: C.fontgeorgia,
     ),
     DropdownMenuItem(
-      child: Text(C.fontOpenSans),
-      value: C.fontOpenSans,
+      child: Text(C.fontVerdana),
+      value: C.fontVerdana,
     ),
-    DropdownMenuItem(
-      child: Text(C.fontPlayfairDisplay),
-      value: C.fontPlayfairDisplay,
-    )
   ].obs;
   RxList<DropdownMenuItem<String>> imageUrlList = [
     DropdownMenuItem(
@@ -146,7 +157,7 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   var setFontStyle = FontStyle.normal.obs;
   var setTextAlign = TextAlign.left.obs;
   var setImage = 'fontOpenSans'.obs;
-  var setFontFamily = C.fontOpenSans.obs;
+  var setFontFamily = C.fontArial.obs;
   var setBGImage = 'fontOpenSans'.obs;
   final selectedChapterContent = "".obs;
   final selectedChapterObject = Rxn<Chapters?>();
@@ -156,6 +167,7 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   final currentPositionLabel = "00:00".obs;
   final setPlaybackRateValue = 1.0.obs;
   int maxDuration = 100;
+  int onchangeValue = 0;
   late Uint8List audioBytes;
   AudioPlayer player = AudioPlayer();
   int forwordBackWordValue = 10;
@@ -235,8 +247,18 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     selectFontSize.value = value;
   }
 
+  void clickOnGetPremium() {
+    inAsyncCall.value = true;
+
+    Get.toNamed(Routes.SUBSCRIPTION);
+
+    inAsyncCall.value = false;
+  }
+
   changeBackgroundColor(color) {
+    isBGColorSelected.value = true;
     backGroundColor.value = color;
+    print(backGroundColor.value);
   }
 
   final responseCodeDictionary = 0.obs;
@@ -252,7 +274,12 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   Future<void> onInit() async {
     super.onInit();
     print(' ++++++++++++++++++++++${isDarkMode.value}');
-    bankChoose = bankDataList[0];
+    bankChoose.value = bankDataList[0];
+    getPopupKey();
+    getPlayerKey();
+    print('---------------${await player.playing}');
+    WidgetsBinding.instance?.addObserver(this);
+
 /*
     onReload();
 */
@@ -260,20 +287,38 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
 
   @override
   void onReady() {
+    player.stop();
     super.onReady();
   }
 
   @override
   Future<void> onClose() async {
-    if (isPlaying.value && audioPlayed.value) {
-      player.stop();
-    }
+    if (isPlaying.value && audioPlayed.value) {}
     super.onClose();
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      if (isUserSubscribed == null) player.stop();
+    }
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      if (isUserSubscribed == null) player.stop();
+    }
+  }
+
+  @override
+  @override
   void dispose() {
+    ambiguate(WidgetsBinding.instance)!.removeObserver(this);
+    player.stop();
+    player.dispose();
     super.dispose();
+
+    WidgetsBinding.instance?.removeObserver(this);
   }
 
   /*  onReload() {
@@ -300,7 +345,7 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   }
 
   Future<void> myOnInit() async {
-    bankChoose = bankDataList[0];
+    bankChoose.value = bankDataList[0];
     isDarkMode.value = await DatabaseHelper.databaseHelperInstance
             .getParticularData(key: DatabaseConst.columnMode) ==
         "1";
@@ -390,6 +435,24 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
       platformChannelSpecifics,
       payload: 'media_player',
     );
+  }
+
+  void setPopupKey(key) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setInt('popup', key);
+    print('set popup key');
+  }
+
+  void getPopupKey() async {
+    print('Popup running');
+    final prefs = await SharedPreferences.getInstance();
+    final key = prefs.get('popup');
+
+    popupvalue = key;
+
+    print('YOUR Popup read book  - $popupvalue');
+    print('YOUR USER KEY - $Key');
   }
 
   Future<void> getChaptersApiCalling() async {
@@ -705,6 +768,26 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     inAsyncCall.value = false;
   }
 
+  void getPlayerKey() async {
+    print('running');
+    final prefs = await SharedPreferences.getInstance();
+    final key = prefs.get('player');
+
+    isAudioPlaying  = key;
+
+    print('YOUR Audio KEY - $isAudioPlaying');
+    print('YOUR Audio KEY - $Key');
+  }
+
+  void setPlayerpKey( key) async {
+
+
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('player', key);
+    print('set player $key');
+  }
+
   Future<void> clickOnBookMarkButton() async {
     CM.unFocsKeyBoard();
     inAsyncCall.value = true;
@@ -751,8 +834,6 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
             key: DatabaseConst.columnMode, val: modeValue.value ? "0" : "1");
         isDarkMode.value = modeValue.value ? false : true;
         modeValue.value = value;
-        print('dark mode value ${isDarkMode.value}');
-        print(' mode value ${modeValue.value}');
       }
     } catch (e) {
       CM.error();
@@ -800,6 +881,10 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
 
   void clickOnPauseAndPlayButton() async {
     inAsyncCall.value = true;
+    print(">>>>${player.playing}");
+    print("${audioPlayed}");
+    print("${isPlaying.value}");
+
 
     if ((!isPlaying.value) && (!audioPlayed.value)) {
       await player.setAudioSource(AudioSource.uri(
@@ -811,14 +896,32 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
           album: "WooEnglish",
           title: selectedChapter.value,
           artUri: Uri.parse(
-              'https://yt3.googleusercontent.com/qMSrYxqjC6z3xn7hCSO0Psf6Oynyn5PoEyCPQS3QQ4VrisyNeEbe6Eh5qGbNzzPV43OqwGXJ=s176-c-k-c0x00ffffff-no-rj'),
+             'https://yt3.googleusercontent.com/qMSrYxqjC6z3xn7hCSO0Psf6Oynyn5PoEyCPQS3QQ4VrisyNeEbe6Eh5qGbNzzPV43OqwGXJ=s176-c-k-c0x00ffffff-no-rj'),
         ),
       ));
-      player.play();
+
+
+      if (player.playing == false &&  isAudioPlaying.value=='1') {
+        print("audio is playing $audioPlayed $isPlaying");
+
+        await player.pause();
+        await player.play();
+        setPlayerpKey('1');
+
+      } else {
+        print("audio is not playing");
+        player.stop();
+      }
       isPlaying.value = true;
       audioPlayed.value = true;
     } else if (audioPlayed.value && !isPlaying.value) {
-      player.play();
+      if (player.playing == false) {
+        player.stop();
+        player.play();
+      } else {
+        player.stop();
+      }
+
       isPlaying.value = true;
       audioPlayed.value = true;
       await player.setSpeed(setPlaybackRateValue.value);

@@ -11,6 +11,7 @@ import 'package:woo_english/app/theme/colors/colors.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:woo_english/model_progress_bar/model_progress_bar.dart';
 
+import '../../../routes/app_pages.dart';
 import '../controllers/my_profile_controller.dart';
 
 class MyProfileView extends GetView<MyProfileController> {
@@ -125,7 +126,8 @@ class MyProfileView extends GetView<MyProfileController> {
                                 ),
                                 GestureDetector(
                                   onTap: (){
-                                    Get.offAllNamed('/my-books');
+                                    Get.toNamed(Routes.MY_BOOKS);
+
                                   },
 
                                   child: Column(
@@ -297,29 +299,34 @@ class MyProfileView extends GetView<MyProfileController> {
       );
 
   Widget listView() => ListView.builder(
-        itemBuilder: (context, index) => Container(
-          height: 60.px,
-          margin: EdgeInsets.symmetric(vertical: 10.px),
-          decoration: BoxDecoration(
-            color: Col.inverseSecondary,
-            border: Border.all(color: Col.borderColor, width: 3.px),
-            borderRadius: BorderRadius.circular(5.px),
-          ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(5.px),
-            onTap: () => controller.clickOnParticularItem(index: index),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: C.margin),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  textViewTitle(index: index),
-                  imageViewArrow(),
-                ],
+        itemBuilder: (context, index) {
+
+          return isUserSubscribed == null && index ==0?SizedBox():
+          Container(
+            height: 60.px,
+            margin: EdgeInsets.symmetric(vertical: 10.px),
+            decoration: BoxDecoration(
+              color: Col.inverseSecondary,
+              border: Border.all(color: Col.borderColor, width: 3.px),
+              borderRadius: BorderRadius.circular(5.px),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(5.px),
+              onTap: () => controller.clickOnParticularItem(index: index),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: C.margin),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+
+                    textViewTitle(index: index),
+                    imageViewArrow(),
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
         itemCount: controller.listOfTitles.length,
         padding: EdgeInsets.symmetric(horizontal: C.margin),
         shrinkWrap: true,

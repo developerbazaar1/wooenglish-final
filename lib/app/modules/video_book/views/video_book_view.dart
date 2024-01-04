@@ -180,7 +180,10 @@ class VideoBookView extends GetView<VideoBookController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             textViewTitle(text: text),
-            buttonViewSeeMore(onPressed: onPressed),
+            buttonViewSeeMore(
+                onPressed: onPressed
+
+            ),
           ],
         ),
       );

@@ -57,7 +57,8 @@ class DatabaseHelper {
         , ${DatabaseConst.columnStatus} ${DatabaseConst.textType}
         , ${DatabaseConst.columnUserId} ${DatabaseConst.textType}
         , ${DatabaseConst.columnMembershipPlan} ${DatabaseConst.textType}
-        , ${DatabaseConst.columnMembershipDate} ${DatabaseConst.textType}
+        , ${DatabaseConst.columnMembershipDate} ${DatabaseConst.textType} , 
+        ${DatabaseConst.columnMembershipExpireDate} ${DatabaseConst.textType}
         , ${DatabaseConst.columnIp} ${DatabaseConst.textType}
         , ${DatabaseConst.columnDeviceType} ${DatabaseConst.textType}
         , ${DatabaseConst.columnCreatedAt} ${DatabaseConst.textType}

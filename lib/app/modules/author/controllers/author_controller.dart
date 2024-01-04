@@ -176,6 +176,9 @@ class AuthorController extends AppController
     await Navigator.of(Get.context!).push(
       MaterialPageRoute(
         builder: (context) => BookDetailView(
+          showbookto: getAuthorDetailsModel.value!.authorBooks?[index].showbookto.toString(),
+
+
             tag: tag,
             bookId:
                 getAuthorDetailsModel.value!.authorBooks?[index].id.toString(),

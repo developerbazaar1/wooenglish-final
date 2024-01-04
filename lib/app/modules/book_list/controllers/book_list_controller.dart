@@ -191,6 +191,13 @@ class BookListController extends AppController {
             selectedFilterId.add("");
             selectedFilter.add("");
           }
+          if (getBooksModel.value?.is_audio != null &&
+              getBooksModel.value!.length!.isNotEmpty) {
+            listOfFilter.add(BooksFilter(
+                title: "Any", filterList: getBooksModel.value?.is_audio));
+            selectedFilterId.add("");
+            selectedFilter.add("");
+          }
     /*      if (getBooksModel.value?.language != null &&
               getBooksModel.value!.language!.isNotEmpty) {
             listOfFilter.add(BooksFilter(
@@ -219,6 +226,7 @@ class BookListController extends AppController {
     await Navigator.of(Get.context!).push(
       MaterialPageRoute(
         builder: (context) => BookDetailView(
+          showbookto: listOfBooks[index].showbookto.toString(),
             tag: tag,
             bookId: title == C.textYourFavorite
                 ? listOfBooks[index].bookId.toString()

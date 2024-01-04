@@ -20,6 +20,8 @@ abstract class Routes {
   static const SEARCH_SUGGESTION_LIST = _Paths.SEARCH_SUGGESTION_LIST;
   static const NOTIFICATIONS = _Paths.NOTIFICATIONS;
   static const BOOK_MARKS = _Paths.BOOK_MARKS;
+  static const MY_PLAN = _Paths.MY_PLAN;
+
   static const REVIEWS = _Paths.REVIEWS;
   static const E_BOOK = _Paths.E_BOOK;
   static const FINISHED_BOOKS = _Paths.FINISHED_BOOKS;
@@ -60,6 +62,7 @@ abstract class _Paths {
   static const SEARCH_SUGGESTION_LIST = '/search-suggestion-list';
   static const NOTIFICATIONS = '/notifications';
   static const BOOK_MARKS = '/book-marks';
+  static const MY_PLAN = '/my-plan';
   static const REVIEWS = '/reviews';
   static const E_BOOK = '/e-book';
   static const FINISHED_BOOKS = '/finished-books';

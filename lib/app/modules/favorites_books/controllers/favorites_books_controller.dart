@@ -120,6 +120,7 @@ class FavoritesBooksController extends AppController {
     Get.put(BookDetailController(), tag: tag);
     await Navigator.of(Get.context!).push(MaterialPageRoute(
       builder: (context) => BookDetailView(
+        showbookto:booksList[index].showbookto.toString(),
         tag: tag,
         bookId: booksList[index].bookId.toString(),
         isLiked: true,

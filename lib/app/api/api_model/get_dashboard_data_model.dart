@@ -11,6 +11,7 @@ class GetDashBoardBooksModel {
   List<Filters>? genre;
   List<Filters>? level;
   List<Filters>? language;
+  List<Filters>? is_audio;
   List<Filters>? length;
   List<Filters>? englishAccent;
   List<Filters>? category;
@@ -51,6 +52,7 @@ class GetDashBoardBooksModel {
       this.adminReply,
       this.bookmark,
       this.language,
+        this.is_audio,
       this.length,this.pages});
 
   GetDashBoardBooksModel.fromJson(Map<String, dynamic> json) {
@@ -128,6 +130,15 @@ class GetDashBoardBooksModel {
         language!.add(Filters.fromJson(v));
       });
     }
+
+    if (json['is_audio'] != null) {
+      is_audio = <Filters>[];
+      json['is_audio'].forEach((v) {
+        is_audio!.add(Filters.fromJson(v));
+      });
+    }
+
+
     if (json['length'] != null) {
       length = <Filters>[];
       json['length'].forEach((v) {
@@ -194,6 +205,8 @@ class GetDashBoardBooksModel {
       data['length'] = length!.map((v) => v.toJson()).toList();
     } if (language != null) {
       data['language'] = language!.map((v) => v.toJson()).toList();
+    }if (is_audio != null) {
+      data['is_audio'] = is_audio!.map((v) => v.toJson()).toList();
     }
     if (level != null) {
       data['level'] = level!.map((v) => v.toJson()).toList();

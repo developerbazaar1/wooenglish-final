@@ -9,6 +9,9 @@ import 'package:woo_english/app/modules/splash/controllers/splash_controller.dar
 import 'package:woo_english/app/routes/app_pages.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../data/local_database/database_const/database_const.dart';
+import '../../../data/local_database/database_helper/database_helper.dart';
+
 RxBool isGoldenSubscribed = false.obs;
 RxBool isSilverSubscribed = false.obs;
 RxBool isPlatinumSubscribed = false.obs;
@@ -28,14 +31,18 @@ class SubscriptionController extends AppController {
   RxMap paymentIntent = Map().obs;
   RxMap GetSubcriptionData = Map().obs;
   RxMap paymentStatusData = Map().obs;
+  RxString isnstansToekn = ''.obs;
 
   RxInt GetSubcriptionDataLength = 0.obs;
 
   @override
-  void onInit() {
+  void onInit() async{
     super.onInit();
     currentIndexOfPlan.value = -1;
-    GetSubcriptionAPI();
+    isnstansToekn.value =await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnToken);
+
+    await GetSubcriptionAPI();
+
 
     onReload();
   }
@@ -135,7 +142,7 @@ class SubscriptionController extends AppController {
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
-
+      print(await response.stream.bytesToString()+'this is payment status app');
       if (response.statusCode == 200) {
         print(await response.stream.bytesToString());
       } else {
@@ -244,11 +251,12 @@ class SubscriptionController extends AppController {
 
   // _____________________Subcription API calling___________
   Future<void> GetSubcriptionAPI() async {
+    print(1);
     isLoading.value = true;
     try {
       var headers = {
         'Accept': 'application/json',
-        'Authorization': 'Bearer Bearer $token'
+        'Authorization': 'Bearer Bearer ${isnstansToekn.value}'
       };
       var request = http.Request('GET',
           Uri.parse('https://hostingbazaar.in/WooEnglish/api/subscriptions'));
@@ -256,23 +264,34 @@ class SubscriptionController extends AppController {
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
+      print(2);
+
       var data = await response.stream.bytesToString();
       GetSubcriptionData.value = jsonDecode(data);
+      print(GetSubcriptionData.value );
 
       if (response.statusCode == 200) {
+
         GetSubcriptionDataLength.value =
             GetSubcriptionData['subscription'].length;
         print(GetSubcriptionDataLength.value);
 
         print(GetSubcriptionData.value['subscription'][0]['plan_name']);
         isLoading.value = false;
+        print(3);
+
       } else {
+
         print(response.reasonPhrase);
         isLoading.value = false;
+        print(4);
+
       }
     } catch (e) {
       print(e);
       isLoading.value = false;
+      print(5);
+
     }
   }
 
@@ -291,15 +310,16 @@ class SubscriptionController extends AppController {
     required int price,
     required int ID,
   }) {
+
     inAsyncCall.value = true;
 
     selectedRadioButton.value = index + 1;
     selectedRadioPrice.value = price;
     selectedRadioID.value = ID;
-    print('%%%%%%%%%%%%%${selectedRadioPrice.value.toString()}');
+    print('%%%%%%%%%%%%%${selectedRadioPrice.value.toString()}  ${currentIndexOfPlan.value}  $index');
 
     if (currentIndexOfPlan.value == index) {
-      currentIndexOfPlan.value = -1;
+     // currentIndexOfPlan.value = -1;
     } else {
       currentIndexOfPlan.value = index;
     }

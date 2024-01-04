@@ -203,6 +203,7 @@ class OnBoardingView extends GetView<OnBoardingController> {
   Widget textViewOnBoardingTitle({required int index}) => Text(
         controller.pages[index].pageName ?? "",
         style: CT.playfairHeadLineSmall(),
+    textAlign: TextAlign.center,
       );
 
   Widget textViewOnBoardingDescription({required int index}) => Text(

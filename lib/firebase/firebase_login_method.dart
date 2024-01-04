@@ -227,6 +227,7 @@ class FirebaseMethod {
         MaterialPageRoute(
           builder: (context) => BookDetailView(
             tag: tag,
+
             bookId: bookId,
             isLiked: false,
             categoryId: categoryId,

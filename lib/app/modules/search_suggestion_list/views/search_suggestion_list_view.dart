@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -151,8 +152,63 @@ class SearchSuggestionListView extends GetView<SearchSuggestionListController> {
               onTap: () => controller.clickOnParticularBook(index: index),
               child: Row(
                 children: [
-                  imageViewBookImage(
-                      image: controller.bookList[index].bookThumbnail),
+                  Stack(
+
+                    children: [
+
+
+                      Opacity(
+                        opacity: controller.bookList[index].showbookto == 'paid_users' &&
+                            controller.isUserSubscribed.value == 'inactive'?0.5:1,
+                        child: imageViewBookImage(
+                            image: controller.bookList[index].bookThumbnail),
+                      ),
+                      if (controller.bookList[index].isAudio
+                           ==
+                          "1")
+                        Opacity(
+                          opacity: controller.bookList[index].showbookto == 'paid_users' &&
+          controller.isUserSubscribed.value == 'inactive'?0.4:1,
+                          child: Align(
+                            alignment:
+                            Alignment.topRight,
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  left: MediaQuery.sizeOf(context).width*
+                                      .075,
+                                  top: MediaQuery.sizeOf(context).width*
+                                      .01),
+                              padding: EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white),
+                              child: Image.asset(
+                                C.imageSoundLogo,
+                                height: 10.px,
+                                width: 10.px,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if(controller.bookList[index].showbookto == 'paid_users' &&
+                          controller.isUserSubscribed.value == 'inactive')
+                        Align(
+
+                          alignment: Alignment.center,
+                            child:
+                            Container(
+                              padding:EdgeInsets.only(
+                                  top:  MediaQuery.sizeOf(context).width* .04,
+                              bottom:  MediaQuery.sizeOf(context).width* .045,
+                              right:  MediaQuery.sizeOf(context).width* .045,
+                              left:  MediaQuery.sizeOf(context).width* .04),
+
+                              child: Icon(Icons.lock_outline,size: 20,weight: 5,),
+                            ))
+                    ],
+                  ),
+
+
                   SizedBox(
                     width: 10.px,
                   ),

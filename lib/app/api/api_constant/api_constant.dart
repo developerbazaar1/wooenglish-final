@@ -95,6 +95,16 @@ class ApiKey {
    static var comment="comment";
 
 
+ /// READ BOOK
+  static var setFontStyle="setFontStyle";
+  static var setImage="setImage";
+  static var setTextAlign="setTextAlign";
+  static var isDarkmode="isDarkmode";
+  static var setFontFamily="setFontFamily";
+  static var formated_id="formated_id";
+  static var textColor="textColor";
+  static var backGroundColor="backGroundColor";
+  static var selectFontSize="selectFontSize";
 
 
 }
@@ -199,6 +209,8 @@ class UriConstant {
 
   //Read book
   static const endPointStoreFormatedData = "${baseUrl}api/store-formated-data";
+  static const endPointUpdateFormatedData = "${baseUrl}api/update-formated-data";
+  static const endPointGetFormatedData = "${baseUrl}api/fetch-formated-data";
 
 
 

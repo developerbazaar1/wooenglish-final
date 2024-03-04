@@ -166,6 +166,7 @@ class BookListView extends GetView<BookListController> {
                                     BorderRadius.circular(10.px)),
                             child: textViewFilterTitle(index: index),
                           ),
+                          
                           buttonViewDropDown(index: index),
 
 
@@ -221,17 +222,25 @@ class BookListView extends GetView<BookListController> {
         tooltip: '',
         position: PopupMenuPosition.under,
         onSelected: (Filters value) async {
+          print("value is ${value.id} and ${value.name}");
+
           controller.inAsyncCall.value = true;
           if (controller.selectedFilterId[index]
               .contains(value.id.toString() ?? "")) {
+
+            
             controller.selectedFilterId[index] = "";
             controller.selectedFilter[index] = "";
+            await controller.getBookListApiCalling(
+                isUserFavoriteData: controller.title == C.textYourFavorite);
           } else {
             controller.selectedFilterId[index] = value.id.toString() ?? "";
             controller.selectedFilter[index] = value.name ?? "";
+            await controller.getBookListApiCalling(
+                isUserFavoriteData: controller.title == C.textYourFavorite);
           }
 
-          controller.offset = 10;
+         controller.offset = 0;
           await controller.getBookListApiCalling(
               isUserFavoriteData: controller.title == C.textYourFavorite);
           controller.inAsyncCall.value = false;
@@ -337,7 +346,7 @@ class BookListView extends GetView<BookListController> {
 
   Widget gridView() {
     if (controller.title == C.textYourFavorite) {
-      return SingleChildScrollView(
+      return Obx(() => SingleChildScrollView(
         child: Wrap(
           children: List.generate(controller.listOfBooks.length, (index) {
             final cellWidth = MediaQuery.of(Get.context!).size.width /
@@ -358,7 +367,7 @@ class BookListView extends GetView<BookListController> {
                     decoration: BoxDecoration(
                         color: Col.inverseSecondary,
                         borderRadius:
-                            BorderRadius.circular(C.bookCardInGridRadius)),
+                        BorderRadius.circular(C.bookCardInGridRadius)),
                     child: Column(
                       children: [
                         Container(
@@ -367,7 +376,7 @@ class BookListView extends GetView<BookListController> {
                           padding: EdgeInsets.zero,
                           decoration: BoxDecoration(
                             borderRadius:
-                                BorderRadius.circular(C.bookImageInGridRadius),
+                            BorderRadius.circular(C.bookImageInGridRadius),
                           ),
                           child: Stack(
                             children: [
@@ -387,7 +396,7 @@ class BookListView extends GetView<BookListController> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     if (controller.listOfBooks[index]
-                                            .bookdetails?.isAudio ==
+                                        .bookdetails?.isAudio ==
                                         "1")
                                       SizedBox(
                                         height: 25.px,
@@ -395,21 +404,21 @@ class BookListView extends GetView<BookListController> {
                                         child: buttonViewSound(index: index),
                                       ),
                                     if (controller.listOfBooks[index]
-                                            .bookdetails?.isAudio ==
+                                        .bookdetails?.isAudio ==
                                         "1")
                                       SizedBox(
                                         width: 5.px,
                                       ),
                                     if (controller.getBooksModel.value
-                                                ?.favorite !=
-                                            null &&
+                                        ?.favorite !=
+                                        null &&
                                         controller
                                             .getBooksModel.value!.favorite!
                                             .contains(controller
-                                                .listOfBooks[index]
-                                                .bookdetails
-                                                ?.id
-                                                .toString()))
+                                            .listOfBooks[index]
+                                            .bookdetails
+                                            ?.id
+                                            .toString()))
                                       SizedBox(
                                         height: 25.px,
                                         width: 25.px,
@@ -428,23 +437,23 @@ class BookListView extends GetView<BookListController> {
                                 height: 5.px,
                               ),
                               if (controller
-                                      .listOfBooks[index].bookdetails?.title !=
+                                  .listOfBooks[index].bookdetails?.title !=
                                   null)
                                 Align(
                                     alignment: Alignment.centerLeft,
                                     child: textViewBookName(
                                         value: controller.listOfBooks[index]
-                                                .bookdetails?.title ??
+                                            .bookdetails?.title ??
                                             "")),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   if (controller.listOfBooks[index].bookdetails
-                                          ?.rating !=
+                                      ?.rating !=
                                       null)
                                     Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      CrossAxisAlignment.center,
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
@@ -453,43 +462,43 @@ class BookListView extends GetView<BookListController> {
                                         ),
                                         textViewRatting(
                                             value: controller.listOfBooks[index]
-                                                    .bookdetails?.rating ??
+                                                .bookdetails?.rating ??
                                                 "")
                                       ],
                                     ),
                                   if (controller.listOfBooks[index].bookdetails
-                                          ?.rating !=
+                                      ?.rating !=
                                       null)
                                     SizedBox(
                                       width: 10.px,
                                     ),
                                   if (controller.listOfBooks[index].bookdetails
-                                          ?.views !=
+                                      ?.views !=
                                       null)
                                     Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      CrossAxisAlignment.center,
                                       children: [
                                         Padding(
                                             padding:
-                                                EdgeInsets.only(right: 4.px),
+                                            EdgeInsets.only(right: 4.px),
                                             child: imageViewEye()),
                                         textViewViewers(
                                             value: controller.listOfBooks[index]
-                                                    .bookdetails?.views ??
+                                                .bookdetails?.views ??
                                                 ''),
                                       ],
                                     )
                                 ],
                               ),
                               if (controller.listOfBooks[index].bookdetails
-                                      ?.authorName !=
+                                  ?.authorName !=
                                   null)
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: textViewAuthorName(
                                       value: controller.listOfBooks[index]
-                                              .bookdetails?.authorName ??
+                                          .bookdetails?.authorName ??
                                           ''),
                                 ),
                             ],
@@ -501,9 +510,9 @@ class BookListView extends GetView<BookListController> {
             );
           }),
         ),
-      );
+      ));
     } else {
-      return SingleChildScrollView(
+      return Obx(() => SingleChildScrollView(
         child: Wrap(
           children: List.generate(controller.listOfBooks.length, (index) {
             final cellWidth = MediaQuery.of(Get.context!).size.width /
@@ -524,7 +533,7 @@ class BookListView extends GetView<BookListController> {
                     decoration: BoxDecoration(
                         color: Col.inverseSecondary,
                         borderRadius:
-                            BorderRadius.circular(C.bookCardInGridRadius)),
+                        BorderRadius.circular(C.bookCardInGridRadius)),
                     child: Column(
                       children: [
                         Container(
@@ -533,10 +542,11 @@ class BookListView extends GetView<BookListController> {
                           padding: EdgeInsets.zero,
                           decoration: BoxDecoration(
                             borderRadius:
-                                BorderRadius.circular(C.bookImageInGridRadius),
+                            BorderRadius.circular(C.bookImageInGridRadius),
                           ),
                           child: Stack(
                             children: [
+
                               SizedBox(
                                 height: C.bookImageInGridHeight,
                                 width: C.bookImageInGridWidth,
@@ -565,13 +575,13 @@ class BookListView extends GetView<BookListController> {
                                         width: 5.px,
                                       ),
                                     if (controller.getBooksModel.value
-                                                ?.favorite !=
-                                            null &&
+                                        ?.favorite !=
+                                        null &&
                                         controller
                                             .getBooksModel.value!.favorite!
                                             .contains(controller
-                                                .listOfBooks[index].id
-                                                .toString()))
+                                            .listOfBooks[index].id
+                                            .toString()))
                                       SizedBox(
                                         height: 25.px,
                                         width: 25.px,
@@ -594,7 +604,7 @@ class BookListView extends GetView<BookListController> {
                                     alignment: Alignment.centerLeft,
                                     child: textViewBookName(
                                         value: controller
-                                                .listOfBooks[index].title ??
+                                            .listOfBooks[index].title ??
                                             "")),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -603,7 +613,7 @@ class BookListView extends GetView<BookListController> {
                                       null)
                                     Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      CrossAxisAlignment.center,
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
@@ -612,7 +622,7 @@ class BookListView extends GetView<BookListController> {
                                         ),
                                         textViewRatting(
                                             value: controller.listOfBooks[index]
-                                                    .rating ??
+                                                .rating ??
                                                 "")
                                       ],
                                     ),
@@ -625,15 +635,15 @@ class BookListView extends GetView<BookListController> {
                                       null)
                                     Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      CrossAxisAlignment.center,
                                       children: [
                                         Padding(
                                             padding:
-                                                EdgeInsets.only(right: 4.px),
+                                            EdgeInsets.only(right: 4.px),
                                             child: imageViewEye()),
                                         textViewViewers(
                                             value: controller
-                                                    .listOfBooks[index].views ??
+                                                .listOfBooks[index].views ??
                                                 ''),
                                       ],
                                     )
@@ -645,7 +655,7 @@ class BookListView extends GetView<BookListController> {
                                   alignment: Alignment.centerLeft,
                                   child: textViewAuthorName(
                                       value: controller
-                                              .listOfBooks[index].authorName ??
+                                          .listOfBooks[index].authorName ??
                                           ''),
                                 ),
                             ],
@@ -657,7 +667,7 @@ class BookListView extends GetView<BookListController> {
             );
           }),
         ),
-      );
+      ));
     }
   }
 

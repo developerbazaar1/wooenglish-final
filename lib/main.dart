@@ -20,12 +20,12 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'app/routes/app_pages.dart';
 import 'app/theme/constants/constants.dart';
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
-bool initializeNotification=false;
+bool initializeNotification = false;
 
 Future<void> main() async {
-
   Stripe.publishableKey = C.stripePublicKey;
 
   print(C.stripePublicKey);
@@ -33,16 +33,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
 
-
-
-
   await Firebase.initializeApp(
 
 
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseApi().initNotifications();
-
 
   Future<Directory?>? _tempDirectory;
   Future<Directory?>? _appSupportDirectory;
@@ -58,21 +54,20 @@ Future<void> main() async {
   AppController().getNetworkConnectionType();
   streamSubscription = AppController().checkNetworkConnection();
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) async {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) async {
     await DatabaseHelper.databaseHelperInstance.openDB();
     clearAppDataOnInstall();
 
-       runApp(GetMaterialApp(
-
-
+    runApp(GetMaterialApp(
       title: "Application",
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       theme: AppThemeData.themeDataLight(),
     ));
   });
-
 }
+
 Future<void> clearAppDataOnInstall() async {
   Future<Directory?>? _tempDirectory;
   Future<Directory?>? _appSupportDirectory;
@@ -97,7 +92,6 @@ Future<void> clearAppDataOnInstall() async {
     _externalCacheDirectories = getExternalCacheDirectories();
     _downloadsDirectory = getDownloadsDirectory();
 
-
     // Check if the folder exists
     if (await Directory(folderPath).exists()) {
       // Delete the folder and its content
@@ -105,7 +99,6 @@ Future<void> clearAppDataOnInstall() async {
     }
 
     // Add additional code to clear other data if necessary
-
   } catch (e) {
     print('Error clearing app data: $e');
   }

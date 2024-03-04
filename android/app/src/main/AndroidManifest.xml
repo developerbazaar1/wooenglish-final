@@ -18,7 +18,7 @@
     </queries>
 
     <application
-        android:name="${applicationName}"
+       android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:label="woo_english"
         android:usesCleartextTraffic="true"
@@ -113,7 +113,7 @@
 
 
 
-</application>
+    </application>
 
 
 </manifest>

@@ -14,6 +14,8 @@ import 'package:woo_english/app/modules/book_detail/views/book_detail_view.dart'
 import 'package:woo_english/app/modules/search_suggestion_list/views/filter_bottom_sheet.dart';
 import 'package:woo_english/app/theme/colors/colors.dart';
 import '../../../api/api_model/get_dashboard_data_model.dart';
+import '../../../data/local_database/database_const/database_const.dart';
+import '../../../data/local_database/database_helper/database_helper.dart';
 
 class SearchSuggestionListController extends AppController {
   final count = 0.obs;
@@ -27,6 +29,8 @@ class SearchSuggestionListController extends AppController {
   Map<String, dynamic> queryParametersForSearchBook = {};
   final getDataNewReleaseBook = Rxn<GetDashBoardBooksModel>();
   RxList<Books> bookList = <Books>[].obs;
+
+  RxString isUserSubscribed = ''.obs;
 
   final getDataForCategory = Rxn<GetDashBoardBooksModel>();
   final getDataForGenre = Rxn<GetDashBoardBooksModel>();
@@ -68,6 +72,8 @@ class SearchSuggestionListController extends AppController {
   Future<void> onInit() async {
     super.onInit();
     await getSearchBookDataApiCalling("0");
+    isUserSubscribed.value = await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnStatus);
+
 
     inAsyncCall.value = true;
     try {
@@ -294,10 +300,11 @@ void clickOnShowAll() async{
     inAsyncCall.value = true;
     String tag = CM.getRandomNumber();
     Get.put(BookDetailController(), tag: tag);
+
     await Navigator.of(Get.context!).push(
       MaterialPageRoute(
         builder: (context) => BookDetailView(
-          isAudio: bookList[index].bookdetails?.isAudio,
+          isAudio: bookList[index].isAudio,
             showbookto: bookList[index].showbookto.toString(),
             tag: tag,
             bookId: bookList[index].id.toString(),
@@ -438,7 +445,7 @@ void clickOnShowAll() async{
       await Navigator.of(Get.context!).push(
         MaterialPageRoute(
           builder: (context) => BookDetailView(
-            isAudio: bookList[index].bookdetails?.isAudio,
+            isAudio: bookList[index].isAudio,
               tag: tag,
               showbookto: bookList[0].showbookto.toString(),
               bookId: bookList[0].id.toString(),

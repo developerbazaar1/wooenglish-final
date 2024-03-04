@@ -24,7 +24,7 @@ class AllReviewsView extends GetView<AllReviewsController> {
   late AllReviewsController controller;
 
   @override
-  AllReviewsView({super.key, Key? k, this.tag, this.bookId,this.isAudio}) {
+  AllReviewsView({super.key, Key? k, this.tag, this.bookId, this.isAudio}) {
     controller = Get.find(tag: tag);
 
     if (controller.intValue == 1) {
@@ -104,92 +104,168 @@ class AllReviewsView extends GetView<AllReviewsController> {
           ),
           child: Column(
             children: [
-              Container(
-                height: 60.px,
-                decoration: BoxDecoration(
-                  color: Col.onSurface,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4.px),
-                    topRight: Radius.circular(4.px),
-                  ),
-                ),
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(left: 15.px, top: 5.px, bottom: 5.px),
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(30.px),
-                        child: imageViewReviewUserForList(
-                            image: controller
-                                .reviewsList[index].userdetails?.userImage),
+              Column(
+                children: [
+                  Container(
+                    height: 60.px,
+                    decoration: BoxDecoration(
+                      color: Col.onSurface,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4.px),
+                        topRight: Radius.circular(4.px),
                       ),
-
-                      SizedBox(
-                        width: 5.px,
-                      ),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (controller
-                                    .reviewsList[index].userdetails?.name !=
-                                null)
-                              Row(
-                                children: [
-                                  textViewReviewUserForList(
-                                      value: controller.reviewsList[index]
-                                              .userdetails?.name ??
-                                          ''),
-                                  SizedBox(
-                                    width: 5,
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.only(left: 15.px, top: 5.px, bottom: 5.px),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(30.px),
+                            child: imageViewReviewUserForList(
+                                image: controller
+                                    .reviewsList[index].userdetails?.userImage),
+                          ),
+                          SizedBox(
+                            width: 5.px,
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (controller
+                                        .reviewsList[index].userdetails?.name !=
+                                    null)
+                                  Row(
+                                    children: [
+                                      textViewReviewUserForList(
+                                          value: controller.reviewsList[index]
+                                                  .userdetails?.name ??
+                                              ''),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      if (controller.reviewsList[index]
+                                              .userdetails?.status ==
+                                          "active")
+                                        Container(
+                                            margin: EdgeInsets.only(top: 5),
+                                            child: Image(
+                                              image: AssetImage(
+                                                  C.imageUserVerified),
+                                              width: 15,
+                                              height: 15,
+                                            ))
+                                    ],
                                   ),
-                                  if (controller.reviewsList[index].userdetails
-                                      ?.status ==
-                                      "active")
+                                if (controller.reviewsList[index].rating !=
+                                    null)
+                                  imageViewRatting(
+                                      count: double.parse(double.parse(
+                                              controller.reviewsList[index]
+                                                      .rating ??
+                                                  "0.0")
+                                          .toStringAsFixed(2))),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (controller.reviewsList[index].review != null)
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Col.inverseSecondary,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(4.px),
+                          bottomRight: Radius.circular(4.px),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: 15.px, top: 8.px, bottom: 8.px),
+                        child: textViewReadMore(
+                            value: controller.reviewsList[index].review ?? ''),
+                      ),
+                    ),
+                ],
+              ),
+              Divider(),
+              if (controller.reviewsList[index].reply != null)
+                Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Col.inverseSecondary,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(4.px),
+                        bottomRight: Radius.circular(4.px),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Col.onSurface,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(4.px),
+                              topRight: Radius.circular(4.px),
+                              bottomLeft: Radius.circular(0.px),
+                              bottomRight: Radius.circular(0.px),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: 15.px, top: 5.px, bottom: 5.px),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(30.px),
+                                  child: Image.asset(
+                                    C.imageWooEnglishAppLogo,
+                                    height: 50.px,
+                                    width: 50.px,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    textViewReviewUserForList(
+                                        value: C.textWooEnglishOfficial),
+                                    SizedBox(
+                                      width: 5.px,
+                                    ),
                                     Container(
                                         margin: EdgeInsets.only(top: 5),
                                         child: Image(
                                           image:
-                                          AssetImage(C.imageUserVerified),
+                                              AssetImage(C.imageUserVerified),
                                           width: 15,
                                           height: 15,
                                         ))
-                                ],
-                              ),
-                            if (controller.reviewsList[index].rating != null)
-                              imageViewRatting(
-                                  count: double.parse(double.parse(controller
-                                              .reviewsList[index].rating ??
-                                          "0.0")
-                                      .toStringAsFixed(2))),
-                          ],
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-
-              if (controller.reviewsList[index].review != null)
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Col.inverseSecondary,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(4.px),
-                      bottomRight: Radius.circular(4.px),
-                    ),
-                  ),
-                  child: Padding(
-                    padding:
-                        EdgeInsets.only(left: 15.px, top: 8.px, bottom: 8.px),
-                    child: textViewReadMore(
-                        value: controller.reviewsList[index].review ?? ''),
-                  ),
-                ),
-
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: 15.px, top: 8.px, bottom: 8.px),
+                          child: textViewReadMore(
+                              value: controller.reviewsList[index].reply ?? ''),
+                        ),
+                      ],
+                    )),
             ],
           ),
         ),

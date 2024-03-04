@@ -15,6 +15,7 @@ import 'package:woo_english/app/theme/colors/colors.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:woo_english/load_more/load_more.dart';
 import 'package:woo_english/model_progress_bar/model_progress_bar.dart';
+
 import '../../../../custom_image_picker/custom_image_view.dart';
 import '../../Showpopup/showpopup.dart';
 import '../../book_detail/views/book_detail_view.dart';
@@ -116,7 +117,7 @@ class ReadBookView extends GetView<ReadBookController> {
                                                     image:
                                                     AssetImage(
                                                       controller
-                                                          .bankChoose
+                                                          .imageChoose
                                                           .value
                                                           .bank_logo
                                                           .value,
@@ -245,7 +246,7 @@ class ReadBookView extends GetView<ReadBookController> {
                                                                   image:
                                                                       AssetImage(
                                                                     controller
-                                                                        .bankChoose
+                                                                        .imageChoose
                                                                         .value
                                                                         .bank_logo
                                                                         .value,
@@ -266,11 +267,9 @@ class ReadBookView extends GetView<ReadBookController> {
                                                 Column(
                                                   children: [
                                                     listViewQuiz(),
-                                                    if (isUserSubscribed ==
-                                                        true)
+                                                    if (controller.userStatus.value == "active")
                                                       buttonViewSubmit(),
-                                                    if (isUserSubscribed ==
-                                                        null)
+                                                    if (controller.userStatus.value == "inactive")
                                                       Padding(
                                                         padding: EdgeInsets.only(
                                                             top: 15.px,
@@ -311,8 +310,7 @@ class ReadBookView extends GetView<ReadBookController> {
                                                           ),
                                                         ),
                                                       ),
-                                                    if (isUserSubscribed ==
-                                                        null)
+                                                    if (controller.userStatus.value == "inactive")
                                                       Container(
                                                         margin: EdgeInsets.only(
                                                             left: 15,
@@ -347,8 +345,7 @@ class ReadBookView extends GetView<ReadBookController> {
                                                           ],
                                                         ),
                                                       ),
-                                                    if (isUserSubscribed ==
-                                                        true)
+                                                    if (controller.userStatus.value == "active")
                                                       Container(
                                                         margin: EdgeInsets.only(
                                                             left: 15,
@@ -1125,7 +1122,7 @@ class ReadBookView extends GetView<ReadBookController> {
                   fontFamily: "verdana_regular",
                 ),
               ),
-              items: controller.bankDataList
+              items: controller.bgImageList
                   .map<DropdownMenuItem<BankListDataModel>>(
                       (BankListDataModel value) {
                     return DropdownMenuItem(
@@ -1160,7 +1157,7 @@ class ReadBookView extends GetView<ReadBookController> {
                 controller.onDropDownItemSelected(newSelectedBank!);
                 Navigator.pop(context);
               },
-              value: controller.bankChoose.value,
+              value: controller.imageChoose.value,
             )
           ]),
         ));
@@ -1204,7 +1201,7 @@ class ReadBookView extends GetView<ReadBookController> {
 
   Widget textFiledViewReply({required int index,required BuildContext context}) {
 
-    return isUserSubscribed==true
+    return controller.userStatus.value == "active"
         ?CW.commonTextFieldForLoginSignUP(
       borderRadius: 20.px,
       hintText: C.textReply,
@@ -1918,6 +1915,8 @@ class ReadBookView extends GetView<ReadBookController> {
                 ],
 
                 onColorChanged: (Color color) {
+                  print('this is my color ${color.value}');
+
                   //on the color picked
                   controller.changeBackgroundColor(color);
                 },
@@ -2099,6 +2098,7 @@ class ReadBookView extends GetView<ReadBookController> {
               value: controller.setTextAlign.value,
               onChanged: (newValue) {
                 controller.changeTextAlignment(newValue);
+
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
@@ -2107,28 +2107,7 @@ class ReadBookView extends GetView<ReadBookController> {
           ])),
     ));
 
-    //   AlertDialog(
-    //
-    //   title: const Text('Pick a color!'),
-    //   content: SingleChildScrollView(
-    //     child: MaterialPicker(
-    //       // pickerColor: mycolor, //default color
-    //       onColorChanged: (Color color) {
-    //         //on the color picked
-    //
-    //       }, pickerColor: controller.textColor.value,
-    //     ),
-    //   ),
-    //   actions: <Widget>[
-    //     ElevatedButton(
-    //       child: const Text('DONE',style: TextStyle(color: Colors.black),),
-    //       onPressed: () {
-    //         Navigator.of(context)
-    //             .pop(); //dismiss the color picker
-    //       },
-    //     ),
-    //   ],
-    // );
+
   }
 }
 

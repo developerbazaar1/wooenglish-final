@@ -11,7 +11,7 @@ import 'package:woo_english/app/routes/app_pages.dart';
 import 'package:woo_english/firebase/firebase_login_method.dart';
 String token = "";
 String isUserLogin = "";
-var isUserSubscribed ;
+//var isUserSubscribed ;
 var popupvalue;
 var isAudioPlaying="0";
 class SplashController extends GetxController {

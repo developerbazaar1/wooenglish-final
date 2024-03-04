@@ -153,10 +153,11 @@ class SearchScreenController extends AppController {
     inAsyncCall.value = false;
     String tag = CM.getRandomNumber();
     Get.put(BookDetailController(), tag: tag);
+    print("this is book data ${bookList[0]}");
     await Navigator.of(Get.context!).push(
       MaterialPageRoute(
         builder: (context) => BookDetailView(
-          isAudio: bookList[index].bookdetails?.isAudio,
+          isAudio:bookList[index].isAudio,
           tag: tag,
           showbookto: bookList[index].showbookto.toString(),
           bookId: bookList[index].id.toString(),

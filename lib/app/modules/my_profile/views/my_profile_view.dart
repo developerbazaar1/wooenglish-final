@@ -48,7 +48,7 @@ class MyProfileView extends GetView<MyProfileController> {
                             padding: EdgeInsets.symmetric(horizontal: C.margin),
                             child: Row(
                               children: [
-                                if(isUserSubscribed==true)
+                                if(controller.isMamber.value==true)
                             Center(
                           child: Stack(
                           alignment: Alignment.center,
@@ -171,7 +171,7 @@ class MyProfileView extends GetView<MyProfileController> {
                             thickness: 2.px,
                           ),
 
-                          if(isUserSubscribed==null)
+                          if(controller.isMamber.value==false)
                           Padding(
                             padding: EdgeInsets.only(
                                 top: 25.px,
@@ -317,7 +317,7 @@ class MyProfileView extends GetView<MyProfileController> {
   Widget listView() => ListView.builder(
         itemBuilder: (context, index) {
 
-          return isUserSubscribed == null && index ==0 ||isUserSubscribed == null &&  index ==6 ?SizedBox():
+          return controller.isMamber.value == false && index ==0 ||controller.isMamber.value == false &&  index ==6 ?SizedBox():
           Container(
             height: 60.px,
             margin: EdgeInsets.symmetric(vertical: 10.px),

@@ -54,7 +54,7 @@ class HomeView extends GetView<HomeController> {
                                   controller: ScrollController(),
                                   padding: EdgeInsets.only(top: 20.px),
                                   children: [
-                                    if (isUserSubscribed == null)
+                                    if (controller.isUserSubscribed.value == 'inactive')
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: C.margin - 9.px,
@@ -193,7 +193,7 @@ class HomeView extends GetView<HomeController> {
                                           ),
                                         ),
                                       ),
-                                    if (isUserSubscribed == null)
+                                    if (controller.isUserSubscribed.value == 'inactive')
                                       Obx(() {
                                         return controller.isload.value == true
                                             ? bannerAdWidget()
@@ -789,7 +789,7 @@ class HomeView extends GetView<HomeController> {
                     alignment: Alignment.center,
                     children: [
                       buttonViewUserProfile(),
-                      if (isUserSubscribed == true)
+                      if (controller.isUserSubscribed.value == 'active')
                         Align(
                           alignment: Alignment.topRight,
                           child: Container(
@@ -1070,7 +1070,7 @@ class HomeView extends GetView<HomeController> {
                               children: [
                                 Opacity(
                                   opacity:
-                                  id==C.textMemberOnlyBooks&&isUserSubscribed==null?0.3:
+                                  id==C.textMemberOnlyBooks&&controller.isUserSubscribed.value == 'inactive'?0.3:
                                       1 ,
                                   child: SizedBox(
                                     height: C.bookHorizontalListHeight,
@@ -1112,7 +1112,7 @@ class HomeView extends GetView<HomeController> {
                                     ],
                                   ),
                                 ),
-                                if(id==C.textMemberOnlyBooks && isUserSubscribed != true)
+                                if(id==C.textMemberOnlyBooks && controller.isUserSubscribed.value !='active')
                                 Center(child: Icon(Icons.lock_outline,size: 30,),)
                               ],
                             )),

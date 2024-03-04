@@ -499,7 +499,7 @@ class QuizDetailView extends GetView<QuizDetailController> {
               height: 62.px,
               margin: EdgeInsets.only(right: 0,left: 0),
               decoration: BoxDecoration(
-                color: Col.onSurface,
+                color: Col.cardBackgroundColor,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(4.px),
                   topLeft: Radius.circular(4.px),
@@ -540,15 +540,37 @@ class QuizDetailView extends GetView<QuizDetailController> {
                 ),
               ),
             ),
+          if (controller.quiz?.userdetails?.name != null)
+            Container(
+
+                padding: EdgeInsets.only(
+                    left: 15.px,
+                    top: 8.px,
+                    bottom: 8.px),
+              width: MediaQuery.sizeOf(context).width,
+              decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(
+                  color: Col.darkGreen,
+                  width: 4
+                ), right: BorderSide(
+                  color: Col.darkGreen,
+                  width: 4
+                ),
+              ),
+                color: Colors.grey.shade200.withOpacity(0.5),
+              ),
+                child: textViewQuizUserName()),
+
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
               color: Col.inverseSecondary,
               borderRadius: BorderRadius.only(
                 bottomLeft:
-                Radius.circular(4.px),
+                Radius.circular(6.px),
                 bottomRight:
-                Radius.circular(4.px),
+                Radius.circular(6.px),
               ),
             ),
             child: Padding(

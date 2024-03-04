@@ -29,10 +29,10 @@ import 'package:woo_english/app/theme/colors/colors.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:woo_english/firebase/firebase_login_method.dart';
 import 'package:woo_english/main.dart';
+import '../../../api/api_model/GetFormattedData.dart';
 import '../../feedback/views/feedback_view.dart';
 import '../../splash/controllers/splash_controller.dart';
 import '../views/read_book_view.dart';
-
 
 class ReadBookController extends AppController with WidgetsBindingObserver {
   int intValue = 1;
@@ -55,10 +55,11 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   bool bookmark = false;
   final haveAudio = false.obs;
   String audioUrl = "";
+  var getFormatttedData = GetFormatedData();
 
   var selectedValue = 'Option 1'; // Default selected value
 
-  List<BankListDataModel> bankDataList = [
+  List<BankListDataModel> bgImageList = [
     BankListDataModel("Bg 1".obs, C.imageBG1.obs),
     BankListDataModel("Bg 2".obs, C.imageBG2.obs),
     BankListDataModel("Bg 3".obs, C.imageBG3.obs),
@@ -71,15 +72,9 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     BankListDataModel("Bg 10".obs, C.imageBG10.obs),
   ];
 
-  void onDropDownItemSelected(BankListDataModel newSelectedBank) {
-    isBGColorSelected.value = false;
-    backGroundColor.value = Colors.transparent;
-    bankChoose.value = newSelectedBank;
 
-    print('djkfhddjkfhk' + bankChoose.value.bank_logo.value);
-  }
 
-  Rx<BankListDataModel> bankChoose = BankListDataModel(''.obs, ''.obs).obs;
+  Rx<BankListDataModel> imageChoose = BankListDataModel(''.obs, ''.obs).obs;
   List<TextEditingController> controllerList = [];
   RxList<DropdownMenuItem<FontStyle>> listFontStyle = [
     DropdownMenuItem(
@@ -204,6 +199,10 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   Map<String, dynamic> bodyParamsForSubmitQuestionAnswerApi = {};
 
   Map<String, dynamic> bodyParamsForAddFinishedBookApi = {};
+  Map<String, dynamic> bodyParamsForStoreFormattedApi = {};
+  Map<String, dynamic> responseForStoreFormattedApi = {};
+  Map<String, dynamic> bodyParamsForUpdateFormattedApi = {};
+  Map<String, dynamic> responseForUpdateFormattedApi = {};
 
   ScrollController scrollController = ScrollController();
   final responseCodeQuizReply = 0.obs;
@@ -213,37 +212,75 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   String quizReplyLimit = "10";
   int quizReplyOffset = 0;
   bool isLiked = false;
+  RxString formatedDataId = ''.obs;
 
-  changeTextColor(color) {
+  changeTextColor(color)async {
     textColor.value = color;
+    if(formatedDataId.value==''){
+      await storeFormatedApiCalling();
+    }else{
+      await updateFormatedApiCalling();
+    }
     print("@@@@@@@@@@@T$textColor");
   }
 
-  changeTextFontStyle(value) {
+  changeTextFontStyle(value)async {
     print(value);
 
     setFontStyle.value = value;
+    if(formatedDataId.value==''){
+      await storeFormatedApiCalling();
+    }else{
+      await updateFormatedApiCalling();
+    }
 
     print(setFontStyle.value);
   }
 
-
 // Chnages in Text Alignment
-  changeTextAlignment(value) {
+  changeTextAlignment(value)async {
     print(value);
 
     setTextAlign.value = value;
+    if(formatedDataId.value==''){
+      await storeFormatedApiCalling();
+    }else{
+      await updateFormatedApiCalling();
+    }
+  }
+
+  void onDropDownItemSelected(BankListDataModel newSelectedBank) async{
+    isBGColorSelected.value = false;
+    backGroundColor.value = Colors.transparent;
+    imageChoose.value = newSelectedBank;
+
+    if(formatedDataId.value==''){
+      await storeFormatedApiCalling();
+    }else{
+      await updateFormatedApiCalling();
+    }
   }
 
   // Chnages in Font Family
-  changeFontFamily(value) {
-    print(value);
+  changeFontFamily(value) async{
+
 
     setFontFamily.value = value;
+    if(formatedDataId.value==''){
+      await storeFormatedApiCalling();
+    }else{
+      await updateFormatedApiCalling();
+    }
+
   }
 
-  changeFontSize(value) {
+  changeFontSize(value) async{
     selectFontSize.value = value;
+    if(formatedDataId.value==''){
+      await storeFormatedApiCalling();
+    }else{
+      await updateFormatedApiCalling();
+    }
   }
 
   void clickOnGetPremium() {
@@ -254,10 +291,19 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     inAsyncCall.value = false;
   }
 
-  changeBackgroundColor(color) {
+  changeBackgroundColor(color) async{
     isBGColorSelected.value = true;
     backGroundColor.value = color;
-    print(backGroundColor.value);
+
+
+    imageChoose.value.bank_logo.value = '';
+    print(' background color is ${imageChoose.value.bank_logo.value}');
+    print(' background color is ${backGroundColor.value}');
+    if(formatedDataId.value==''){
+      await storeFormatedApiCalling();
+    }else{
+      await updateFormatedApiCalling();
+    }
   }
 
   final responseCodeDictionary = 0.obs;
@@ -272,15 +318,15 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   @override
   Future<void> onInit() async {
     super.onInit();
-    print(' ++++++++++++++++++++++${isDarkMode.value}');
-    bankChoose.value = bankDataList[0];
+
+    imageChoose.value = bgImageList[0];
     await getPopupKey();
     await getPlayerKey();
-    userStatus.value  = await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnStatus);
+    await getFormattedDataApiCalling();
+
+    userStatus.value = await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnStatus);
 
 
-
-    print('---------------${await player.playing}');
     WidgetsBinding.instance?.addObserver(this);
 
 /*
@@ -304,12 +350,11 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      if (isUserSubscribed == null)       await player.pause();
-
+      if (userStatus.value == "inactive") await player.pause();
     }
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
-      if (isUserSubscribed == null) player.stop();
+      if (userStatus.value == "inactive") player.stop();
     }
   }
 
@@ -332,7 +377,6 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     });
   }*/
 
-
   Future<bool> onLoadMore() async {
     if (selectedChapter.value == "Quiz") {
       quizReplyOffset = quizReplyOffset + 10;
@@ -349,7 +393,7 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   }
 
   Future<void> myOnInit() async {
-    bankChoose.value = bankDataList[0];
+    imageChoose.value = bgImageList[0];
     isDarkMode.value = await DatabaseHelper.databaseHelperInstance
             .getParticularData(key: DatabaseConst.columnMode) ==
         "1";
@@ -783,8 +827,7 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     print('YOUR Audio KEY - $Key');
   }
 
-  Future<void> setPlayerpKey( key) async {
-
+  Future<void> setPlayerpKey(key) async {
     final prefs = await SharedPreferences.getInstance();
 
     prefs.setString('player', key);
@@ -837,6 +880,11 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
             key: DatabaseConst.columnMode, val: modeValue.value ? "0" : "1");
         isDarkMode.value = modeValue.value ? false : true;
         modeValue.value = value;
+        if(formatedDataId.value==''){
+          await storeFormatedApiCalling();
+        }else{
+          await updateFormatedApiCalling();
+        }
       }
     } catch (e) {
       CM.error();
@@ -890,7 +938,6 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     print("${audioPlayed}");
     print("${isPlaying.value}");
 
-
     if ((!isPlaying.value) && (!audioPlayed.value)) {
       await player.setAudioSource(AudioSource.uri(
         Uri.parse(CM.getImageUrl(value: audioUrl)),
@@ -901,12 +948,11 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
           album: "WooEnglish",
           title: selectedChapter.value,
           artUri: Uri.parse(
-             'https://yt3.googleusercontent.com/qMSrYxqjC6z3xn7hCSO0Psf6Oynyn5PoEyCPQS3QQ4VrisyNeEbe6Eh5qGbNzzPV43OqwGXJ=s176-c-k-c0x00ffffff-no-rj'),
+              'https://yt3.googleusercontent.com/qMSrYxqjC6z3xn7hCSO0Psf6Oynyn5PoEyCPQS3QQ4VrisyNeEbe6Eh5qGbNzzPV43OqwGXJ=s176-c-k-c0x00ffffff-no-rj'),
         ),
       ));
 
-
-   /*   if (player.playing == false &&  isAudioPlaying == '1') {
+      /*   if (player.playing == false &&  isAudioPlaying == '1') {
         print("audio is playing $audioPlayed $isPlaying");
 
         await player.pause();
@@ -920,7 +966,6 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
       isPlaying.value = true;
       audioPlayed.value = true;
       player.play();
-
     } else if (audioPlayed.value && !isPlaying.value) {
       /*if (player.playing == false) {
         player.stop();
@@ -1005,17 +1050,17 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     inAsyncCall.value = true;
     String tag = CM.getRandomNumber();
     Get.put(QuizDetailController(), tag: tag);
-if(userStatus.value=='active')
-    await Navigator.of(Get.context!).push(
-      MaterialPageRoute(
-        builder: (context) => QuizDetailView(
-            tag: tag,
-            quizId: quizReplyList[index].id.toString(),
-            isLiked: getDataModel.value?.isFavorite == 1,
-            bookId: bookId,
-            quiz: quizReplyList[index]),
-      ),
-    );
+    if (userStatus.value == 'active')
+      await Navigator.of(Get.context!).push(
+        MaterialPageRoute(
+          builder: (context) => QuizDetailView(
+              tag: tag,
+              quizId: quizReplyList[index].id.toString(),
+              isLiked: getDataModel.value?.isFavorite == 1,
+              bookId: bookId,
+              quiz: quizReplyList[index]),
+        ),
+      );
     await Get.delete<QuizDetailController>(tag: tag);
     screens = Screens.readAndListen;
     inAsyncCall.value = false;
@@ -1036,8 +1081,6 @@ if(userStatus.value=='active')
       );
     }
   }
-
-
 
   AlertDialog alertDialogView({required String value}) => AlertDialog(
         backgroundColor: Col.borderColor,
@@ -1193,20 +1236,154 @@ if(userStatus.value=='active')
     Get.back();
   }
 
-  Future<bool> storeFormatedApiCalling() async {
-    bodyParamsForAddFinishedBookApi = {
-      ApiKey.bookId: bookId,
-    };
-    http.Response? response = await HttpMethod.instance.postRequest(
-        url: UriConstant.endPointAddFinishedBook,
-        bodyParams: bodyParamsForAddFinishedBookApi);
-    if (CM.responseCheckForPostMethod(response: response)) {
-      bodyParamsForAddFinishedBookApi.clear();
-      return true;
+  Future<void> getFormattedDataApiCalling() async {
+    http.Response? response = await HttpMethod.instance.getRequest(
+      url: UriConstant.endPointGetFormatedData,
+    );
+    responseCode.value = response?.statusCode ?? 0;
+
+    if (CM.responseCheckForGetMethod(response: response)) {
+      getFormatttedData =
+          GetFormatedData.fromJson(jsonDecode(response?.body ?? ""));
+
+      print(getFormatttedData.data!.id);
+      formatedDataId.value = getFormatttedData.data!.id.toString();
+      if (getFormatttedData.data!.setFontStyle == "FontStyle.normal") {
+        setFontStyle.value = FontStyle.normal;
+      } else {
+        setFontStyle.value = FontStyle.italic;
+      }
+      if(getFormatttedData.data!.setImage==null||getFormatttedData.data!.setImage=="assets\/images\/BGImg (1).png"){
+        isBGColorSelected.value = true;
+      }else{
+        imageChoose.value.bank_logo.value = getFormatttedData.data!.setImage!;
+      }
+
+
+      if (getFormatttedData.data!.setTextAlign == "TextAlign.left") {
+        setTextAlign.value = TextAlign.left;
+      } else if (getFormatttedData.data!.setTextAlign == "TextAlign.center") {
+        setTextAlign.value = TextAlign.center;
+      } else {
+        setTextAlign.value = TextAlign.right;
+      }
+      isDarkMode.value =
+          bool.parse(getFormatttedData.data!.isDarkmode.toString());
+      textColor.value =
+          parseColor(getFormatttedData.data!.textColor.toString());
+      backGroundColor.value = bgColorColor(getFormatttedData.data!.backGroundColor.toString());
+
+
+      selectFontSize.value =
+          double.parse(getFormatttedData.data!.selectFontSize.toString());
+
+      print(
+          "${setFontStyle.value.toString()},${imageChoose.value.bank_logo.toString()},${setTextAlign.value.toString()},${isDarkMode.value.toString()},${setFontFamily.value.toString()},${textColor.value.toString()},${backGroundColor.value.toString()},${selectFontSize.value.toString()}");
     } else {
-      bodyParamsForAddFinishedBookApi.clear();
-      return false;
+      print("Something went wrong");
     }
   }
 
+  Future<void> storeFormatedApiCalling() async {
+    bodyParamsForStoreFormattedApi = {
+      ApiKey.setFontStyle: setFontStyle.value.toString(),
+      ApiKey.setImage: imageChoose.value.bank_logo.toString(),
+      ApiKey.setTextAlign: setTextAlign.value.toString(),
+      ApiKey.isDarkmode: isDarkMode.value.toString(),
+      ApiKey.setFontFamily: setFontFamily.value.toString(),
+      ApiKey.textColor: textColor.value.toString(),
+      ApiKey.backGroundColor: backGroundColor.value.toString(),
+      ApiKey.selectFontSize: selectFontSize.value.toString()
+    };
+    http.Response? response = await HttpMethod.instance.postRequest(
+        url: UriConstant.endPointStoreFormatedData,
+        bodyParams: bodyParamsForStoreFormattedApi);
+
+    if (CM.responseCheckForPostMethod(response: response)) {
+      responseForStoreFormattedApi = jsonDecode(response!.body);
+
+      bodyParamsForStoreFormattedApi.clear();
+    } else {
+      bodyParamsForStoreFormattedApi.clear();
+    }
+  }
+
+  Future<void> updateFormatedApiCalling() async {
+
+    bodyParamsForUpdateFormattedApi = {
+      ApiKey.setFontStyle: setFontStyle.value.toString(),
+      ApiKey.setImage: imageChoose.value.bank_logo.toString(),
+      ApiKey.setTextAlign: setTextAlign.value.toString(),
+      ApiKey.isDarkmode: isDarkMode.value.toString(),
+      ApiKey.setFontFamily: setFontFamily.value.toString(),
+      ApiKey.textColor: textColor.value.toString(),
+      ApiKey.backGroundColor:backGroundColor.value.toString(),
+      ApiKey.selectFontSize: selectFontSize.value.toString(),
+      ApiKey.formated_id: formatedDataId.value.toString(),
+    };
+    http.Response? response = await HttpMethod.instance.postRequest(
+        url: UriConstant.endPointUpdateFormatedData,
+        bodyParams: bodyParamsForUpdateFormattedApi);
+
+    if (CM.responseCheckForPostMethod(response: response)) {
+
+      responseForUpdateFormattedApi = jsonDecode(response!.body);
+
+      print(responseForUpdateFormattedApi);
+
+      bodyParamsForUpdateFormattedApi.clear();
+    } else {
+
+      bodyParamsForStoreFormattedApi.clear();
+    }
+  }
+
+  Color parseColor(String colorString) {
+    // Remove '#' symbol if it's present
+    colorString = colorString.replaceAll('#', '');
+
+    // Parse the color string and create a Color object
+    int colorValue = int.parse(
+        colorString.replaceAll('Color(0x', '').replaceAll(')', ''),
+        radix: 16);
+    print(Color(colorValue));
+
+    return Color(colorValue); // You can adjust the opacity if needed
+  }
+  Color parseBGColor(String colorString) {
+    // Remove '#' symbol if it's present
+    int colorValue = int.parse(
+      colorString.split("Color(")[1].split(")")[0],
+      radix: 16,
+    );
+    MaterialColor materialColor = MaterialColor(colorValue, {
+      50: Color(colorValue).withOpacity(0.1),
+      100: Color(colorValue).withOpacity(0.2),
+      200: Color(colorValue).withOpacity(0.3),
+      300: Color(colorValue).withOpacity(0.4),
+      400: Color(colorValue).withOpacity(0.5),
+      500: Color(colorValue).withOpacity(0.6),
+      600: Color(colorValue).withOpacity(0.7),
+      700: Color(colorValue).withOpacity(0.8),
+      800: Color(colorValue).withOpacity(0.9),
+      900: Color(colorValue).withOpacity(1.0),
+    });
+
+    print(Color(colorValue));
+
+    return materialColor; // You can adjust the opacity if needed
+  }
+  Color bgColorColor(String colorString) {
+    print(colorString);
+
+    List<String> strarray = colorString.split("Color(");
+
+    var lenght = strarray.length-1;
+
+    var colorData = strarray[lenght];
+    List<String> color = colorData.split(")");
+
+
+    return Color(int.parse(color[0])); // You can adjust the opacity if needed
+  }
 }

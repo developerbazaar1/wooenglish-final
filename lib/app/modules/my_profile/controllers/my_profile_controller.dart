@@ -51,16 +51,10 @@ class MyProfileController extends AppController {
     super.onInit();
 
 
-    if(isUserSubscribed==true)
-    {
-      isMamber.value= true;
-    }else{
-      isMamber.value= false;
-    }
+
+
     inAsyncCall.value=true;
-    isMamber.value = await DatabaseHelper.databaseHelperInstance
-        .getParticularData(key: DatabaseConst.columnStatus) ==
-        "active";
+    isMamber.value = await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnStatus) == "active";
     userProfilePicture=await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnUserImage);
     userName=await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnName);
     userOnGoingCount=await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnOnGoing);

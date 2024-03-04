@@ -424,8 +424,9 @@ class CW {
     bool readOnly = false,
   }) {
     return SizedBox(
-      height: maxHeight,
+      height: 50,
       child: Card(
+
         elevation: elevation ?? 2.px,
         shape: OutlineInputBorder(
             borderRadius:

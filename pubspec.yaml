@@ -16,6 +16,7 @@ dependencies:
   audio_service: ^0.18.12
   flutter_svg: ^1.1.6
 
+
   http: ^0.13.6
   internet_connection_checker: ^1.0.0+1
   fluttertoast: ^8.2.2

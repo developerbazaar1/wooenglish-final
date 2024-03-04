@@ -83,12 +83,13 @@ class HomeController extends AppController {
   final getDashBoarDataForMemberBooks = Rxn<GetDashBoardBooksModel>();
   final getDashBoarDataAuthors = Rxn<GetDashBoardBooksModel>();
   Map<String, dynamic> queryParametersForGetUserFavoriteData = {};
-
+  RxString isUserSubscribed = ''.obs;
   @override
   Future<void> onInit() async {
     super.onInit();
+    isUserSubscribed.value = await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnStatus);
 
-    _getKey();
+    //_getKey();
     getPopupKey();
 
     await loadBanner();
@@ -243,16 +244,16 @@ class HomeController extends AppController {
         }
       }
   }
-  void _getKey() async {
-    print('running');
-    final prefs = await SharedPreferences.getInstance();
-    final key = prefs.get('subscribe');
-
-    isUserSubscribed  = key;
-
-    print('YOUR SUBSCRIBE KEY - $isUserSubscribed');
-    print('YOUR USER KEY - $Key');
-  }
+  // void _getKey() async {
+  //   print('running');
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final key = prefs.get('subscribe');
+  //
+  //   isUserSubscribed  = key;
+  //
+  //   print('YOUR SUBSCRIBE KEY - $isUserSubscribed');
+  //   print('YOUR USER KEY - $Key');
+  // }
 
   void setPopupKey( key) async {
 

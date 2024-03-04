@@ -87,13 +87,14 @@ class BookDetailView extends GetView<BookDetailController> {
                         buttonViewBottomBar(
                             title: C.textRead,
                             onPressed: () {
-                              if (isUserSubscribed ==
-                                  null) if (controller.interstitialAd != null) {
+
+                              if (controller.isUserSubscribed.value == 'inactive')
+                                if (controller.interstitialAd != null) {
                                 controller.interstitialAd!.show();
                               }
 
                               if (showbookto == 'paid_users' &&
-                                  isUserSubscribed == null) {
+                                  controller.isUserSubscribed.value == 'inactive') {
                                 print(bookNameId);
                                 _showDialog(context);
                               } else {
@@ -106,12 +107,12 @@ class BookDetailView extends GetView<BookDetailController> {
                         buttonViewBottomBar(
                             title: C.textListen,
                             onPressed: () {
-                              if (isUserSubscribed ==
-                                  null) if (controller.interstitialAd != null) {
+                              if (controller.isUserSubscribed.value =='inactive'
+                                  ) if (controller.interstitialAd != null) {
                                 controller.interstitialAd!.show();
                               }
 
-                              if (isUserSubscribed == null &&
+                              if (controller.isUserSubscribed.value == 'inactive' &&
                                   showbookto == 'paid_users') {
                                 print(bookNameId);
                                 _showDialog(context);
@@ -123,14 +124,15 @@ class BookDetailView extends GetView<BookDetailController> {
                           buttonViewBottomBar(
                               title: C.textVideo,
                               onPressed: () {
-                                if (isUserSubscribed == null) if (controller
+                                if (controller.isUserSubscribed.value == 'inactive')
+                                  if (controller
                                         .interstitialAd !=
                                     null) {
                                   controller.interstitialAd!.show();
                                 }
 
                                 // if(bookNameId==C.textMemberOnlyBooks&& isUserSubscribed==null||showbookto=='paid_users')
-                                if (isUserSubscribed == null &&
+                                if (controller.isUserSubscribed.value == 'inactive' &&
                                     showbookto == 'paid_users') {
                                   print(bookNameId);
                                   _showDialog(context);
@@ -384,7 +386,7 @@ class BookDetailView extends GetView<BookDetailController> {
                                                         null)
                                                       commonViewTwo(
                                                           value:
-                                                              "${C.textAccent}${controller.getBookDetailDataModel.value?.englishAccentName ?? ""}",
+                                                              "${C.textAccent}${controller.getBookDetailDataModel.value?.languageName ?? ""}",
                                                           width: 188.px)
                                                   ],
                                                 ),
@@ -413,7 +415,7 @@ class BookDetailView extends GetView<BookDetailController> {
                                                   vertical: 10.px),
                                               child: textViewOverViewDis(),
                                             ),
-                                          if (isUserSubscribed == null)
+                                          if (controller.isUserSubscribed.value == 'inactive')
                                             Obx(() {
                                               return controller.isload.value ==
                                                       true
@@ -571,7 +573,7 @@ class BookDetailView extends GetView<BookDetailController> {
                                             ),
                                           ),
                                           Container(
-                                            height: 100.px,
+                                            height: 80.px,
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.only(
                                                   bottomLeft:
@@ -1037,9 +1039,10 @@ class BookDetailView extends GetView<BookDetailController> {
 
   Widget textFieldReview() => CW.commonTextFieldForWriteSomething(
       wantBorder: false,
-      maxHeight: 100.px,
+      maxHeight: 80.px,
       borderRadius: 0.px,
       elevation: 0.px,
+
       hintText: C.textWriteYourReview,
       hintStyle: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(
             fontFamily: C.fontOpenSans,

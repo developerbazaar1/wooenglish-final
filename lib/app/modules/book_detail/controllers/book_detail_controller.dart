@@ -84,9 +84,11 @@ BannerAd? bannerAd;
   @override
   void onInit() async{
     super.onInit();
-    isUserSubscribed.value = await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnMembershipPlan);
+    isUserSubscribed.value = await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnStatus);
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) async{
+
+    print(" paid  ${isUserSubscribed.value}");
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
       await loadBanner();
       await loadIndustrial();
       getPopupKey();

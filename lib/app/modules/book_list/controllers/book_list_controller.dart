@@ -98,7 +98,7 @@ class BookListController extends AppController {
   }
 
   Future<bool> onLoadMore() async {
-    offset = offset + 10;
+    offset = offset ;
     await getBookListApiCalling(
         isUserFavoriteData: title == C.textYourFavorite);
     increment();
@@ -132,9 +132,9 @@ class BookListController extends AppController {
       queryParametersForSeeMore[ApiKey.genre] = selectedFilterId[0];
       queryParametersForSeeMore[ApiKey.level] = selectedFilterId[1];
       queryParametersForSeeMore[ApiKey.length] = selectedFilterId[2];
-/*
+
       queryParametersForSeeMore[ApiKey.language] = selectedFilterId[3];
-*/
+
     }
     http.Response? response = await HttpMethod.instance.getRequestForParams(
         baseUriForParams: UriConstant.baseUriForParams,
@@ -148,10 +148,15 @@ class BookListController extends AppController {
       if (offset == 0) {
         listOfBooks.clear();
       }
+      int index = 0;
       if (getBooksModel.value!= null&&getBooksModel.value?.books != null &&
           getBooksModel.value!.books!.isNotEmpty) {
         getBooksModel.value?.books?.forEach((element) {
           listOfBooks.add(element);
+
+
+          print('this is book list${listOfBooks[index].title}');
+          index++;
         });
         isLastPage.value = false;
       } else {
@@ -220,6 +225,7 @@ class BookListController extends AppController {
 
   Future<void> clickOnParticularBook({required int index}) async {
     inAsyncCall.value = true;
+
     String tag = CM.getRandomNumber();
     Get.put(BookDetailController(), tag: tag);
     intValue = 0;

@@ -87,6 +87,7 @@ class BookDetailView extends GetView<BookDetailController> {
                         buttonViewBottomBar(
                             title: C.textRead,
                             onPressed: () {
+                              print('$showbookto == paid_users && ${controller.isUserSubscribed.value} == inactive');
 
                               if (controller.isUserSubscribed.value == 'inactive')
                                 if (controller.interstitialAd != null) {
@@ -107,8 +108,8 @@ class BookDetailView extends GetView<BookDetailController> {
                         buttonViewBottomBar(
                             title: C.textListen,
                             onPressed: () {
-                              if (controller.isUserSubscribed.value =='inactive'
-                                  ) if (controller.interstitialAd != null) {
+                              if (controller.isUserSubscribed.value =='inactive')
+                                if (controller.interstitialAd != null) {
                                 controller.interstitialAd!.show();
                               }
 

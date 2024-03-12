@@ -47,7 +47,11 @@ class MyPlanSubscriptionView extends GetView<MySubscriptionController> {
                     ),
                     ActivePlan(context),
                     SizedBox(
-                      height: 40.px,
+                      height: 15.px,
+                    ),
+                    listViewPlan(),
+                    SizedBox(
+                      height: 20.px,
                     ),
                     buttonViewSubscription(context)
                   ],
@@ -147,6 +151,111 @@ class MyPlanSubscriptionView extends GetView<MySubscriptionController> {
           ],
         ),
       );
+
+
+  Widget listViewPlan() {
+
+
+    return Obx(() => ListView.builder(
+      physics: ScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      itemBuilder: (context, index) {
+        print("current plan is");
+        if(controller.planPrice.toString() == controller.GetSubcriptionData.value['subscription'][index]['plan_price']){
+          controller.isUpgrade.value = true;
+        }else{
+          controller.isUpgrade.value = false;
+        }
+          return controller.isUpgrade.value
+              ?SizedBox()
+              :Obx(() => Padding(
+        padding: EdgeInsets.only(bottom: 14.px),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(5.px),
+          onTap: () => controller.clickOnParticularPlan(
+              index: index,
+              price: int.parse(controller.GetSubcriptionData
+                  .value['subscription'][index]['plan_price']),
+              ID: controller.GetSubcriptionData.value['subscription']
+              [index]['id']),
+          child: Ink(
+            padding: EdgeInsets.all(C.margin / 2),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.px),
+                border: Border.all(color: Col.borderColor, width: 3.px),
+                color: controller.currentIndexOfPlan.value == index
+                    ? Col.cardBackgroundColor
+                    : Col.inverseSecondary),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      textViewPlanName(
+                          index: index,
+                          text: controller.GetSubcriptionData
+                              .value['subscription'][index]
+                          ['plan_name']),
+                      SizedBox(
+                        height: 2.px,
+                      ),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: textViewPlanPrice(
+                                index: index,
+                                price: int.parse(controller
+                                    .GetSubcriptionData
+                                    .value['subscription'][index]
+                                ['plan_price'])),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 2.px,
+                      ),
+                      Row(
+                        children: [
+                          textViewPerMonth(
+                              index: index,
+                              text: controller.GetSubcriptionData
+                                  .value['subscription'][index]
+                              ['plan_duration']),
+                          SizedBox(
+                            width: 4.px,
+                          ),
+                          Expanded(
+                              child: textViewPerMonth(
+                                  index: index,
+                                  text: controller.GetSubcriptionData
+                                      .value['subscription'][index]
+                                  ['plan_period'])),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                // SizedBox(
+                //   height: 50.px,
+                //   width: 50.px,
+                //   child: Transform.scale(
+                //     scale: 1.5,
+                //     child: radioButtonViewForPlan(index: index),
+                //   ),
+                // )
+              ],
+            ),
+          ),
+        ),
+      ))
+              ;},
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      itemCount: controller.GetSubcriptionDataLength.value,
+    ));
+  }
 
   SizedBox MyPlanDetails(BuildContext context, String title, String subtitle) {
     return SizedBox(

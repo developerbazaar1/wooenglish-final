@@ -80,27 +80,30 @@ class MyProfileController extends AppController {
     String tag = CM.getRandomNumber();
     Get.put(BookDetailController(), tag: tag);
     getDashBoarDataForContinueBooks.value = await getContinueBookData();
+    await Get.offAllNamed(Routes.ON_GOING);
 
-    if(getDashBoarDataForContinueBooks.value!=null)
-    await Navigator.of(Get.context!).push(
-      MaterialPageRoute(
-        builder: (context) => BookDetailView
-          (
-          isAudio: getDashBoarDataForContinueBooks.value?.book?.bookdetails?.isAudio,
-            showbookto: getDashBoarDataForContinueBooks.value?.book?.bookdetails?.showbookto.toString(),
+   // if(getDashBoarDataForContinueBooks.value!=null)
 
 
-            tag: tag,
-            bookId: getDashBoarDataForContinueBooks.value?.book?.bookId
-                .toString() ??
-                "0",
-            isLiked: getDashBoarDataForContinueBooks.value!.favorite!.contains(
-                getDashBoarDataForContinueBooks.value!.book?.bookId.toString()),
-            categoryId: getDashBoarDataForContinueBooks
-                .value!.book?.bookdetails?.category
-                .toString()),
-      ),
-    );
+    // await Navigator.of(Get.context!).push(
+    //   MaterialPageRoute(
+    //     builder: (context) => BookDetailView
+    //       (
+    //       isAudio: getDashBoarDataForContinueBooks.value?.book?.bookdetails?.isAudio,
+    //         showbookto: getDashBoarDataForContinueBooks.value?.book?.bookdetails?.showbookto.toString(),
+    //
+    //
+    //         tag: tag,
+    //         bookId: getDashBoarDataForContinueBooks.value?.book?.bookId
+    //             .toString() ??
+    //             "0",
+    //         isLiked: getDashBoarDataForContinueBooks.value!.favorite!.contains(
+    //             getDashBoarDataForContinueBooks.value!.book?.bookId.toString()),
+    //         categoryId: getDashBoarDataForContinueBooks
+    //             .value!.book?.bookdetails?.category
+    //             .toString()),
+    //   ),
+    // );
     await Get.delete<BookDetailController>(tag: tag);
     await onInit();
     inAsyncCall.value = false;

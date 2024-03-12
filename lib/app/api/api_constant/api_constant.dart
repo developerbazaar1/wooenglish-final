@@ -106,6 +106,12 @@ class ApiKey {
   static var backGroundColor="backGroundColor";
   static var selectFontSize="selectFontSize";
 
+/// READ BOOK
+  static var plan_id="plan_id";
+  static var amount="amount";
+  static var currency="currency";
+  static var transaction_id="transaction_id";
+
 
 }
 
@@ -211,6 +217,11 @@ class UriConstant {
   static const endPointStoreFormatedData = "${baseUrl}api/store-formated-data";
   static const endPointUpdateFormatedData = "${baseUrl}api/update-formated-data";
   static const endPointGetFormatedData = "${baseUrl}api/fetch-formated-data";
+
+
+//MY SUBSCRIPTION SCREEN
+  static const endPointPaymentStatus = "${baseUrl}api/payment-update";
+
 
 
 

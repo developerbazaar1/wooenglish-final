@@ -118,6 +118,7 @@ class EBookController extends AppController {
     Get.put(BookDetailController(), tag: tag);
     await Navigator.of(Get.context!).push(MaterialPageRoute(
       builder: (context) => BookDetailView(
+        showbookto: booksList[index].bookdetails!.showbookto.toString(),
         isAudio: booksList[index].bookdetails?.isAudio,
         tag: tag,
         bookId: booksList[index].bookId.toString(),

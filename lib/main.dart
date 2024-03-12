@@ -31,6 +31,7 @@ Future<void> main() async {
   print(C.stripePublicKey);
 
   WidgetsFlutterBinding.ensureInitialized();
+
   MobileAds.instance.initialize();
 
   await Firebase.initializeApp(

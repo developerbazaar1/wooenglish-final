@@ -1,3 +1,6 @@
+import 'dart:ffi';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -50,7 +53,6 @@ class BookListView extends GetView<BookListController> {
                 appBarView(),
                 if (controller.listOfFilter.isNotEmpty)
                   Container(
-
                     padding: EdgeInsets.symmetric(vertical: 15.px),
                     child: listViewBookFilter(),
                   ),
@@ -116,71 +118,99 @@ class BookListView extends GetView<BookListController> {
   }
 
   Widget appBarView() => CW.commonAppBarWithoutActon(
-      onPressed: () => controller.clickOnBackButton(), title: controller.title);
+      onPressed: () => controller.clickOnBackButton(),
+      title: controller.title,
+      widget: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius:BorderRadius.circular(5),
+
+          ),
+          padding: EdgeInsets.only(right: 15,left: 15,top: 0,bottom: 0),
+
+        ),
+
+          onPressed: ()async {
+            controller.inAsyncCall.value = true;
+            controller.isAudio.value=false;
+            controller.isAudioApplied.value = false;
+
+            controller.offset = 0;
+            await controller.getBookListApiCalling(
+                isUserFavoriteData: title == C.textYourFavorite);
+            controller.inAsyncCall.value = false;
+
+          }
+
+
+          , child: Text("All Books")));
 
   Widget listViewBookFilter() => SizedBox(
-    height: 74.px,
-    child: ScrollConfiguration(
-      behavior: ListScrollBehaviour(),
-      child: ListView.builder(
-          itemBuilder: (context, index) => index ==
-                  controller.listOfFilter.length
-              ? Column(
-                  children: [
-                    SizedBox(
-                      height: 35.px,
-                    ),
-                    commonButtonView(
-                        image: controller.isAudio.value
-                            ? C.imageFilterAudioLogo
-                            : C.imageFilterMuteLogo,
-                        onTap: () =>
-                            controller.clickOnSelectAudioFilter()),
-                  ],
-                )
-              : SizedBox(width: 90,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        controller.listOfFilterTitle[index],
-                        style: CT.alegreyaBodyLarge(),
-                      ),
-                      SizedBox(
-                        height: 2.px,
-                      ),
-                      Stack(
-                        alignment: Alignment.centerRight,
+        height: 74.px,
+        child: ScrollConfiguration(
+          behavior: ListScrollBehaviour(),
+          child: ListView.builder(
+              itemBuilder: (context, index) => index ==
+                      controller.listOfFilter.length
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          height: 35.px,
+                        ),
+                        Obx(() =>
+                        Opacity(
+                          opacity: controller.isAudioApplied.value == false &&
+                                  controller.isAudio.value == false
+                              ? 0.3
+                              : 1,
+                          child: commonButtonView(
+                              image: controller.isAudio.value
+                                  ? C.imageFilterAudioLogo
+                                  : C.imageFilterMuteLogo,
+                              onTap: () =>
+                                  controller.clickOnSelectAudioFilter()),
+                        )),
+                      ],
+                    )
+                  : SizedBox(
+                      width: 90,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 80,
-
-                            padding:
-                                EdgeInsets.symmetric(horizontal: 5.px,vertical: 5.px),
-                            margin: EdgeInsets.only(
-                                right: 5.px, left: 8.px),
-                            decoration: BoxDecoration(
-                                color: Col.cardBackgroundColor,
-                                borderRadius:
-                                    BorderRadius.circular(10.px)),
-                            child: textViewFilterTitle(index: index),
+                          Text(
+                            controller.listOfFilterTitle[index],
+                            style: CT.alegreyaBodyLarge(),
                           ),
-                          
-                          buttonViewDropDown(index: index),
-
-
+                          SizedBox(
+                            height: 2.px,
+                          ),
+                          Stack(
+                            alignment: Alignment.centerRight,
+                            children: [
+                              Container(
+                                width: 80,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 5.px, vertical: 5.px),
+                                margin:
+                                    EdgeInsets.only(right: 5.px, left: 8.px),
+                                decoration: BoxDecoration(
+                                    color: Col.cardBackgroundColor,
+                                    borderRadius: BorderRadius.circular(10.px)),
+                                child: textViewFilterTitle(index: index),
+                              ),
+                              buttonViewDropDown(index: index),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-              ),
-          itemCount: controller.listOfFilter.length + 1,
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          scrollDirection: Axis.horizontal),
-    ),
-  );
+                    ),
+              itemCount: controller.listOfFilter.length + 1,
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.horizontal),
+        ),
+      );
 
   Widget commonButtonView(
           {required String image, required VoidCallback onTap}) =>
@@ -204,9 +234,9 @@ class BookListView extends GetView<BookListController> {
             ? controller.listOfFilter[index].title ?? ""
             : controller.selectedFilter[index],
         style: CT.alegreyaBodySmall(),
-    overflow:TextOverflow.ellipsis,
-    textAlign: TextAlign.center,
-    softWrap: true,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        softWrap: true,
       );
 
   Widget iconViewDownIcon({required int index}) => Icon(
@@ -227,8 +257,6 @@ class BookListView extends GetView<BookListController> {
           controller.inAsyncCall.value = true;
           if (controller.selectedFilterId[index]
               .contains(value.id.toString() ?? "")) {
-
-            
             controller.selectedFilterId[index] = "";
             controller.selectedFilter[index] = "";
             await controller.getBookListApiCalling(
@@ -240,7 +268,7 @@ class BookListView extends GetView<BookListController> {
                 isUserFavoriteData: controller.title == C.textYourFavorite);
           }
 
-         controller.offset = 0;
+          controller.offset = 0;
           await controller.getBookListApiCalling(
               isUserFavoriteData: controller.title == C.textYourFavorite);
           controller.inAsyncCall.value = false;
@@ -254,11 +282,11 @@ class BookListView extends GetView<BookListController> {
                 child: Text(
                   value.name ?? "",
                   style: TextStyle(
-                      color: controller.selectedFilterId[index]
-                              .contains(value.id.toString())
-                          ? Col.primary
-                          : Col.secondary,
-                    ),
+                    color: controller.selectedFilterId[index]
+                            .contains(value.id.toString())
+                        ? Col.primary
+                        : Col.secondary,
+                  ),
                 ));
           }).toList();
         },
@@ -347,327 +375,340 @@ class BookListView extends GetView<BookListController> {
   Widget gridView() {
     if (controller.title == C.textYourFavorite) {
       return Obx(() => SingleChildScrollView(
-        child: Wrap(
-          children: List.generate(controller.listOfBooks.length, (index) {
-            final cellWidth = MediaQuery.of(Get.context!).size.width /
-                2; // Every cell's `width` will be set to 1/2 of the screen width.
-            return SizedBox(
-              width: cellWidth,
-              child: GestureDetector(
-                onTap: () => controller.clickOnParticularBook(index: index),
-                child: Container(
-                    width: cellWidth,
-                    height: C.bookCardInGridHeight,
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.all(10.px),
-                    margin: EdgeInsets.only(
-                        left: index % 2 == 0 ? 16.px : 10.px,
-                        right: index % 2 == 0 ? 10.px : 16.px,
-                        bottom: 16.px),
-                    decoration: BoxDecoration(
-                        color: Col.inverseSecondary,
-                        borderRadius:
-                        BorderRadius.circular(C.bookCardInGridRadius)),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: C.bookImageInGridHeight,
-                          width: C.bookImageInGridWidth,
-                          padding: EdgeInsets.zero,
-                          decoration: BoxDecoration(
+            child: Wrap(
+              children: List.generate(controller.listOfBooks.length, (index) {
+                final cellWidth = MediaQuery.of(Get.context!).size.width /
+                    2; // Every cell's `width` will be set to 1/2 of the screen width.
+                return SizedBox(
+                  width: cellWidth,
+                  child: GestureDetector(
+                    onTap: () => controller.clickOnParticularBook(index: index),
+                    child: Container(
+                        width: cellWidth,
+                        height: C.bookCardInGridHeight,
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.all(10.px),
+                        margin: EdgeInsets.only(
+                            left: index % 2 == 0 ? 16.px : 10.px,
+                            right: index % 2 == 0 ? 10.px : 16.px,
+                            bottom: 16.px),
+                        decoration: BoxDecoration(
+                            color: Col.inverseSecondary,
                             borderRadius:
-                            BorderRadius.circular(C.bookImageInGridRadius),
-                          ),
-                          child: Stack(
-                            children: [
-                              SizedBox(
-                                height: C.bookImageInGridHeight,
-                                width: C.bookImageInGridWidth,
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        C.bookImageInGridRadius),
-                                    child: imageViewBook(
-                                        value: controller.listOfBooks[index]
-                                            .bookdetails?.bookThumbnail)),
+                                BorderRadius.circular(C.bookCardInGridRadius)),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: C.bookImageInGridHeight,
+                              width: C.bookImageInGridWidth,
+                              padding: EdgeInsets.zero,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    C.bookImageInGridRadius),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(8.px),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    if (controller.listOfBooks[index]
-                                        .bookdetails?.isAudio ==
-                                        "1")
-                                      SizedBox(
-                                        height: 25.px,
-                                        width: 25.px,
-                                        child: buttonViewSound(index: index),
-                                      ),
-                                    if (controller.listOfBooks[index]
-                                        .bookdetails?.isAudio ==
-                                        "1")
-                                      SizedBox(
-                                        width: 5.px,
-                                      ),
-                                    if (controller.getBooksModel.value
-                                        ?.favorite !=
-                                        null &&
-                                        controller
-                                            .getBooksModel.value!.favorite!
-                                            .contains(controller
-                                            .listOfBooks[index]
-                                            .bookdetails
-                                            ?.id
-                                            .toString()))
-                                      SizedBox(
-                                        height: 25.px,
-                                        width: 25.px,
-                                        child: buttonViewLike(index: index),
-                                      )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        CW.commonPaddingForBookContent(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 5.px,
-                              ),
-                              if (controller
-                                  .listOfBooks[index].bookdetails?.title !=
-                                  null)
-                                Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: textViewBookName(
-                                        value: controller.listOfBooks[index]
-                                            .bookdetails?.title ??
-                                            "")),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                              child: Stack(
                                 children: [
-                                  if (controller.listOfBooks[index].bookdetails
-                                      ?.rating !=
-                                      null)
-                                    Row(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: 2.px, right: 4.px),
-                                          child: imageViewStar(),
-                                        ),
-                                        textViewRatting(
+                                  SizedBox(
+                                    height: C.bookImageInGridHeight,
+                                    width: C.bookImageInGridWidth,
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                            C.bookImageInGridRadius),
+                                        child: imageViewBook(
                                             value: controller.listOfBooks[index]
-                                                .bookdetails?.rating ??
-                                                "")
+                                                .bookdetails?.bookThumbnail)),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.px),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        if (controller.listOfBooks[index]
+                                                .bookdetails?.isAudio ==
+                                            "1")
+                                          SizedBox(
+                                            height: 25.px,
+                                            width: 25.px,
+                                            child:
+                                                buttonViewSound(index: index),
+                                          ),
+                                        if (controller.listOfBooks[index]
+                                                .bookdetails?.isAudio ==
+                                            "1")
+                                          SizedBox(
+                                            width: 5.px,
+                                          ),
+                                        if (controller.getBooksModel.value
+                                                    ?.favorite !=
+                                                null &&
+                                            controller
+                                                .getBooksModel.value!.favorite!
+                                                .contains(controller
+                                                    .listOfBooks[index]
+                                                    .bookdetails
+                                                    ?.id
+                                                    .toString()))
+                                          SizedBox(
+                                            height: 25.px,
+                                            width: 25.px,
+                                            child: buttonViewLike(index: index),
+                                          )
                                       ],
                                     ),
-                                  if (controller.listOfBooks[index].bookdetails
-                                      ?.rating !=
-                                      null)
-                                    SizedBox(
-                                      width: 10.px,
-                                    ),
-                                  if (controller.listOfBooks[index].bookdetails
-                                      ?.views !=
-                                      null)
-                                    Row(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                            padding:
-                                            EdgeInsets.only(right: 4.px),
-                                            child: imageViewEye()),
-                                        textViewViewers(
-                                            value: controller.listOfBooks[index]
-                                                .bookdetails?.views ??
-                                                ''),
-                                      ],
-                                    )
+                                  ),
                                 ],
                               ),
-                              if (controller.listOfBooks[index].bookdetails
-                                  ?.authorName !=
-                                  null)
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: textViewAuthorName(
-                                      value: controller.listOfBooks[index]
-                                          .bookdetails?.authorName ??
-                                          ''),
-                                ),
-                            ],
-                          ),
-                        )
-                      ],
-                    )),
-              ),
-            );
-          }),
-        ),
-      ));
+                            ),
+                            CW.commonPaddingForBookContent(
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 5.px,
+                                  ),
+                                  if (controller.listOfBooks[index].bookdetails
+                                          ?.title !=
+                                      null)
+                                    Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: textViewBookName(
+                                            value: controller.listOfBooks[index]
+                                                    .bookdetails?.title ??
+                                                "")),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      if (controller.listOfBooks[index]
+                                              .bookdetails?.rating !=
+                                          null)
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: 2.px, right: 4.px),
+                                              child: imageViewStar(),
+                                            ),
+                                            textViewRatting(
+                                                value: controller
+                                                        .listOfBooks[index]
+                                                        .bookdetails
+                                                        ?.rating ??
+                                                    "")
+                                          ],
+                                        ),
+                                      if (controller.listOfBooks[index]
+                                              .bookdetails?.rating !=
+                                          null)
+                                        SizedBox(
+                                          width: 10.px,
+                                        ),
+                                      if (controller.listOfBooks[index]
+                                              .bookdetails?.views !=
+                                          null)
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                                padding: EdgeInsets.only(
+                                                    right: 4.px),
+                                                child: imageViewEye()),
+                                            textViewViewers(
+                                                value: controller
+                                                        .listOfBooks[index]
+                                                        .bookdetails
+                                                        ?.views ??
+                                                    ''),
+                                          ],
+                                        )
+                                    ],
+                                  ),
+                                  if (controller.listOfBooks[index].bookdetails
+                                          ?.authorName !=
+                                      null)
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: textViewAuthorName(
+                                          value: controller.listOfBooks[index]
+                                                  .bookdetails?.authorName ??
+                                              ''),
+                                    ),
+                                ],
+                              ),
+                            )
+                          ],
+                        )),
+                  ),
+                );
+              }),
+            ),
+          ));
     } else {
       return Obx(() => SingleChildScrollView(
-        child: Wrap(
-          children: List.generate(controller.listOfBooks.length, (index) {
-            final cellWidth = MediaQuery.of(Get.context!).size.width /
-                2; // Every cell's `width` will be set to 1/2 of the screen width.
-            return SizedBox(
-              width: cellWidth,
-              child: GestureDetector(
-                onTap: () => controller.clickOnParticularBook(index: index),
-                child: Container(
-                    width: cellWidth,
-                    height: C.bookCardInGridHeight,
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.all(10.px),
-                    margin: EdgeInsets.only(
-                        left: index % 2 == 0 ? 16.px : 10.px,
-                        right: index % 2 == 0 ? 10.px : 16.px,
-                        bottom: 16.px),
-                    decoration: BoxDecoration(
-                        color: Col.inverseSecondary,
-                        borderRadius:
-                        BorderRadius.circular(C.bookCardInGridRadius)),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: C.bookImageInGridHeight,
-                          width: C.bookImageInGridWidth,
-                          padding: EdgeInsets.zero,
-                          decoration: BoxDecoration(
+            child: Wrap(
+              children: List.generate(controller.listOfBooks.length, (index) {
+                final cellWidth = MediaQuery.of(Get.context!).size.width /
+                    2; // Every cell's `width` will be set to 1/2 of the screen width.
+                return SizedBox(
+                  width: cellWidth,
+                  child: GestureDetector(
+                    onTap: () => controller.clickOnParticularBook(index: index),
+                    child: Container(
+                        width: cellWidth,
+                        height: C.bookCardInGridHeight,
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.all(10.px),
+                        margin: EdgeInsets.only(
+                            left: index % 2 == 0 ? 16.px : 10.px,
+                            right: index % 2 == 0 ? 10.px : 16.px,
+                            bottom: 16.px),
+                        decoration: BoxDecoration(
+                            color: Col.inverseSecondary,
                             borderRadius:
-                            BorderRadius.circular(C.bookImageInGridRadius),
-                          ),
-                          child: Stack(
-                            children: [
-
-                              SizedBox(
-                                height: C.bookImageInGridHeight,
-                                width: C.bookImageInGridWidth,
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        C.bookImageInGridRadius),
-                                    child: imageViewBook(
-                                        value: controller
-                                            .listOfBooks[index].bookThumbnail)),
+                                BorderRadius.circular(C.bookCardInGridRadius)),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: C.bookImageInGridHeight,
+                              width: C.bookImageInGridWidth,
+                              padding: EdgeInsets.zero,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    C.bookImageInGridRadius),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(8.px),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    if (controller.listOfBooks[index].isAudio ==
-                                        "1")
-                                      SizedBox(
-                                        height: 25.px,
-                                        width: 25.px,
-                                        child: buttonViewSound(index: index),
-                                      ),
-                                    if (controller.listOfBooks[index].isAudio ==
-                                        "1")
-                                      SizedBox(
-                                        width: 5.px,
-                                      ),
-                                    if (controller.getBooksModel.value
-                                        ?.favorite !=
-                                        null &&
-                                        controller
-                                            .getBooksModel.value!.favorite!
-                                            .contains(controller
-                                            .listOfBooks[index].id
-                                            .toString()))
-                                      SizedBox(
-                                        height: 25.px,
-                                        width: 25.px,
-                                        child: buttonViewLike(index: index),
-                                      )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        CW.commonPaddingForBookContent(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 5.px,
-                              ),
-                              if (controller.listOfBooks[index].title != null)
-                                Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: textViewBookName(
-                                        value: controller
-                                            .listOfBooks[index].title ??
-                                            "")),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                              child: Stack(
                                 children: [
-                                  if (controller.listOfBooks[index].rating !=
-                                      null)
-                                    Row(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: 2.px, right: 4.px),
-                                          child: imageViewStar(),
-                                        ),
-                                        textViewRatting(
+                                  SizedBox(
+                                    height: C.bookImageInGridHeight,
+                                    width: C.bookImageInGridWidth,
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                            C.bookImageInGridRadius),
+                                        child: imageViewBook(
                                             value: controller.listOfBooks[index]
-                                                .rating ??
-                                                "")
-                                      ],
-                                    ),
-                                  if (controller.listOfBooks[index].rating !=
-                                      null)
-                                    SizedBox(
-                                      width: 10.px,
-                                    ),
-                                  if (controller.listOfBooks[index].views !=
-                                      null)
-                                    Row(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                                .bookThumbnail)),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.px),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Padding(
-                                            padding:
-                                            EdgeInsets.only(right: 4.px),
-                                            child: imageViewEye()),
-                                        textViewViewers(
-                                            value: controller
-                                                .listOfBooks[index].views ??
-                                                ''),
+                                        if (controller
+                                                .listOfBooks[index].isAudio ==
+                                            "1")
+                                          SizedBox(
+                                            height: 25.px,
+                                            width: 25.px,
+                                            child:
+                                                buttonViewSound(index: index),
+                                          ),
+                                        if (controller
+                                                .listOfBooks[index].isAudio ==
+                                            "1")
+                                          SizedBox(
+                                            width: 5.px,
+                                          ),
+                                        if (controller.getBooksModel.value
+                                                    ?.favorite !=
+                                                null &&
+                                            controller
+                                                .getBooksModel.value!.favorite!
+                                                .contains(controller
+                                                    .listOfBooks[index].id
+                                                    .toString()))
+                                          SizedBox(
+                                            height: 25.px,
+                                            width: 25.px,
+                                            child: buttonViewLike(index: index),
+                                          )
                                       ],
-                                    )
+                                    ),
+                                  ),
                                 ],
                               ),
-                              if (controller.listOfBooks[index].authorName !=
-                                  null)
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: textViewAuthorName(
-                                      value: controller
-                                          .listOfBooks[index].authorName ??
-                                          ''),
-                                ),
-                            ],
-                          ),
-                        )
-                      ],
-                    )),
-              ),
-            );
-          }),
-        ),
-      ));
+                            ),
+                            CW.commonPaddingForBookContent(
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 5.px,
+                                  ),
+                                  if (controller.listOfBooks[index].title !=
+                                      null)
+                                    Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: textViewBookName(
+                                            value: controller
+                                                    .listOfBooks[index].title ??
+                                                "")),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      if (controller
+                                              .listOfBooks[index].rating !=
+                                          null)
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: 2.px, right: 4.px),
+                                              child: imageViewStar(),
+                                            ),
+                                            textViewRatting(
+                                                value: controller
+                                                        .listOfBooks[index]
+                                                        .rating ??
+                                                    "")
+                                          ],
+                                        ),
+                                      if (controller
+                                              .listOfBooks[index].rating !=
+                                          null)
+                                        SizedBox(
+                                          width: 10.px,
+                                        ),
+                                      if (controller.listOfBooks[index].views !=
+                                          null)
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                                padding: EdgeInsets.only(
+                                                    right: 4.px),
+                                                child: imageViewEye()),
+                                            textViewViewers(
+                                                value: controller
+                                                        .listOfBooks[index]
+                                                        .views ??
+                                                    ''),
+                                          ],
+                                        )
+                                    ],
+                                  ),
+                                  if (controller
+                                          .listOfBooks[index].authorName !=
+                                      null)
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: textViewAuthorName(
+                                          value: controller.listOfBooks[index]
+                                                  .authorName ??
+                                              ''),
+                                    ),
+                                ],
+                              ),
+                            )
+                          ],
+                        )),
+                  ),
+                );
+              }),
+            ),
+          ));
     }
   }
 

@@ -118,10 +118,11 @@ class FavoritesBooksController extends AppController {
     inAsyncCall.value = true;
     String tag = CM.getRandomNumber();
     Get.put(BookDetailController(), tag: tag);
+    print('paid log ${booksList[index].bookdetails!.showbookto.toString()}');
     await Navigator.of(Get.context!).push(MaterialPageRoute(
       builder: (context) => BookDetailView(
         isAudio: booksList[index].bookdetails?.isAudio,
-        showbookto:booksList[index].showbookto.toString(),
+        showbookto:booksList[index].bookdetails!.showbookto.toString(),
         tag: tag,
         bookId: booksList[index].bookId.toString(),
         isLiked: true,

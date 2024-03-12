@@ -203,7 +203,7 @@ class C {
   static const textMyPlanExpiry = "Plan Expiry Date:  ";
   static const textMyPlanPrice = "Plan Price:  ";
   static const textMyPlanDuration = "Plan Duration:  ";
-  static const textUpgradeNow = "Done";
+  static const textUpgradeNow = "Upgrade Now";
 
   ///Subscription
   static const textSubscription = "Subscription";
@@ -400,6 +400,11 @@ class C {
   static String imageFeedBackScreen = "assets/images/feedback_screen.png";
   static String textFeedBack = "Feedback";
   static String textFeedBackDis = "I'm here to help!\nHow can I assist you?";
+
+
+  /// ONGOING
+  static String textOngoing = "My Ongoing Books";
+
 
   ///COMMON IMAGES AND STRINGS
   static String imageBackButton = "assets/images/back_button_icon.png";

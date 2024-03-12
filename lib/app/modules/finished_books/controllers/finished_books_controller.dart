@@ -119,7 +119,7 @@ class FinishedBooksController extends AppController {
     await Navigator.of(Get.context!).push(MaterialPageRoute(
       builder: (context) => BookDetailView(
         isAudio: booksList[index].bookdetails?.isAudio,
-        showbookto:  booksList[index].showbookto.toString(),
+        showbookto:  booksList[index].bookdetails!.showbookto.toString(),
         tag: tag,
         bookId: booksList[index].bookId.toString(),
         isLiked: getDataModel.value!.favorite!

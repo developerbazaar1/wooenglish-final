@@ -113,9 +113,9 @@ class MyProfileView extends GetView<MyProfileController> {
                                   child: Column(
                                     children: [
                                       textViewCount(
-                                          value:isContinueBookavailable.value ==true
-                                      ?"1":'0'
-                                              //controller.userOnGoingCount ?? ""
+                                      //     value:isContinueBookavailable.value ==true
+                                      // ?"1":'0'
+                                      value:controller.userOnGoingCount ?? ""
                                       ),
                                       SizedBox(
                                         height: 2.px,

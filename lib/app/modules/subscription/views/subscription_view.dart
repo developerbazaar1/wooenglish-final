@@ -316,15 +316,8 @@ class SubscriptionView extends GetView<SubscriptionController> {
           print('Subcription value ${controller.selectedRadioButton.value}');
           if (controller.selectedRadioButton.value == null ||
               controller.selectedRadioButton.value == 0) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Please select any Payment',
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-              duration: Duration(seconds: 1),
-            ));
+            CM.showToast(  'Please select any Payment',);
+
           } else {
             controller.clickOnSubscriptionButton();
           }

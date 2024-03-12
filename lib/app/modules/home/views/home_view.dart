@@ -1,5 +1,6 @@
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:woo_english/app/modules/Showpopup/showpopup.dart';
 import 'package:flutter/material.dart';
@@ -1224,16 +1225,19 @@ class HomeView extends GetView<HomeController> {
                             ),
                             child: Stack(
                               children: [
-                                SizedBox(
-                                  height: C.bookHorizontalListHeight,
-                                  width: C.bookHorizontalListWidth,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        C.bookHorizontalListRadius),
-                                    child: imageViewBook(
-                                        value: listOfBooks[index]
-                                            .bookdetails
-                                            ?.bookThumbnail),
+                                Opacity(
+                                  opacity: listOfBooks[index].bookdetails!.showbookto.toString()=='paid_users'?0.3:1,
+                                  child: SizedBox(
+                                    height: C.bookHorizontalListHeight,
+                                    width: C.bookHorizontalListWidth,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          C.bookHorizontalListRadius),
+                                      child: imageViewBook(
+                                          value: listOfBooks[index]
+                                              .bookdetails
+                                              ?.bookThumbnail),
+                                    ),
                                   ),
                                 ),
                                 Padding(
@@ -1273,6 +1277,8 @@ class HomeView extends GetView<HomeController> {
                                     ],
                                   ),
                                 ),
+                                if(listOfBooks[index].bookdetails!.showbookto.toString()=='paid_users')
+                                Center(child: Icon(Icons.lock_outline,size: 30,),)
                               ],
                             )),
                         CW.commonPaddingForBookContent(

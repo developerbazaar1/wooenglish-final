@@ -322,12 +322,12 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     imageChoose.value = bgImageList[0];
     await getPopupKey();
     await getPlayerKey();
-    await getFormattedDataApiCalling();
+   await getFormattedDataApiCalling();
 
     userStatus.value = await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnStatus);
 
 
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
 /*
     onReload();
@@ -1237,25 +1237,33 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
   }
 
   Future<void> getFormattedDataApiCalling() async {
+    try{
     http.Response? response = await HttpMethod.instance.getRequest(
       url: UriConstant.endPointGetFormatedData,
     );
-    responseCode.value = response?.statusCode ?? 0;
 
+    //responseCode.value = response?.statusCode ?? 0;
+    var data = jsonDecode(response!.body);
+
+    getFormatttedData = GetFormatedData.fromJson(jsonDecode(response.body ?? ""));
+
+    if (getFormatttedData.status == true){
     if (CM.responseCheckForGetMethod(response: response)) {
-      getFormatttedData =
-          GetFormatedData.fromJson(jsonDecode(response?.body ?? ""));
 
-      print(getFormatttedData.data!.id);
+
+
+
+        print(getFormatttedData.data!.id);
       formatedDataId.value = getFormatttedData.data!.id.toString();
       if (getFormatttedData.data!.setFontStyle == "FontStyle.normal") {
         setFontStyle.value = FontStyle.normal;
       } else {
         setFontStyle.value = FontStyle.italic;
       }
-      if(getFormatttedData.data!.setImage==null||getFormatttedData.data!.setImage=="assets\/images\/BGImg (1).png"){
+      if (getFormatttedData.data!.setImage == null ||
+          getFormatttedData.data!.setImage == "assets\/images\/BGImg (1).png") {
         isBGColorSelected.value = true;
-      }else{
+      } else {
         imageChoose.value.bank_logo.value = getFormatttedData.data!.setImage!;
       }
 
@@ -1271,16 +1279,24 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
           bool.parse(getFormatttedData.data!.isDarkmode.toString());
       textColor.value =
           parseColor(getFormatttedData.data!.textColor.toString());
-      backGroundColor.value = bgColorColor(getFormatttedData.data!.backGroundColor.toString());
+      backGroundColor.value =
+          bgColorColor(getFormatttedData.data!.backGroundColor.toString());
 
 
       selectFontSize.value =
           double.parse(getFormatttedData.data!.selectFontSize.toString());
 
       print(
-          "${setFontStyle.value.toString()},${imageChoose.value.bank_logo.toString()},${setTextAlign.value.toString()},${isDarkMode.value.toString()},${setFontFamily.value.toString()},${textColor.value.toString()},${backGroundColor.value.toString()},${selectFontSize.value.toString()}");
-    } else {
-      print("Something went wrong");
+          "${setFontStyle.value.toString()},${imageChoose.value.bank_logo
+              .toString()},${setTextAlign.value.toString()},${isDarkMode.value
+              .toString()},${setFontFamily.value.toString()},${textColor.value
+              .toString()},${backGroundColor.value.toString()},${selectFontSize
+              .value.toString()}");
+    }
+    } }
+
+    catch(e) {
+      print("Something went wrong $e");
     }
   }
 

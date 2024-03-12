@@ -29,6 +29,7 @@ class BookListController extends AppController {
   List<String> selectedFilter = [];
   String limit = "10";
   int offset = 0;
+  RxBool isAudioApplied = false.obs;
   final isLastPage = false.obs;
   final statusCode = 0.obs;
   Map<String, dynamic> queryParametersForSeeMore = {};
@@ -105,12 +106,15 @@ class BookListController extends AppController {
     return true;
   }
 
+
+
   Future<void> getBookListApiCalling({bool isUserFavoriteData = false}) async {
     if (isUserFavoriteData) {
       queryParametersForSeeMore = {
         ApiKey.limit: limit,
         ApiKey.offset: offset.toString(),
         ApiKey.isDashboard: "0",
+        if(isAudioApplied.value != false)
         ApiKey.isAudio:isAudio.value?"1":"0"
       };
     } else if (title == C.textSimilarBooks || categoryId.isNotEmpty) {
@@ -119,12 +123,14 @@ class BookListController extends AppController {
         ApiKey.limit: limit,
         ApiKey.offset: offset.toString(),
         ApiKey.inBookDetails: "0",
+        if(isAudioApplied.value != false)
         ApiKey.isAudio:isAudio.value?"1":"0"
       };
     } else {
       queryParametersForSeeMore = {
         ApiKey.limit: limit,
         ApiKey.offset: offset.toString(),
+        if(isAudioApplied.value != false)
         ApiKey.isAudio: isAudio.value ? "1" : "0"
       };
     }
@@ -263,13 +269,30 @@ class BookListController extends AppController {
   }
 
   Future<void> clickOnSelectAudioFilter() async {
+
+
     inAsyncCall.value = true;
     isAudio.value=!isAudio.value;
+    isAudioApplied.value = true;
+    print("button presssed ${ isAudioApplied.value}  ${isAudio.value}");
     offset = 0;
     await getBookListApiCalling(
         isUserFavoriteData: title == C.textYourFavorite);
     inAsyncCall.value = false;
   }
+  Future<void> clickOnAllBooks() async {
+
+
+    inAsyncCall.value = true;
+    isAudio.value=false;
+    isAudioApplied.value = false;
+
+    // offset = 0;
+    // await getBookListApiCalling(
+    //     isUserFavoriteData: title == C.textYourFavorite);
+    inAsyncCall.value = false;
+  }
+
 }
 
 class BooksFilter {

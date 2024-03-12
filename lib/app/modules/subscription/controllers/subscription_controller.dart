@@ -27,7 +27,7 @@ class SubscriptionController extends AppController {
   RxInt selectedRadioButton = 0.obs;
   RxInt selectedRadioPrice = 0.obs;
   RxInt selectedRadioID = 0.obs;
-  RxMap paymentIntent = Map().obs;
+
   RxMap paymentIntent1 = Map().obs;
   RxMap GetSubcriptionData = Map().obs;
   RxMap paymentStatusData = Map().obs;
@@ -82,8 +82,10 @@ class SubscriptionController extends AppController {
 
   //____________________Payment Status API_____________________
   Future<void> PaymentStatusAPI(
+
       plan_id, amount, currency, status, transaction_id) async {
     try {
+      inAsyncCall.value = true;
       var headers = {
         'Authorization':
         'Bearer Bearer $token'
@@ -92,8 +94,8 @@ class SubscriptionController extends AppController {
       var request = http.MultipartRequest('POST',
           Uri.parse('https://hostingbazaar.in/WooEnglish/api/payment-update'));
       request.fields.addAll({
-        'plan_id': 1.toString(),
-        'amount': 100.toString(),
+        'plan_id': plan_id,
+        'amount': amount,
         'currency': currency,
         'status': status,
         'transaction_id': transaction_id
@@ -102,17 +104,21 @@ class SubscriptionController extends AppController {
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
+
       var data = await response.stream.bytesToString();
       paymentStatusData.value = jsonDecode(data);
+      inAsyncCall.value = false;
       print(paymentStatusData.value);
       if (response.statusCode == 200) {
         if (paymentStatusData.value['status'] == true)
           Get.offAllNamed('/congratulation');
         _setKey(true);
       } else {
+        inAsyncCall.value = false;
         print(response.reasonPhrase);
       }
     } catch (e) {
+      inAsyncCall.value = false;
       print(e);
     }
   }

@@ -42,6 +42,7 @@ abstract class Routes {
   static const FEEDBACK = _Paths.FEEDBACK;
   static const QUIZ_DETAIL = _Paths.QUIZ_DETAIL;
   static const SPLASH = _Paths.SPLASH;
+  static const ON_GOING = _Paths.ON_GOING;
 }
 
 abstract class _Paths {
@@ -83,4 +84,5 @@ abstract class _Paths {
   static const FEEDBACK = '/feedback';
   static const QUIZ_DETAIL = '/quiz-detail';
   static const SPLASH = '/splash';
+  static const ON_GOING = '/on-going';
 }

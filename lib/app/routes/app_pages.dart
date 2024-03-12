@@ -41,6 +41,8 @@ import '../modules/notifications/bindings/notifications_binding.dart';
 import '../modules/notifications/views/notifications_view.dart';
 import '../modules/on_boarding/bindings/on_boarding_binding.dart';
 import '../modules/on_boarding/views/on_boarding_view.dart';
+import '../modules/on_going/binding/on_going_binding.dart';
+import '../modules/on_going/view/on_going.dart';
 import '../modules/payment/bindings/payment_binding.dart';
 import '../modules/payment/views/payment_view.dart';
 import '../modules/privacy_policy/bindings/privacy_policy_binding.dart';
@@ -165,6 +167,7 @@ class AppPages {
       page: () => const EBookView(),
       binding: EBookBinding(),
     ),
+
     GetPage(
       name: _Paths.FINISHED_BOOKS,
       page: () => const FinishedBooksView(),
@@ -258,6 +261,11 @@ class AppPages {
       name: _Paths.SPLASH,
       page: () => const SplashView(),
       binding: SplashBinding(),
+    ),
+    GetPage(
+      name: _Paths.ON_GOING,
+      page: () =>  OnGoing(),
+      binding: OnGoingBinding(),
     ),
   ];
 

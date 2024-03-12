@@ -105,7 +105,7 @@ class MyBooksController extends AppController {
         isAudio: booksList[index].bookdetails?.isAudio,
 
         tag: tag,
-        showbookto:booksList[index].showbookto.toString() ,
+        showbookto:booksList[index].bookdetails!.showbookto.toString() ,
         bookId: booksList[index].bookId.toString(),
         isLiked: true,
         categoryId: booksList[index].bookdetails?.category,

@@ -15,6 +15,8 @@ import 'package:woo_english/app/routes/app_pages.dart';
 import 'package:woo_english/app/theme/constants/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:woo_english/firebase/firebase_login_method.dart';
+import '../../../data/local_database/database_const/database_const.dart';
+import '../../../data/local_database/database_helper/database_helper.dart';
 import '../../book_detail/controllers/book_detail_controller.dart';
 
 class AuthorController extends AppController
@@ -37,6 +39,7 @@ class AuthorController extends AppController
   Map<String, dynamic> queryParametersForAuthor = {};
   final getAuthorDetailsModel = Rxn<GetAuthorDetailsModel>();
   Map<String, dynamic> bodyParamsForAuthorFollowUnfollow = {};
+  RxString isUserSubscribed = ''.obs;
 
   @override
   Future<void> onInit() async {
@@ -50,6 +53,8 @@ class AuthorController extends AppController
       }
     inAsyncCall.value = false;
     onReload();
+    isUserSubscribed.value = await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnStatus);
+
   }
 
   @override

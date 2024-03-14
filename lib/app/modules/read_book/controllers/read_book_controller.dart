@@ -296,14 +296,14 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
     backGroundColor.value = color;
 
 
-    imageChoose.value.bank_logo.value = '';
-    print(' background color is ${imageChoose.value.bank_logo.value}');
-    print(' background color is ${backGroundColor.value}');
-    if(formatedDataId.value==''){
-      await storeFormatedApiCalling();
-    }else{
-      await updateFormatedApiCalling();
-    }
+    // imageChoose.value.bank_logo.value = '';
+    // print(' background color is ${imageChoose.value.bank_logo.value}');
+    // print(' background color is ${backGroundColor.value}');
+    // if(formatedDataId.value==''){
+    //   await storeFormatedApiCalling();
+    // }else{
+    //   await updateFormatedApiCalling();
+    // }
   }
 
   final responseCodeDictionary = 0.obs;
@@ -1242,18 +1242,24 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
       url: UriConstant.endPointGetFormatedData,
     );
 
-    //responseCode.value = response?.statusCode ?? 0;
-    var data = jsonDecode(response!.body);
 
-    getFormatttedData = GetFormatedData.fromJson(jsonDecode(response.body ?? ""));
+
+    getFormatttedData = GetFormatedData.fromJson(jsonDecode(response!.body ?? ""));
 
     if (getFormatttedData.status == true){
     if (CM.responseCheckForGetMethod(response: response)) {
+      print("get format ${getFormatttedData.data!.backGroundColor}");
 
 
 
 
-        print(getFormatttedData.data!.id);
+
+      // print(
+      //     " back value ${setFontStyle.value.toString()},${imageChoose.value.bank_logo.toString()},"
+      //         "${setTextAlign.value.toString()},${isDarkMode.value.toString()},"
+      //         "${setFontFamily.value.toString()},${textColor.value.toString()},"
+      //         "${backGroundColor.value.toString()},${selectFontSize.value.toString()}");
+      // backGroundColor.value = bgColorColor(getFormatttedData.data!.backGroundColor.toString());
       formatedDataId.value = getFormatttedData.data!.id.toString();
       if (getFormatttedData.data!.setFontStyle == "FontStyle.normal") {
         setFontStyle.value = FontStyle.normal;
@@ -1277,21 +1283,18 @@ class ReadBookController extends AppController with WidgetsBindingObserver {
       }
       isDarkMode.value =
           bool.parse(getFormatttedData.data!.isDarkmode.toString());
-      textColor.value =
-          parseColor(getFormatttedData.data!.textColor.toString());
-      backGroundColor.value =
-          bgColorColor(getFormatttedData.data!.backGroundColor.toString());
+      textColor.value = parseColor(getFormatttedData.data!.textColor.toString());
+        print(
+            " back value ${setFontStyle.value.toString()},${imageChoose.value.bank_logo.toString()},"
+                "${setTextAlign.value.toString()},${isDarkMode.value.toString()},"
+                "${setFontFamily.value.toString()},${textColor.value.toString()},"
+                "${backGroundColor.value.toString()},${selectFontSize.value.toString()}");
+      backGroundColor.value = bgColorColor(getFormatttedData.data!.backGroundColor.toString());
 
 
-      selectFontSize.value =
-          double.parse(getFormatttedData.data!.selectFontSize.toString());
+      selectFontSize.value = double.parse(getFormatttedData.data!.selectFontSize.toString());
 
-      print(
-          "${setFontStyle.value.toString()},${imageChoose.value.bank_logo
-              .toString()},${setTextAlign.value.toString()},${isDarkMode.value
-              .toString()},${setFontFamily.value.toString()},${textColor.value
-              .toString()},${backGroundColor.value.toString()},${selectFontSize
-              .value.toString()}");
+
     }
     } }
 

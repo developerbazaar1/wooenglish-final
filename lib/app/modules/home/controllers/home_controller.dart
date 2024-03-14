@@ -444,11 +444,14 @@ class HomeController extends AppController {
     inAsyncCall.value = true;
     String tag = CM.getRandomNumber();
     Get.put(BookDetailController(), tag: tag);
+    
     await Navigator.of(Get.context!).push(
       MaterialPageRoute(
         builder: (context) => BookDetailView(
          isAudio: isAudio,
-          showbookto:getDashBoardBooksModel.books![index].showbookto  ,
+          showbookto:id=='Your Favorites'
+              ?getDashBoardBooksModel.books![index].bookdetails!.showbookto
+              :getDashBoardBooksModel.books![index].showbookto,
           bookNameId: id,
             tag: tag,
             bookId: id == C.textYourFavorite

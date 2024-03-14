@@ -272,7 +272,8 @@ class OnGoing extends GetView<OnGoingController>{
 
 
   Widget appBarView() => CW.commonAppBarWithoutActon(
-      title: C.textOngoing, wantBackButton: true);
+      title: C.textOngoing,
+      onPressed: () => controller.clickOnBackButton());
 
   Widget textViewAuthorName({required String value}) => Text(
     value,

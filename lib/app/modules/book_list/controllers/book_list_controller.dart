@@ -230,6 +230,7 @@ class BookListController extends AppController {
   }
 
   Future<void> clickOnParticularBook({required int index}) async {
+    print("fev book ${listOfBooks[index].showbookto.toString()}");
     inAsyncCall.value = true;
 
     String tag = CM.getRandomNumber();
@@ -239,7 +240,7 @@ class BookListController extends AppController {
       MaterialPageRoute(
         builder: (context) => BookDetailView(
           isAudio: listOfBooks[index].isAudio,
-          showbookto: listOfBooks[index].showbookto.toString(),
+          showbookto:title == C.textYourFavorite?listOfBooks[index].bookdetails!.showbookto.toString(): listOfBooks[index].showbookto.toString(),
             tag: tag,
             bookId: title == C.textYourFavorite
                 ? listOfBooks[index].bookId.toString()

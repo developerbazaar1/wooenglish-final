@@ -228,14 +228,7 @@ class ReadBookView extends GetView<ReadBookController> {
                                                 child: SingleChildScrollView(
                                                   child: Container(
                                                       decoration: BoxDecoration(
-                                                          color: controller
-                                                                  .modeValue
-                                                                  .value
-                                                              ? controller
-                                                                  .changeBackgroundColor(
-                                                                      Colors
-                                                                          .transparent)
-                                                              : controller
+                                                          color:  controller
                                                                   .backGroundColor
                                                                   .value,
                                                           image: controller

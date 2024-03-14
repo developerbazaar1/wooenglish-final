@@ -15,7 +15,8 @@ import 'package:woo_english/read_more/read_more.dart';
 class CW {
   ///For Full Size Use In Column Not In ROW
   static Widget commonElevatedButton(
-      {double? height,
+      {
+        double? height,
       double? width,
       EdgeInsetsGeometry? buttonMargin,
       EdgeInsetsGeometry? contentPadding,
@@ -25,7 +26,8 @@ class CW {
       Color? buttonColor,
       double? elevation,
       required VoidCallback onPressed,
-      required Widget child}) {
+      required Widget child
+      }) {
     return Container(
       height: wantContentSizeButton ? height : 54.px,
       width: wantContentSizeButton ? width : double.infinity,

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:woo_english/app/api/api_constant/api_constant.dart';
 import 'package:woo_english/app/api/http_methods/http_methods.dart';
@@ -41,7 +42,7 @@ class MyProfileController extends AppController {
   ];
   String? userProfilePicture="";
   String? userName="";
-  String? userOnGoingCount="";
+  RxString userOnGoingCount="".obs;
   String? userOnCompleteCount="";
   String? userOnMyCollectionCount="";
 
@@ -57,7 +58,7 @@ class MyProfileController extends AppController {
     isMamber.value = await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnStatus) == "active";
     userProfilePicture=await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnUserImage);
     userName=await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnName);
-    userOnGoingCount=await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnOnGoing);
+    userOnGoingCount.value=await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnOnGoing);
     userOnCompleteCount=await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnCompleteBook);
     userOnMyCollectionCount=await DatabaseHelper.databaseHelperInstance.getParticularData(key: DatabaseConst.columnMyCollection);
     inAsyncCall.value=false;

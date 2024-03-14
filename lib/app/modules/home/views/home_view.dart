@@ -1004,7 +1004,9 @@ class HomeView extends GetView<HomeController> {
 
   Widget textViewTitle({required String text}) => Text(
         text,
-        style: CT.alegreyaDisplayLarge(),
+        style: CT.alegreyaDisplayLarge().copyWith(
+          fontSize: 18.px
+        ),
       );
 
   Widget buttonViewSeeMore({required VoidCallback onPressed}) =>
@@ -1069,9 +1071,11 @@ class HomeView extends GetView<HomeController> {
                             ),
                             child: Stack(
                               children: [
+                                if(id==C.textMemberOnlyBooks)
+                                  Obx(() =>
                                 Opacity(
                                   opacity:
-                                  id==C.textMemberOnlyBooks&&controller.isUserSubscribed.value == 'inactive'?0.3:
+                                  controller.isUserSubscribed.value == 'inactive'?0.3:
                                       1 ,
                                   child: SizedBox(
                                     height: C.bookHorizontalListHeight,
@@ -1084,7 +1088,19 @@ class HomeView extends GetView<HomeController> {
                                               listOfBooks[index].bookThumbnail),
                                     ),
                                   ),
-                                ),
+                                )
+                                  )else
+                                  SizedBox(
+                                    height: C.bookHorizontalListHeight,
+                                    width: C.bookHorizontalListWidth,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          C.bookHorizontalListRadius),
+                                      child: imageViewBook(
+                                          value:
+                                          listOfBooks[index].bookThumbnail),
+                                    ),
+                                  ),
                                 Padding(
                                   padding: EdgeInsets.all(8.px),
                                   child: Row(
@@ -1113,8 +1129,13 @@ class HomeView extends GetView<HomeController> {
                                     ],
                                   ),
                                 ),
-                                if(id==C.textMemberOnlyBooks && controller.isUserSubscribed.value !='active')
-                                Center(child: Icon(Icons.lock_outline,size: 30,),)
+                                if(id==C.textMemberOnlyBooks)
+                                Obx(() {
+                                  return  controller.isUserSubscribed.value !='active'?
+                                  Center(child: Icon(Icons.lock_outline,size: 30,),):SizedBox();
+
+                                })
+
                               ],
                             )),
                         CW.commonPaddingForBookContent(
@@ -1225,8 +1246,9 @@ class HomeView extends GetView<HomeController> {
                             ),
                             child: Stack(
                               children: [
+                                Obx(() =>
                                 Opacity(
-                                  opacity: listOfBooks[index].bookdetails!.showbookto.toString()=='paid_users'?0.3:1,
+                                  opacity: listOfBooks[index].bookdetails!.showbookto.toString()=='paid_users'&&controller.isUserSubscribed.value !='active'?0.3:1,
                                   child: SizedBox(
                                     height: C.bookHorizontalListHeight,
                                     width: C.bookHorizontalListWidth,
@@ -1239,7 +1261,8 @@ class HomeView extends GetView<HomeController> {
                                               ?.bookThumbnail),
                                     ),
                                   ),
-                                ),
+                                ),),
+
                                 Padding(
                                   padding: EdgeInsets.all(8.px),
                                   child: Row(
@@ -1277,8 +1300,14 @@ class HomeView extends GetView<HomeController> {
                                     ],
                                   ),
                                 ),
+
+
+
+
                                 if(listOfBooks[index].bookdetails!.showbookto.toString()=='paid_users')
-                                Center(child: Icon(Icons.lock_outline,size: 30,),)
+                                  Obx(() {
+                                    return  controller.isUserSubscribed.value !='active'?
+                                    Center(child: Icon(Icons.lock_outline,size: 30,),):SizedBox();}),
                               ],
                             )),
                         CW.commonPaddingForBookContent(

@@ -156,6 +156,7 @@ class UriConstant {
   static const endPointDeleteUserReview = "/WooEnglish/api/delete-review";
   static const endPointAddFinishedBook = "${baseUrl}api/book/add-finish-book";
   static const endPointGetUserFinishedBooks = "WooEnglish/api/get-finish-books";
+  static const endPointGetUserOngoingBooks = "WooEnglish/api/get-continue-book-list";
   static const endPointAddUserFavorite = "${baseUrl}api/user/favorite-book";
   static const endPointGetUserQuiz = "WooEnglish/api/user/quiz";
   static const endPointNotificationOnOff = "WooEnglish/api/notification-on-off";

@@ -107,15 +107,19 @@ class MyProfileView extends GetView<MyProfileController> {
                               children: [
                                 GestureDetector(
                                   onTap: (){
-                                    controller.clickOnContinueBook();
+
+
+
+                                    Get.toNamed(Routes.ON_GOING);
 
                                   },
                                   child: Column(
                                     children: [
+
                                       textViewCount(
                                       //     value:isContinueBookavailable.value ==true
                                       // ?"1":'0'
-                                      value:controller.userOnGoingCount ?? ""
+                                      value:controller.userOnGoingCount.value ?? ""
                                       ),
                                       SizedBox(
                                         height: 2.px,
